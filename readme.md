@@ -340,4 +340,4 @@ tree
 
 ## 七、时间进度安排
 
-![时间序列](G:\Homework\企业应用与开发\code\images\时间序列.png)
+![时间序列](https://github.com/EnterpriseOrganization/enterprise/blob/master/images/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97.png)
