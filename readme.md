@@ -257,7 +257,7 @@ mysql -uroot -p [password] enterprise < db.sql
 
 ## 四、各组需求说明
 
-![需求](G:\Homework\企业应用与开发\code\images\需求.png)
+![需求](https://github.com/EnterpriseOrganization/enterprise/blob/master/images/%E9%9C%80%E6%B1%82.png)
 
 ## 五、规范性要求
 
