@@ -255,11 +255,15 @@ mysql -uroot -p [password] enterprise < db.sql
 
 **后端配置有问题，找严骅/唐鹏森/孟宇航咨询**
 
-## 四、各组需求说明
+## 四、系统架构图
+
+![home](https://github.com/EnterpriseOrganization/enterprise/blob/master/images/home.png)
+
+## 五、各组需求说明
 
 ![需求](https://github.com/EnterpriseOrganization/enterprise/blob/master/images/%E9%9C%80%E6%B1%82.png)
 
-## 五、规范性要求
+## 六、规范性要求
 
 ### A.git规范
 
@@ -276,7 +280,7 @@ mysql -uroot -p [password] enterprise < db.sql
 3. 变量名字避免使用数字作为区分，除非实在有必要
 4. 前后端方法要做到REST风格，有困难的可以放宽要求
 
-## 六、各个小组操作的远端分支部分
+## 七、各个小组操作的远端分支部分
 
 <text style="color:#f00">每个小组只能操作自己对应的小组文件夹内部的文件，不能够操作别的小组的文件夹</text>
 
@@ -338,6 +342,6 @@ tree
 
 ```
 
-## 七、时间进度安排
+## 八、时间进度安排
 
 ![时间序列](https://github.com/EnterpriseOrganization/enterprise/blob/master/images/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97.png)
