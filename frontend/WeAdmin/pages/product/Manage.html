@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>生产分配-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+    </head>
+
+    <body>
+        <div class="weadmin-nav">
+            <span class="layui-breadcrumb">
+                <a href="">首页</a>
+                <a href="">生产管理</a>
+                <a>
+                    <cite>任务划分</cite>
+                </a>
+            </span>
+            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+                <i class="layui-icon" style="line-height:30px">ဂ</i>
+            </a>
+        </div>
+
+        <!-- 将第一个table换成你的table -->
+        <table id="assign-table" lay-filter="assign-table-filter"></table>
+        <table id="order-list-table" lay-filter="order-list-table-filter"></table>
+
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+        var order_list_data;
+        // TODO: 从后端获取订单列表存储到order_list_data中
+        // 测试数据
+        // order_list_data = [{'orderID': 0, 'createTime': 20170102, 'deadline': 20170304, 'finishStatus': true, 'tip': '','assignStatus': true},
+        //         {'orderID': 1, 'createTime': 20180102, 'deadline': 20180304, 'finishStatus': false, 'tip': '', 'assignStatus': false}
+        //     ]
+        layui.config({
+            base: '../../static/js/'
+            ,version: '101100'
+        }).use('admin');
+        layui.use('table', function() {
+            var assign_table = layui.table;
+            assign_table.render({
+                elem: '#assign-table'
+                ,height: 200
+                ,page: true
+                ,cols: [[
+                    {field: 'orderID', title: '订单ID', width:150, fixed: 'left'},
+                    {field:'groupID', title: '车间ID', width:150},
+                    {field:'groupName', title: '车间名称', width:150},
+                    {field:'productID', title: '货品ID', width:150},
+                    {field:'productName', title: '货品名称', width:150},
+                    {field:'productNumber', title: '货品数量', width:100},
+                    {field: 'tip', title: '备注'},
+                    {field:'FinishStatus', title: '完成状态', width:100, fixed: 'right'}
+                ]]
+            });
+            var order_list_table = layui.table;
+            order_list_table.render({
+                elem: '#order-list-table'
+                ,height: 180
+                ,page: true
+                ,data: order_list_data
+                ,cols: [[
+                    {field: 'orderID', title: '订单ID', width:150, fixed: 'left'},
+                    {field: 'createTime', title: '生成日期', width:150, sort: true},
+                    {field: 'deadline', title: '截止日期', width:150, sort: true},
+                    {field: 'tip', title: '备注'},
+                    {field: 'finishStatus', title: '完成状态', width:100, templet: '#finishStatusTpl'},
+                    {field: 'assignStatus', title: '分配状态', width:100, templet: '#assignStatusTpl'},
+                    {field: 'operation', title: '操作', width: 120, fixed: 'right',toolbar: '#select-order-button-template'}
+                ]]
+            });
+            order_list_table.on('tool(order-list-table-filter)', function(obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'detail') {
+                    var assign_data;
+                    // TODO: 链接后端数据库， 通过订单id获取相应的分配情况， 存储到assign_data中
+                    // 测试数据
+                    // assign_data = [{'orderID': 0, 'groupID': 101, 'groupName': '车间1'},
+                    //         {'orderID': 1, 'groupID': 102, 'groupName': '车间2'}
+                    //     ]
+                    // var assign_data1 = [assign_data[0]];
+                    // var assign_data2 = [assign_data[1]];
+                    assign_table.reload('assign-table', {
+                        data: [assign_data[data.orderID]]
+                    });
+                }
+            });
+        });
+        </script>
+        <script  type="text/html" id="select-order-button-template">
+            <button class="layui-btn layui-btn-radius layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
+        </script>
+        <script  type="text/html" id="assignStatusTpl">
+            {{# if (d.assignStatus === true) { }}
+                <span class="layui-btn layui-btn-xs">已分配</span>
+            {{# } else { }}
+                <span class="layui-btn layui-btn-normal layui-btn-xs">未分配</span>
+            {{# } }}
+        </script>
+        <script  type="text/html" id="finishStatusTpl">
+            {{# if (d.finishStatus === true) { }}
+                <span class="layui-btn layui-btn-xs">已完成</span>
+            {{# } else { }}
+                <span class="layui-btn layui-btn-normal layui-btn-xs">未完成</span>
+            {{# } }}
+        </script>
+    </body>
+</html>
