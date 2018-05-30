@@ -1,4 +1,9 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+from django.utils import timezone
+
 
 class MaterialClass(models.Model):
     # id = models.AutoField(primary_key=True)
@@ -37,6 +42,11 @@ class Order(models.Model):
         managed = True
         db_table = 'order'
 
+@receiver(pre_save, sender=Order)
+def fillDeliveryDate(sender, instance, **kwargs):
+    if instance.status == 2:
+        instance.deliverydate = timezone.now()
+
 class ProductClass(models.Model):
     # id = models.AutoField(primary_key=True)
     class_field = models.CharField(db_column='class', max_length=45, default='the very based class')
@@ -66,22 +76,41 @@ class Workshop(models.Model):
         managed = True
         db_table = 'workshop'
 
+def TaskStatusValidator(value):
+    if value < 0 or value > 2:
+        raise ValidationError("status value out of range [0~2]", params={'value', value})
+
 
 class ProduceTaskBasic(models.Model):
     # id = models.AutoField(primary_key=True)
     personincharge = models.CharField(db_column='personInCharge', max_length=45, blank=True, null=True)  # Field name made lowercase.
     topic = models.CharField(max_length=45, blank=True, null=True)
-    status = models.BooleanField(default=False) # TODO: Add a trigger to update its order's status
+    status = models.IntegerField(default=0, validators=[TaskStatusValidator]) # 0：已分配,待领料 1： 已领料,待生产 2: 生产完成
     # producestatus = models.IntegerField(db_column='produceStatus', blank=True, null=True, default=0)  # Field name made lowercase.
-    accuratedate = models.DateTimeField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
+    archivedate = models.DateTimeField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
     order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', blank=True, null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
     begindate = models.DateTimeField(db_column='beginDate',auto_now_add=True)  # Field name made lowercase.
-    deadline = models.DateTimeField(null=True)
+    # deadline = models.DateTimeField(null=True)
+    deadline = models.DateField(null=True)
+    material_getter = models.CharField(max_length=100, default="")
+    material_checker = models.CharField(max_length=100, default="")
+    material_distributon_date = models.DateTimeField(null=True)
     class Meta:
         managed = True
         db_table = 'producetaskbasic'
+
+
+@receiver(pre_save, sender=ProduceTaskBasic)
+def fillDoneDate(sender, instance, **kwargs):
+    if instance.status == 1: # 添加领料时间
+        instance.material_distributon_date = timezone.now()
+    elif instance.status == 2:
+        instance.archivedate = timezone.now() # 添加完成时间
+        order = instance.order # 注册进度到订单里
+        order.status = 2
+        order.save()
 
 
 class OutWarehouse(models.Model):

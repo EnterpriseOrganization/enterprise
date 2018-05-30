@@ -54,6 +54,7 @@ def generateProductTaskBasic():
 
     for i in range(30):
         ptb = ProduceTaskBasic()
+        ptb.status = i%3
         ptb.personincharge = charger.format(i)
         ptb.topic = topic.format(i)
         ptb.producestatus = i%2
