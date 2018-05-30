@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class MaterialClass(models.Model):
     # id = models.AutoField(primary_key=True)
     class_field = models.CharField(db_column='class', max_length=45, default='the very based class')
@@ -23,7 +22,7 @@ class Material(models.Model):
 
 class Order(models.Model):
     # id = models.AutoField(primary_key=True)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     indentor = models.CharField(max_length=45, null=True)
     receiver = models.CharField(max_length=45, null=True)
     checker = models.CharField(max_length=45, null=True)
@@ -31,7 +30,7 @@ class Order(models.Model):
     indentorphonenumber = models.CharField(db_column='indentorPhoneNumber', max_length=45, null=True)  # Field name made lowercase.
     totalprice = models.DecimalField(db_column='totalPrice', max_digits=3, decimal_places=0, null=True)  # Field name made lowercase.
     status = models.IntegerField(default=0)  # 0: 待生产 1: 生产中 2:配送中（生产完成） 3: 采购中
-    deliverydate = models.DateTimeField(db_column='deliveryDate', auto_now=True)  # Field name made lowercase.
+    deliverydate = models.DateTimeField(db_column='deliveryDate', auto_now_add=True)  # Field name made lowercase.
     paymentway = models.CharField(db_column='paymentWay', max_length=45, default='default paymentway')  # say 顺丰
 
     class Meta:
@@ -61,7 +60,7 @@ class Product(models.Model):
 
 class Workshop(models.Model):
     # id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=45, null=True)
+    name = models.CharField(max_length=45, null=True, unique=True)
     product = models.ForeignKey(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
     class Meta:
         managed = True
@@ -69,17 +68,16 @@ class Workshop(models.Model):
 
 
 class ProduceTaskBasic(models.Model):
-    # id = models.IntegerField(primary_key=True)
     # id = models.AutoField(primary_key=True)
     personincharge = models.CharField(db_column='personInCharge', max_length=45, blank=True, null=True)  # Field name made lowercase.
     topic = models.CharField(max_length=45, blank=True, null=True)
-    # 0：未分配 1：已分配 2：已完成
-    producestatus = models.IntegerField(db_column='produceStatus', blank=True, null=True, default=0)  # Field name made lowercase.
+    status = models.BooleanField(default=False) # TODO: Add a trigger to update its order's status
+    # producestatus = models.IntegerField(db_column='produceStatus', blank=True, null=True, default=0)  # Field name made lowercase.
     accuratedate = models.DateTimeField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
     order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', blank=True, null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
-    begindate = models.DateTimeField(db_column='beginDate', auto_now=True)  # Field name made lowercase.
+    begindate = models.DateTimeField(db_column='beginDate',auto_now_add=True)  # Field name made lowercase.
     deadline = models.DateTimeField(null=True)
     class Meta:
         managed = True
@@ -88,7 +86,7 @@ class ProduceTaskBasic(models.Model):
 
 class OutWarehouse(models.Model):
     # id = models.AutoField(primary_key=True)
-    outdate = models.DateTimeField(db_column='outDate', auto_now=True)  # Field name made lowercase.
+    outdate = models.DateTimeField(db_column='outDate', auto_now_add=True)  # Field name made lowercase.
     receiver = models.CharField(max_length=45, null=True)
     checker = models.CharField(max_length=45, null=True)
 
@@ -124,7 +122,7 @@ class InventorInformation(models.Model):
 
 class InWarehouse(models.Model):
     # id = models.AutoField(primary_key=True)
-    indate = models.DateTimeField(db_column='inDate', auto_now=True)  # Field name made lowercase.
+    indate = models.DateTimeField(db_column='inDate', auto_now_add=True)  # Field name made lowercase.
     checker = models.CharField(max_length=45, null=True)
     operator = models.CharField(max_length=45, null=True)
 
@@ -155,8 +153,8 @@ class InwareHouseProduct(models.Model):
 
 
 class MaterialRequistion(models.Model):
-    # id = models.AutoField(primary_key=True)
-    distributiondate = models.DateTimeField(db_column='distributionDate', blank=True, auto_now=True)  # Field name made lowercase.
+    # id = models.AutoField(primary_key=Tdjango select_related 多个字段rue)
+    distributiondate = models.DateTimeField(db_column='distributionDate', blank=True, auto_now_add=True)  # Field name made lowercase.
     requistioner = models.CharField(max_length=45, blank=True, null=True)
     checker = models.CharField(max_length=45, blank=True, null=True)
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
@@ -209,7 +207,7 @@ class Purchase(models.Model):
     # id = models.AutoField(primary_key=True)
     # id = models.IntegerField(primary_key=True)
     purchaser = models.CharField(max_length=45, null=True)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     checker = models.CharField(max_length=45, null=True)
     totalprice = models.DecimalField(db_column='totalPrice', max_digits=3, decimal_places=0, default=0)  # Field name made lowercase.
     supplier = models.ForeignKey(Supplier, models.DO_NOTHING, db_column='supplier', null=True)
@@ -261,7 +259,7 @@ class UserTable(models.Model):
     password = models.CharField(max_length=45)
     name = models.CharField(max_length=45, blank=True, null=True)
     gender = models.CharField(max_length=45, default='male')
-    dateofentry = models.DateTimeField(db_column='dateOfEntry', auto_now=True)  # Field name made lowercase.
+    dateofentry = models.DateTimeField(db_column='dateOfEntry', auto_now_add=True)  # Field name made lowercase.
     position = models.ForeignKey(Role, models.DO_NOTHING, db_column='position', null=True)
     phonenumber = models.CharField(db_column='phoneNumber', max_length=45, null=True)  # Field name made lowercase.
     address = models.CharField(max_length=45, null=True)
