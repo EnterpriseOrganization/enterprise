@@ -7,10 +7,12 @@ from django.core import serializers
 def testExample(request):
     resp = {'errorcode': 100, 'detail': 'Get success'}
     return HttpResponse(json.dumps(resp), content_type="application/json")
+    # 测试用的例子
 
 def GetAllOrder(request):
 	Response=serializers.serialize("json", Order.objects.all());
 	return HttpResponse(json.dumps(Response), content_type="application/json")
+	# 获取到所有的订单信息
 
 def AddOder(request):
 	info = "add order msg"
