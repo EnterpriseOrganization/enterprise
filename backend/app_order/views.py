@@ -14,7 +14,7 @@ def GetAllOrder(request):
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 	# 获取到所有的订单信息
 
-def AddOder(request):
+def AddOrder(request):
 	info = "add order msg"
 	if request.method == 'post':
 		req = simplejson.loads(request.raw_post_data)
@@ -28,3 +28,4 @@ def AddOder(request):
 		status = req['status']
 		deliverydate = req['deliverydate']
 		paymentway= req['paymentway']
+	return HttpResponse(info)
