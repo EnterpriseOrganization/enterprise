@@ -3,6 +3,7 @@ from django.test import TestCase
 # from ..enterprise.models import *
 from enterprise.models import *
 from app_product.Views import ProduceTask
+from app_product.Views import MaterialList
 
 
 class ProduceTaskModelTestCase(TestCase):
@@ -137,3 +138,46 @@ class ProduceTaskModelTestCase(TestCase):
         self.assertEqual(1, amount)
         self.assertEqual(old_amount-1, new_amount)
 
+
+class MaterialListModelTestCase(TestCase):
+    def setUp(self):
+        self.p1 = Product()
+        self.p1.save()
+        self.p2 = Product()
+        self.p2.save()
+        self.m1 = Material(name='material001')
+        self.m1.save()
+        self.m2 = Material(name='material002')
+        self.m2.save()
+        self.m3 = Material(name='material003')
+        self.m3.save()
+        self.m4 = Material(name='material004')
+        self.m4.save()
+        self.m5 = Material(name='material005')
+        self.m5.save()
+
+        self.r1 = ProductMaterial(product=self.p1, material=self.m1, number=10)
+        self.r1.save()
+        self.r2 = ProductMaterial(product=self.p1, material=self.m3, number=30)
+        self.r2.save()
+        self.r3 = ProductMaterial(product=self.p1, material=self.m5, number=50)
+        self.r3.save()
+        self.r4 = ProductMaterial(product=self.p2, material=self.m2, number=20)
+        self.r4.save()
+        self.r5 = ProductMaterial(product=self.p2, material=self.m4, number=40)
+        self.r5.save()
+
+    def test_getMaterialList(self):
+        my_list = MaterialList.getMaterialList(self.p1.id, 2)
+        its_list = ProductMaterial.objects.filter(product=self.p1.id)
+
+        array = my_list["material_requisition"]
+        my_type = type(array[0])
+        my_number = 0
+        for a in array:
+            if a["material_id"]==self.m3.id:
+                my_number = a["material_num"]
+
+        self.assertEqual(len(array), len(its_list))
+        self.assertEqual(my_type, type({}))
+        self.assertEqual(my_number, 60)
