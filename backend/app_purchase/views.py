@@ -20,7 +20,7 @@ def get_quotation_list(request):
 	"""
 	if request.method == 'POST':
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').all()
-		# fileds = SupplierMaterial._meta.get_fields()
+		# attributes = SupplierMaterial._meta.get_fields()
 		result = []
 		for sm in sms:
 			res = {
