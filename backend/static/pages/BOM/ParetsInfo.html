@@ -14,11 +14,26 @@
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
             var mdata=[]
+            var mdatanum=0
         </script>
       
         <script>
         layui.use(['form','table'], function(){
             var $=layui.jquery;
+            var table = layui.table;
+            var form=layui.form;
+
+            var materialtypeoptions=["sfs","sdfsdf","sdfdsfs"];
+
+            $("#mt").prepend("<option value='null'>配料类型</option>")
+            for (var i = 0; i < materialtypeoptions.length; i++) {
+                $("#mt").append("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
+                //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
+                //materialtypeoptions[i]
+            }
+            form.render('select');
+
+
             $.ajax({
                 url:"http://127.0.0.1:8000/bom/material/?name=null&class_obj=null&id=null",
                 type:"GET",
@@ -34,7 +49,8 @@
                     page:true
                     });
 
-                    $("#mdcount").text("共有数据："+mdata.length+"条")
+                    mdatanum=mdata.length
+                    $("#mdcount").text("共有数据："+mdatanum+"条")
                 },
                 error:function(error){
                     console.log(error)
@@ -42,11 +58,10 @@
                 }
             });
 
-            var table = layui.table;
-            var form=layui.form;
+
             //第一个实例
             var tableIns=table.render({
-            elem: '#demo'
+            elem: '#materialtable'
             ,height: 315
             ,data:mdata //数据接口
             ,page: true //开启分页
@@ -57,43 +72,7 @@
               ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
               ,{title: '操作', width:'25%',templet:'#med'} 
             ]]
-            });
-
-            form.on('submit(search)',function(data){
-                var materialname=data.field.materialname
-                var materialtype=data.field.materialtype
-                if(materialname==""){
-                    materialname="null";
-                }
-                // alert(materialname)
-                var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_obj="+materialtype+"&id=null";
-                // alert(urltogo)
-                $.ajax({
-                    url:urltogo,
-                    type:"GET",
-                    xhrFields:{
-                        withCredentials:true
-                    },
-                    success:function(msg){
-                        console.log(msg.data)
-                        mdata=msg.data
-
-                        tableIns.reload({
-                        data:mdata,
-                        page:true
-                        });
-
-                        //window.location.href="main";
-                    },
-                    error:function(error){
-                        console.log(error)
-                        // alert("dsf")
-                    }
-
-                });
-                return false;
-            });          
-
+            });        
 
         });
         </script>
@@ -118,12 +97,8 @@
                         <input class="layui-input" placeholder="名称" name="materialname" >
                     </div>
                     <div class="layui-inline">
-                        <select name="materialtype" lay-verify="required" lay-search>
-                            <option value="null">配料类型</option>
-                            <option value="供电类">供电类</option>
-                            <option value="电阻类">电阻类</option>
-                            <option value="机械类">机械类</option>
-                            <option value="中间件类">中间件类</option>
+                        <select id="mt" name="materialtype" lay-verify="required">
+
                         </select>
                     </div>
                     <!--
@@ -140,11 +115,11 @@
             <div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
                 <button class="layui-btn" onclick="WeAdminShow('添加物料','./AddParets.html',550,405)"><i class="fas fa-plus"></i> 新增物料</button>
-                <button class="layui-btn" onclick="addTable();"><i class="fas fa-share"></i> 全部导出</button>
+                <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
                 <span class="fr" style="line-height:40px" id="mdcount"></span>
             </div>
 
-        <table id="demo" lay-filter="test"></table>
+        <table id="materialtable" lay-filter="test"></table>
 
         </div>
 
@@ -156,7 +131,7 @@
             var form=layui.form;
             //第一个实例
             var tableIns=table.render({
-            elem: '#demo'
+            elem: '#materialtable'
             ,height: 315
             ,data:mdata //数据接口
             ,page: true //开启分页
@@ -193,6 +168,7 @@
                         page:true
                         });
 
+                        mdatanum=mdata.length
                         $("#mdcount").text("共有数据："+mdata.length+"条")
 
                     },
@@ -214,15 +190,10 @@
                             withCredentials:true
                         },
                         success:function(msg){
-                            console.log(msg.data)
-                            mdata=msg.data
+                            console.log(msg)
 
-                            tableIns.reload({
-                            data:mdata,
-                            page:true
-                            });
-
-                            $("#mdcount").text("共有数据："+mdata.length+"条")
+                            mdatanum-=1
+                            $("#mdcount").text("共有数据："+mdatanum+"条")
 
                         },
                         error:function(error){
@@ -238,6 +209,41 @@
                     return false;
                 });
             }
+
+            window.delAll = function () {
+                var checkStatus=table.checkStatus('materialtable');
+                //var data = tableCheck.getData();
+                var urltogo="http://127.0.0.1:8000/bom/material/";
+                layer.confirm('确认要删除这些记录吗？', function(index) {
+                    console.log(checkStatus)
+                    $.ajax({
+                        url:urltogo,
+                        type:"DELETE",
+                        data:{todelete:checkStatus},
+                        dataType:"json",
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(msg){
+                            console.log(msg)
+
+                            mdatanum-=checkStatus.data.length
+
+                            $("#mdcount").text("共有数据："+mdatanum+"条")
+
+                        },
+                        error:function(error){
+                            console.log(error)
+                        }
+
+                    });
+                    layer.msg('删除成功', {
+                        icon: 1
+                    });
+                    $(".layui-form-checked").not('.header').parents('tr').remove();
+                    return false;
+                });
+            }            
 
         });
         </script>
