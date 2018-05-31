@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>管理员登录-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
@@ -13,46 +14,87 @@
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
 
 </head>
+
 <body class="login-bg">
-    
+
     <div class="login">
         <div class="message">WeAdmin 1.0-管理登录</div>
         <div id="darkbannerwrap"></div>
-        
-        <form method="post" class="layui-form" >
-            <input name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
+
+        <form method="post" class="layui-form">
+            <input name="username" placeholder="用户名" type="text" lay-verify="required" class="layui-input">
             <hr class="hr15">
-            <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
+            <input name="password" lay-verify="required" placeholder="密码" type="password" class="layui-input">
             <hr class="hr15">
             <input class="loginin" value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
-            <hr class="hr20" >
-            <div>
-                前端静态展示，请随意输入，即可登录。
-            </div>
+            <hr class="hr20">
         </form>
     </div>
 
     <script type="text/javascript">
-        
-            layui.extend({
-                admin: '{/}./static/js/admin'
-            });
-            layui.use(['form','admin'], function(){
-              var form = layui.form
-                  ,admin = layui.admin;
-              // layer.msg('玩命卖萌中', function(){
-              //   //关闭后的操作
-              //   });
-              //监听提交
-              form.on('submit(login)', function(data){
-                // alert(888)
-                layer.msg(JSON.stringify(data.field),function(){
-                    location.href='./index.html'
-                });
+        function setCookie(c_name, value, expiredays) {
+            var exdate = new Date()
+            exdate.setDate(exdate.getDate() + expiredays)
+            document.cookie = c_name + "=" + escape(value) +
+                ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString())
+        }
+        layui.extend({
+            admin: '{/}./static/js/admin'
+        });
+        layui.use(['form', 'admin', 'jquery'], function () {
+            var form = layui.form,
+                admin = layui.admin;
+            var $ = layui.$
+            // layer.msg('玩命卖萌中', function(){
+            //   //关闭后的操作
+            //   });
+            //监听提交 
+            form.on('submit(login)', function (data) {
+                // 后端检测密码正确性
+                var username = data.field.username
+                var password = data.field.password
+                console.log(username)
+                // 如果登陆成功
+                //setCookie(username,'WTF')
+                if (1) {
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/login/',
+                        type: 'POST', //POST提交数据  
+                        crossDomain: true,
+                        xhrFields: {
+                            withCredentials: true
+                         },
+                        data: {
+                            'username': 'qw',
+                            'password': 'qw123456'
+                        },
+                        //beforeSend: function (request) {
+                            //request.setRequestHeader("Access-Control-Allow-Credentials",
+                                //true);
+                            //request.setRequestHeader("Access-Control-Allow-Methods", "POST");
+                            //request.setRequestHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+                        //},
+                        success: function (arg) { //请求成功后的回调函数。  
+                            //var obj = jQuery.parseJSON(arg); //解析后台返回数据  
+                            console.log("successful");
+                            console.log(arg);
+                        },
+                        error: function (e) { //请求失败时调用此函数。  
+                            console.log(111);
+                        }
+                    });
+
+                    // layer.msg('登陆成功',{anim: 5},function(){
+                    //     location.href='./index.html'
+                    // })
+                } else {
+                    layer.msg('用户名或密码不正确')
+                }
                 return false;
-              });
-            });   
-    </script>  
+            });
+        });
+    </script>
     <!-- 底部结束 -->
 </body>
+
 </html>

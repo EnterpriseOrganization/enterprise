@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -84,9 +84,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'enterprise',
         'USER': 'root',
-        'PASSWORD':'',
+        'PASSWORD':'root',
         'HOST':'localhost',
-        'PORT':'',
+        'PORT':'3306',
     }
 }
 
@@ -129,3 +129,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'dist'),
+)
