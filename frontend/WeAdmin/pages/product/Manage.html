@@ -1,115 +1,286 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>生产分配-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-        <link rel="stylesheet" href="../../static/css/font.css">
-        <link rel="stylesheet" href="../../static/css/weadmin.css">
-        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
-    </head>
 
-    <body>
-        <div class="weadmin-nav">
-            <span class="layui-breadcrumb">
-                <a href="">首页</a>
-                <a href="">生产管理</a>
-                <a>
-                    <cite>任务划分</cite>
-                </a>
-            </span>
-            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-                <i class="layui-icon" style="line-height:30px">ဂ</i>
+<head>
+    <meta charset="UTF-8">
+    <title>生产分配-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+</head>
+
+<body>
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">生产管理</a>
+            <a>
+                <cite>任务划分</cite>
             </a>
-        </div>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i>
+        </a>
+    </div>
 
-        <!-- 将第一个table换成你的table -->
-        <table id="assign-table" lay-filter="assign-table-filter"></table>
-        <table id="order-list-table" lay-filter="order-list-table-filter"></table>
+    <!-- 将第一个table换成你的table -->
+    <table class="layui-table" id="assign-table">
+        <thead>
+            <tr>
+                <th>订单ID</th>
+                <th>货品名称</th>
+                <th>车间名称</th>
+                <th>货品数量</th>
+                <th>生产状态</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="layui-btn-container" style="float: right;">
+        <button class="layui-btn" onclick="addRow();">增加</button>
+        <button class="layui-btn" onclick="submit();">提交</button>
+    </div>
 
-        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
-        <script>
+    <table id="order-list-table" lay-filter="order-list-table-filter" style="margin-top: 50px;"></table>
+
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+    <script>
         var order_list_data;
         // TODO: 从后端获取订单列表存储到order_list_data中
         // 测试数据
-        // order_list_data = [{'orderID': 0, 'createTime': 20170102, 'deadline': 20170304, 'finishStatus': true, 'tip': '','assignStatus': true},
-        //         {'orderID': 1, 'createTime': 20180102, 'deadline': 20180304, 'finishStatus': false, 'tip': '', 'assignStatus': false}
-        //     ]
+        order_list_data = [{
+                'orderID': 0,
+                'createTime': 20170102,
+                'deadline': 20170304,
+                'finishStatus': true,
+                'tip': '',
+                'assignStatus': true
+            },
+            {
+                'orderID': 1,
+                'createTime': 20180102,
+                'deadline': 20180304,
+                'finishStatus': false,
+                'tip': '',
+                'assignStatus': false
+            }
+        ]
+
         layui.config({
-            base: '../../static/js/'
-            ,version: '101100'
+            base: '../../static/js/',
+            version: '101100'
         }).use('admin');
-        layui.use('table', function() {
-            var assign_table = layui.table;
-            assign_table.render({
-                elem: '#assign-table'
-                ,height: 200
-                ,page: true
-                ,cols: [[
-                    {field: 'orderID', title: '订单ID', width:150, fixed: 'left'},
-                    {field:'groupID', title: '车间ID', width:150},
-                    {field:'groupName', title: '车间名称', width:150},
-                    {field:'productID', title: '货品ID', width:150},
-                    {field:'productName', title: '货品名称', width:150},
-                    {field:'productNumber', title: '货品数量', width:100},
-                    {field: 'tip', title: '备注'},
-                    {field:'FinishStatus', title: '完成状态', width:100, fixed: 'right'}
-                ]]
+        layui.use(['table', 'jquery', 'form'], function () {
+            var table = layui.table,
+                form = layui.form,
+                $ = layui.jquery;
+
+            var num = 0; // 第几条记录 不一定是0 要根据读出的数据判断
+            var status = new Array(); // 记录分配的任务的状态 null则表示删除掉了这一条记录
+            var optionsData;
+            var order_id; // 用于记录当前的订单编号
+
+            table.render({
+                elem: '#order-list-table',
+                height: 180,
+                page: true,
+                data: order_list_data,
+                cols: [
+                    [{
+                            field: 'orderID',
+                            title: '订单ID',
+                            width: 150,
+                            fixed: 'left'
+                        },
+                        {
+                            field: 'createTime',
+                            title: '生成日期',
+                            width: 150,
+                            sort: true
+                        },
+                        {
+                            field: 'deadline',
+                            title: '截止日期',
+                            width: 150,
+                            sort: true
+                        },
+                        {
+                            field: 'tip',
+                            title: '备注'
+                        },
+                        {
+                            field: 'finishStatus',
+                            title: '完成状态',
+                            width: 100,
+                            templet: '#finishStatusTpl'
+                        },
+                        {
+                            field: 'assignStatus',
+                            title: '分配状态',
+                            width: 100,
+                            templet: '#assignStatusTpl'
+                        },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            width: 120,
+                            fixed: 'right',
+                            toolbar: '#select-order-button-template'
+                        }
+                    ]
+                ]
             });
-            var order_list_table = layui.table;
-            order_list_table.render({
-                elem: '#order-list-table'
-                ,height: 180
-                ,page: true
-                ,data: order_list_data
-                ,cols: [[
-                    {field: 'orderID', title: '订单ID', width:150, fixed: 'left'},
-                    {field: 'createTime', title: '生成日期', width:150, sort: true},
-                    {field: 'deadline', title: '截止日期', width:150, sort: true},
-                    {field: 'tip', title: '备注'},
-                    {field: 'finishStatus', title: '完成状态', width:100, templet: '#finishStatusTpl'},
-                    {field: 'assignStatus', title: '分配状态', width:100, templet: '#assignStatusTpl'},
-                    {field: 'operation', title: '操作', width: 120, fixed: 'right',toolbar: '#select-order-button-template'}
-                ]]
-            });
-            order_list_table.on('tool(order-list-table-filter)', function(obj) {
+
+            table.on('tool(order-list-table-filter)', function (obj) {
                 var data = obj.data;
                 var layEvent = obj.event;
-                if(layEvent === 'detail') {
-                    var assign_data;
-                    // TODO: 链接后端数据库， 通过订单id获取相应的分配情况， 存储到assign_data中
-                    // 测试数据
-                    // assign_data = [{'orderID': 0, 'groupID': 101, 'groupName': '车间1'},
-                    //         {'orderID': 1, 'groupID': 102, 'groupName': '车间2'}
-                    //     ]
-                    // var assign_data1 = [assign_data[0]];
-                    // var assign_data2 = [assign_data[1]];
-                    assign_table.reload('assign-table', {
-                        data: [assign_data[data.orderID]]
+                if (layEvent === 'detail') {
+                    order_id = data.orderID
+                    // TODO: 加载数据
+                    $.ajax({ // 从后台拿到数据
+                        type: 'POST',
+                        url: 'http://127.0.0.1:2333',
+                        dataType: 'json',
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            optionsData = data;
+                        }
                     });
+
+                    for (var i = 0; i < num; i++) { // 删除掉现在展示的table
+                        if (status[i] != null) {
+                            removeTr(i);
+                        }
+                    }
+                    num = 0; // 重新赋值为0
+                    status = []; // 清空状态数组
                 }
             });
+
+            window.addRow = function () {
+                if (order_id === undefined) { // 如果还没选择哪个订单就不响应
+                    return;
+                }
+
+                // 添加一行元素
+                var tableHtml = '<tr id="tr' + num + '">' +
+                    '<td><div class="layui-input-inline"><a>' + order_id + '</a></div></td>' +
+                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-filter="goodsName" lay-search="" id="goodsName' +
+                    num + '"></select></div></td>' +
+                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-search="" id="workshopName' +
+                    num + '"></select></div></td>' +
+                    '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" class="layui-input inputNum" id="goodsNum' +
+                    num + '"></input></div></td>' +
+                    '<td><button class="layui-btn layui-btn-sm" id="button' + num +
+                    '" onclick="changeStatus(' + num + ')">未完成</button>' + '</td>' +
+                    '<td><button class="layui-btn layui-btn-sm" onclick="removeTr(' + num +
+                    ')"><i class="layui-icon">&#xe640;</i></button>' + '</td>' +
+                    '</tr>';
+                const elements = $("#assign-table").children().length; // 表示id为“mtTable”的标签下的子标签的个数    
+                $("#assign-table").children().eq(elements - 1).after(tableHtml); // 在表头之后添加空白行
+
+                $('#workshopName' + num).append(new Option('', -1));
+                $('#goodsName' + num).append(new Option('', -1));
+                // 添加options            
+                $.each(optionsData, function (index, item) { // 动态添加元素
+                    $('#goodsName' + num).append(new Option(item.name, item.name)); // 第二个参数是选择器的值
+                })
+                form.render(); // 下拉菜单渲染 把内容加载进去
+
+                // 设置只能输入数字
+                $("#goodsNum" + num).keyup(function () { // 设置数量那一栏只能输入数字
+                    $(this).val($(this).val().replace(/[^0-9]/g, ''));
+                    const tmp = '#goodsName' + num;
+                }).bind("paste", function () { // CTR+V事件处理  
+                    $(this).val($(this).val().replace(/[^0-9]/g, ''));
+                }).css("ime-mode", "disabled"); // CSS设置输入法不可用
+
+                // TODO: 更改当前已分配
+                $("#goodsNum" + num).blur(function () { // 输入框失去焦点的时候进行值判断
+                    const trID = $(this).context.id.slice(8); //在控制台找到的 别说这种方法不优雅
+                    const goodsNameID = '#goodsName' + trID;
+                    if ($(goodsNameID).val() !== '-1') { // 如果选择了goodsname
+                        console.log($(goodsNameID).val());
+                        // console.log($(this).val());
+                    }
+                })
+
+                status[num] = false;
+                num++;
+            };
+
+            // TODO: 发送数据
+            window.submit = function () {
+                for (var i = 0; i < num; i++) {
+                    if (status[i] != null) { // 如果是null就是删除掉的行，提取不到数据
+                        // var comp_name = $("#ordercomp").val();
+                        const tmp = '#goodsName' + i;
+                        console.log($(tmp).val());
+                    }
+                }
+            };
+
+            window.changeStatus = function (num) {
+                const id = "#button" + num;
+                status[num] = !status[num]; // 改变状态
+                if (status[num] == true) {
+                    $(id).text('已完成');
+                } else {
+                    $(id).text('未完成');
+                }
+                $(id).toggleClass("layui-btn-normal"); // 改变CSS
+            };
+
+            //删除行
+            window.removeTr = function (trNum) {
+                status[trNum] = null;
+                $("#tr" + trNum).remove();
+            };
+
+            //监听goodsName select 动态加载workshopName选项
+            form.on('select(goodsName)', function (data) {
+                const trID = data.elem.id.slice(9); //在控制台找到的 别说这种方法不优雅
+                const workshopNameID = '#workshopName' + trID;
+                $.each(optionsData, function (index, item) { // 动态添加元素
+                    $(workshopNameID).append(new Option(item.name, item.name));
+                })
+                form.render(); // 下拉菜单渲染 把内容加载进去
+
+                // TODO: 更改当前已分配 判断是否超限 超限就炸
+                const goodsNumID = '#goodsNum' + trID;
+                const num = $(goodsNumID).val();
+                if (num !== '') { // 如果有了输入值
+                    console.log($(goodsNumID).val());
+                }
+            });
+
+
         });
-        </script>
-        <script  type="text/html" id="select-order-button-template">
-            <button class="layui-btn layui-btn-radius layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
-        </script>
-        <script  type="text/html" id="assignStatusTpl">
-            {{# if (d.assignStatus === true) { }}
-                <span class="layui-btn layui-btn-xs">已分配</span>
-            {{# } else { }}
-                <span class="layui-btn layui-btn-normal layui-btn-xs">未分配</span>
-            {{# } }}
-        </script>
-        <script  type="text/html" id="finishStatusTpl">
-            {{# if (d.finishStatus === true) { }}
-                <span class="layui-btn layui-btn-xs">已完成</span>
-            {{# } else { }}
-                <span class="layui-btn layui-btn-normal layui-btn-xs">未完成</span>
-            {{# } }}
-        </script>
-    </body>
+    </script>
+    <script type="text/html" id="select-order-button-template">
+        <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
+    </script>
+    <script type="text/html" id="assignStatusTpl">
+        {{# if (d.assignStatus === true) { }}
+        <span class="layui-btn layui-btn-xs">已分配</span>
+        {{# } else { }}
+        <span class="layui-btn layui-btn-normal layui-btn-xs">未分配</span>
+        {{# } }}
+    </script>
+    <script type="text/html" id="finishStatusTpl">
+        {{# if (d.finishStatus === true) { }}
+        <span class="layui-btn layui-btn-xs">已完成</span>
+        {{# } else { }}
+        <span class="layui-btn layui-btn-normal layui-btn-xs">未完成</span>
+        {{# } }}
+    </script>
+</body>
+
 </html>
