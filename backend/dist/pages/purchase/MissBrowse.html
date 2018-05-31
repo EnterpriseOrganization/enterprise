@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>角色管理-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">	
+    </head>
+
+    <body>
+        <div class="weadmin-nav">
+            <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">采购管理</a>
+        <a>
+          <cite>缺料浏览</cite></a>
+      </span>
+            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+                <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+        </div>
+        <div class="weadmin-body">
+            <div class="layui-row">
+                <form class="layui-form layui-col-md12 we-search">
+                    <div class="layui-inline">
+                        <input type="text" name="username" placeholder="订单编号" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" name="username" placeholder="物料编号" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+             <div class="weadmin-block"> <!--缺料项是自动生成的自动消失的（当达到数量后） 应该不用手动添加-->   
+                <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="delAll()"><i class="fas fa-check"></i> 批量完成</button>
+                <span class="fr" style="line-height:40px">共有数据：3 条</span>
+            </div> 
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+                        </th>
+                        <th>订单编号</th>
+                        <th>物料编号</th>
+                        <th>物料名称</th>
+                        <th>缺货数量</th>
+                        <th>操作</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+                        </td>
+                        <td>123098501273</td>
+                        <td>ASD41324</td>
+                        <td>电阻</td>
+                        <td>
+                            <div class="layui-progress">
+                                <div class="layui-progress-bar layui-bg-red" lay-percent="30%"></div>
+                            </div>
+                            300/1000
+                        </td>
+                        <td class="td-status">
+                            <a title="新增" onclick="WeAdminShow('编辑','./MissPutIn.html', 400, 400)" href="javascript:;">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a title="强制完成" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+                        </td>
+                        <td>123092134473</td>
+                        <td>QE9250CDJ</td>
+                        <td>散热片</td>
+                        <td>
+                            <div class="layui-progress">
+                                <div class="layui-progress-bar layui-bg-blue" lay-percent="90%"></div>
+                            </div>
+                            900/1000
+                        </td>
+                        <td class="td-status">
+                            <a title="新增" onclick="WeAdminShow('编辑','./MissPutIn.html', 400, 400)" href="javascript:;">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a title="强制完成" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+                        </td>
+                        <td>90218375214</td>
+                        <td>QE9adc0CDJ</td>
+                        <td>磁针</td>
+                        <td>
+                            <div class="layui-progress">
+                                <div class="layui-progress-bar layui-bg-orange" lay-percent="50%"></div>
+                            </div>
+                            25/50
+                        </td>
+                        <td class="td-status">
+                            <a title="新增" onclick="WeAdminShow('编辑','./MissPutIn.html', 400, 400)" href="javascript:;">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a title="强制完成" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="page">
+                <div>
+                    <a class="prev" href="">&lt;&lt;</a>
+                    <a class="num" href="">1</a>
+                    <span class="current">2</span>
+                    <a class="num" href="">3</a>
+                    <a class="num" href="">489</a>
+                    <a class="next" href="">&gt;&gt;</a>
+                </div>
+            </div>
+        </div>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+    </body>
+
+</html>

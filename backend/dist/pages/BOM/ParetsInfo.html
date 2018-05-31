@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>删除会员-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+
+    </head>
+
+    <body>
+        <div class="weadmin-nav">
+            <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">BOM信息管理</a>
+        <a>
+          <cite>配料管理</cite></a>
+      </span>
+            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+                <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+        </div>
+        <div class="weadmin-body">
+            <div class="layui-row">
+                <form class="layui-form layui-col-md12 we-search">
+                    <i class="fas fa-filter"> </i>
+                    <div class="layui-inline">
+                        <input class="layui-input" placeholder="名称" >
+                    </div>
+                    <div class="layui-inline">
+                        <select name="city" lay-verify="required" lay-search>
+                            <option value="-1">配料类型</option>
+                            <option value="0">供电类</option>
+                            <option value="0">电阻类</option>
+                            <option value="0">机械类</option>
+                            <option value="0">中间件类</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <input class="layui-input" placeholder="￥ 最低价" id="price-low">
+                    </div> -
+                    <div class="layui-inline">
+                        <input class="layui-input" placeholder="￥ 最高价" id="price-high">
+                    </div>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="weadmin-block">
+                <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
+                <button class="layui-btn" onclick="WeAdminShow('添加物料','./AddParets.html',550,405)"><i class="fas fa-plus"></i> 新增物料</button>
+                <button class="layui-btn"><i class="fas fa-share"></i> 全部导出</button>
+                <span class="fr" style="line-height:40px">共有数据：88 条</span>
+            </div>
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+                        </th>
+                        <th>编号</th>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th>参考价格(元)</th>
+                        <!--<th>备注</th>-->
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+                        </td>
+                        <td>1</td>
+                        <td>330V 变电器</td>
+                        <td>供电类</td>
+                        <td>120</td>
+                       <!--<td>需搭配1000V+ 的保险丝使用</td>-->
+                        <td class="td-manage">
+                            <a title="修改" onclick="WeAdminShow('编辑配料','./ParetsDetail.html',550,400)" href="javascript:;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="page">
+                <div>
+                    <a class="prev" href="">&lt;&lt;</a>
+                    <a class="num" href="">1</a>
+                    <span class="current">2</span>
+                    <a class="num" href="">3</a>
+                    <a class="num" href="">489</a>
+                    <a class="next" href="">&gt;&gt;</a>
+                </div>
+            </div>
+
+        </div>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+    </body>
+
+</html>
