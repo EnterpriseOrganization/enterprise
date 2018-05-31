@@ -23,6 +23,5 @@ urlpatterns = [
     # url(r'^order/',include('app_order.urls',namespace = "app_order")),
     # url(r'^product/',include('app_product.urls',namespace = "app_product")),
     # url(r'^purchase/',include('app_purchase.urls',namespace = "app_purchase")),
-    url(r'^login/',include('app_bom_permission.urls',namespace = "app_bom_permission")),
-    # url(r'^permission/',include('app_bom_permission.urls',namespace = "app_bom_permission")),
+    url(r'^user/',include('app_bom_permission.urls',namespace = "app_bom_permission")),
 ]

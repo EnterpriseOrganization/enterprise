@@ -26,13 +26,14 @@ def user_login(request):
     else:
         status=422
     response = JsonResponse({'status':status})
-    # response["Access-Control-Allow-Origin"] = "http://localhost:8000"
-    # response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS" 
-    # response["Access-Control-Max-Age"] = "1000"
-    # response["Access-Control-Allow-Headers"] = "x-requested-with,content-type"
-    # response["Access-Control-Allow-Credentials"]='true'
     return response
 
+def current_user
+
+def change_password(request):
+    print(request.user)
+    user = request.user
+    user
 
 # def get_user(request):
 #     from django.contrib.auth.models import AnonymousUser

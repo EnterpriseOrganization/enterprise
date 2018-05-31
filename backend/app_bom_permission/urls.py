@@ -3,8 +3,8 @@ from django.conf.urls.static import static
 from . import views
 from django.conf import settings
 urlpatterns = [
-    url(r'^$', views.user_login),
-    
+    url(r'^login', views.user_login),
+    url(r'^getUser',view.get_user)
     
 ]
 
