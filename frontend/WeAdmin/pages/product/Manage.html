@@ -34,7 +34,7 @@
                 <th>订单ID</th>
                 <th>货品名称</th>
                 <th>车间名称</th>
-                <th>货品数量</th>
+                <th>分配数量</th>
                 <th>生产状态</th>
                 <th>状态</th>
             </tr>
@@ -56,16 +56,16 @@
         // 测试数据
         order_list_data = [{
                 'orderID': 0,
-                'createTime': 20170102,
-                'deadline': 20170304,
+                'createTime': '2017-01-02',
+                'deadline': '2017-03-04',
                 'finishStatus': true,
                 'tip': '',
                 'assignStatus': true
             },
             {
                 'orderID': 1,
-                'createTime': 20180102,
-                'deadline': 20180304,
+                'createTime': '2018-01-02',
+                'deadline': '2018-03-04',
                 'finishStatus': false,
                 'tip': '',
                 'assignStatus': false
@@ -85,6 +85,7 @@
             var status = new Array(); // 记录分配的任务的状态 null则表示删除掉了这一条记录
             var optionsData;
             var order_id; // 用于记录当前的订单编号
+            var product_id; // 用于记录当前的货品编号，用来向后端发送
 
             table.render({
                 elem: '#order-list-table',
@@ -99,20 +100,31 @@
                             fixed: 'left'
                         },
                         {
+                            field: 'productID',
+                            title: '货品ID',
+                            width: 150
+                        },
+                        {
+                            field: 'productName',
+                            title: '货品名称',
+                            width: 150
+                        },
+                        {
+                            field: 'productNumber',
+                            title: '货品数量',
+                            width: 150
+                        },
+                        {
                             field: 'createTime',
                             title: '生成日期',
-                            width: 150,
+                            width: 120,
                             sort: true
                         },
                         {
                             field: 'deadline',
                             title: '截止日期',
-                            width: 150,
+                            width: 120,
                             sort: true
-                        },
-                        {
-                            field: 'tip',
-                            title: '备注'
                         },
                         {
                             field: 'finishStatus',
@@ -129,7 +141,6 @@
                         {
                             field: 'operation',
                             title: '操作',
-                            width: 120,
                             fixed: 'right',
                             toolbar: '#select-order-button-template'
                         }
@@ -142,6 +153,7 @@
                 var layEvent = obj.event;
                 if (layEvent === 'detail') {
                     order_id = data.orderID
+                    product_id = data.productID
                     // TODO: 加载数据
                     $.ajax({ // 从后台拿到数据
                         type: 'POST',
@@ -183,12 +195,12 @@
                     '<td><button class="layui-btn layui-btn-sm" onclick="removeTr(' + num +
                     ')"><i class="layui-icon">&#xe640;</i></button>' + '</td>' +
                     '</tr>';
-                const elements = $("#assign-table").children().length; // 表示id为“mtTable”的标签下的子标签的个数    
+                const elements = $("#assign-table").children().length; // 表示id为“mtTable”的标签下的子标签的个数
                 $("#assign-table").children().eq(elements - 1).after(tableHtml); // 在表头之后添加空白行
 
                 $('#workshopName' + num).append(new Option('', -1));
                 $('#goodsName' + num).append(new Option('', -1));
-                // 添加options            
+                // 添加options
                 $.each(optionsData, function (index, item) { // 动态添加元素
                     $('#goodsName' + num).append(new Option(item.name, item.name)); // 第二个参数是选择器的值
                 })
@@ -198,7 +210,7 @@
                 $("#goodsNum" + num).keyup(function () { // 设置数量那一栏只能输入数字
                     $(this).val($(this).val().replace(/[^0-9]/g, ''));
                     const tmp = '#goodsName' + num;
-                }).bind("paste", function () { // CTR+V事件处理  
+                }).bind("paste", function () { // CTR+V事件处理
                     $(this).val($(this).val().replace(/[^0-9]/g, ''));
                 }).css("ime-mode", "disabled"); // CSS设置输入法不可用
 

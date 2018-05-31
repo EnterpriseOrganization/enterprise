@@ -25,6 +25,25 @@
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+        </script>
+        <script>
             layui.config({
                 base: '../../static/js/'
                 ,version: '101100'
@@ -50,10 +69,10 @@
                         {field: 'groupID', title: '车间ID', width:100},
                         {field: 'productName', title: '货品名称'},
                         {field: 'productNumber', title: '货品数量', width:100},
-                        {field: 'generateTime', title: '记录生成时间', width:120},
+                        {field: 'generateTime', title: '记录生成时间', width:120, sort: true},
                         {field: 'outRepresent', title: '出库负责人', width:100, templet: '#outRepresentTpl'},
                         {field: 'inRepresent', title: '领料负责人', width:100, templet: '#inRepresentTpl'},
-                        {field: 'getTime', title: '领料时间', width:100},
+                        {field: 'getTime', title: '领料时间', width:100, sort: true},
                         {field: 'status', title: '操作', width:100, toolbar: '#get-meterial'},
                         {field: 'detail', title: '详情', width:100, fixed: 'right', toolbar: '#show-detail'},
                     ]]
@@ -88,10 +107,9 @@
                             out_present_dom.parent().html('<div class="out-represent">' + out_present_value + '</div>')
                             button_dom.removeClass("layui-btn-normal");
                             button_dom.text("已领料");
-                            var myDate = new Date();
-                            var mytime = myDate.toLocaleString();
+                            var currentTime = new Date().Format("yyyy-MM-dd");
                             obj.update({
-                                getTime: mytime
+                                getTime: currentTime
                             });
                             // TODO: 将in_present_value， out_present_value mytime 领料状态 更新到后端数据库
                             //       可通过assignID作为索引，通过data.assignID获取
