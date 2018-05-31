@@ -27,27 +27,33 @@
         </a>
     </div>
 
-    <!-- 将第一个table换成你的table -->
-    <table class="layui-table" id="assign-table">
-        <thead>
-            <tr>
-                <th>订单ID</th>
-                <th>货品名称</th>
-                <th>车间名称</th>
-                <th>分配数量</th>
-                <th>生产状态</th>
-                <th>状态</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <div class="layui-btn-container" style="float: right;">
-        <button class="layui-btn" onclick="addRow();">增加</button>
-        <button class="layui-btn" onclick="submit();">提交</button>
+    <div class="weadmin-body">
+        <!-- 将第一个table换成你的table -->
+        <table class="layui-table" id="assign-table">
+            <thead>
+                <tr>
+                    <th>订单ID</th>
+                    <th>货品名称</th>
+                    <th>车间名称</th>
+                    <th>分配数量</th>
+                    <th>生产状态</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="layui-word-aux">
+            <label id="now"></label>
+            <label id="num"></label>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <button class="layui-btn" onclick="addRow();">增加</button>
+            <button class="layui-btn" onclick="submit();">提交</button>
+        </div>
+
+        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter" style="margin-top: 50px;"></table>
     </div>
-
-    <table id="order-list-table" lay-filter="order-list-table-filter" style="margin-top: 50px;"></table>
-
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
     <script>
@@ -55,22 +61,42 @@
         // TODO: 从后端获取订单列表存储到order_list_data中
         // 测试数据
         order_list_data = [{
-                'orderID': 0,
-                'createTime': '2017-01-02',
-                'deadline': '2017-03-04',
-                'finishStatus': true,
-                'tip': '',
-                'assignStatus': true
-            },
-            {
-                'orderID': 1,
-                'createTime': '2018-01-02',
-                'deadline': '2018-03-04',
-                'finishStatus': false,
-                'tip': '',
-                'assignStatus': false
-            }
-        ]
+            'orderID': 0,
+            'productID': '0-1',
+            'productName': 'pro1',
+            'productNumber': 10,
+            'createTime': '2017-01-02',
+            'deadline': '2017-03-04',
+            'tip': '',
+            'assignStatus': true
+        }, {
+            'orderID': 0,
+            'productID': '0-2',
+            'productName': 'pro2',
+            'productNumber': 9,
+            'createTime': '2017-01-02',
+            'deadline': '2017-03-04',
+            'tip': '',
+            'assignStatus': true
+        }, {
+            'orderID': 0,
+            'productID': '0-3',
+            'productName': 'pro3',
+            'productNumber': 5,
+            'createTime': '2017-01-02',
+            'deadline': '2017-03-04',
+            'tip': '',
+            'assignStatus': true
+        }, {
+            'orderID': 1,
+            'productID': '0-1',
+            'productName': 'pro1',
+            'productNumber': 10,
+            'createTime': '2017-01-02',
+            'deadline': '2017-03-04',
+            'tip': '',
+            'assignStatus': true
+        }]
 
         layui.config({
             base: '../../static/js/',
@@ -83,13 +109,22 @@
 
             var num = 0; // 第几条记录 不一定是0 要根据读出的数据判断
             var status = new Array(); // 记录分配的任务的状态 null则表示删除掉了这一条记录
+            var value = new Array(); // 记录值
             var optionsData;
             var order_id; // 用于记录当前的订单编号
             var product_id; // 用于记录当前的货品编号，用来向后端发送
+            var product_name;
+            var product_num;
+
+            function resetData() {
+                num = 0;
+                status = [];
+                value = [];
+            }
 
             table.render({
                 elem: '#order-list-table',
-                height: 180,
+                // height: 180,
                 page: true,
                 data: order_list_data,
                 cols: [
@@ -127,12 +162,6 @@
                             sort: true
                         },
                         {
-                            field: 'finishStatus',
-                            title: '完成状态',
-                            width: 100,
-                            templet: '#finishStatusTpl'
-                        },
-                        {
                             field: 'assignStatus',
                             title: '分配状态',
                             width: 100,
@@ -152,8 +181,10 @@
                 var data = obj.data;
                 var layEvent = obj.event;
                 if (layEvent === 'detail') {
-                    order_id = data.orderID
-                    product_id = data.productID
+                    order_id = data.orderID;
+                    product_id = data.productID;
+                    product_name = data.productName;
+                    product_num = data.productNumber;
                     // TODO: 加载数据
                     $.ajax({ // 从后台拿到数据
                         type: 'POST',
@@ -166,13 +197,16 @@
                         }
                     });
 
+                    $('#num').html('/' + product_num); // 展示订单分配情况
+                    $('#now').html(0);
+
                     for (var i = 0; i < num; i++) { // 删除掉现在展示的table
                         if (status[i] != null) {
                             removeTr(i);
                         }
                     }
-                    num = 0; // 重新赋值为0
-                    status = []; // 清空状态数组
+
+                    resetData(); // 换表单的时候重置数据
                 }
             });
 
@@ -184,9 +218,8 @@
                 // 添加一行元素
                 var tableHtml = '<tr id="tr' + num + '">' +
                     '<td><div class="layui-input-inline"><a>' + order_id + '</a></div></td>' +
-                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-filter="goodsName" lay-search="" id="goodsName' +
-                    num + '"></select></div></td>' +
-                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-search="" id="workshopName' +
+                    '<td><div class="layui-input-inline"><a>' + product_name + '</a></div></td>' +
+                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-filter="workshopName" lay-search="" id="workshopName' +
                     num + '"></select></div></td>' +
                     '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" class="layui-input inputNum" id="goodsNum' +
                     num + '"></input></div></td>' +
@@ -199,10 +232,9 @@
                 $("#assign-table").children().eq(elements - 1).after(tableHtml); // 在表头之后添加空白行
 
                 $('#workshopName' + num).append(new Option('', -1));
-                $('#goodsName' + num).append(new Option('', -1));
                 // 添加options
                 $.each(optionsData, function (index, item) { // 动态添加元素
-                    $('#goodsName' + num).append(new Option(item.name, item.name)); // 第二个参数是选择器的值
+                    $('#workshopName' + num).append(new Option(item.name, item.name)); // 第二个参数是选择器的值
                 })
                 form.render(); // 下拉菜单渲染 把内容加载进去
 
@@ -214,17 +246,28 @@
                     $(this).val($(this).val().replace(/[^0-9]/g, ''));
                 }).css("ime-mode", "disabled"); // CSS设置输入法不可用
 
-                // TODO: 更改当前已分配
                 $("#goodsNum" + num).blur(function () { // 输入框失去焦点的时候进行值判断
                     const trID = $(this).context.id.slice(8); //在控制台找到的 别说这种方法不优雅
-                    const goodsNameID = '#goodsName' + trID;
-                    if ($(goodsNameID).val() !== '-1') { // 如果选择了goodsname
-                        console.log($(goodsNameID).val());
-                        // console.log($(this).val());
+                    const workshopNameID = '#workshopName' + trID;
+                    if ($(workshopNameID).val() !== '-1') { // 如果选择了workshop
+                        value[trID] = parseInt($(this).val()); // 更新数组内的值
+
+                        var sum = 0; // 求值
+                        for (var i = 0; i < value.length; i++) {
+                            sum += value[i];
+                        }
+
+                        if (sum > product_num) { // 如果和大于所需要分配的数量
+                            value[trID] = 0;
+                            $(this).val(0);
+                        } else {
+                            $('#now').html(sum);
+                        }
                     }
                 })
 
                 status[num] = false;
+                value[num] = 0;
                 num++;
             };
 
@@ -239,6 +282,7 @@
                 }
             };
 
+            // 变换状态
             window.changeStatus = function (num) {
                 const id = "#button" + num;
                 status[num] = !status[num]; // 改变状态
@@ -252,24 +296,37 @@
 
             //删除行
             window.removeTr = function (trNum) {
+                // TODO: 改变显示
                 status[trNum] = null;
+                value[trNum] = 0;
                 $("#tr" + trNum).remove();
+
+                var sum = 0; // 求值
+                for (var i = 0; i < value.length; i++) {
+                    sum += value[i];
+                }
+                $('#now').html(sum);
             };
 
-            //监听goodsName select 动态加载workshopName选项
-            form.on('select(goodsName)', function (data) {
-                const trID = data.elem.id.slice(9); //在控制台找到的 别说这种方法不优雅
-                const workshopNameID = '#workshopName' + trID;
-                $.each(optionsData, function (index, item) { // 动态添加元素
-                    $(workshopNameID).append(new Option(item.name, item.name));
-                })
-                form.render(); // 下拉菜单渲染 把内容加载进去
-
-                // TODO: 更改当前已分配 判断是否超限 超限就炸
+            // 监听车间选择
+            form.on('select(workshopName)', function (data) {
+                const trID = data.elem.id.slice(12); //在控制台找到的 别说这种方法不优雅
                 const goodsNumID = '#goodsNum' + trID;
-                const num = $(goodsNumID).val();
-                if (num !== '') { // 如果有了输入值
-                    console.log($(goodsNumID).val());
+                const number = $(goodsNumID).val();
+                if (number !== '') { // 如果有了输入值
+                    value[trID] = parseInt(number);
+
+                    var sum = 0; // 求值
+                    for (var i = 0; i < value.length; i++) {
+                        sum += value[i];
+                    }
+
+                    if (sum > product_num) { // 如果和大于所需要分配的数量
+                        value[trID] = 0;
+                        $(goodsNumID).val(0);
+                    } else {
+                        $('#now').html(sum);
+                    }
                 }
             });
 
