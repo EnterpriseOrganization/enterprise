@@ -18,63 +18,63 @@
         </script>
       
         <script>
-        layui.use(['form','table'], function(){
-            var $=layui.jquery;
-            var table = layui.table;
-            var form=layui.form;
+            layui.use(['form','table'], function(){
+                var $=layui.jquery;
+                var table = layui.table;
+                var form=layui.form;
 
-            var materialtypeoptions=["sfs","sdfsdf","sdfdsfs"];
+                var materialtypeoptions=["sfs","sdfsdf","sdfdsfs"];
 
-            $("#mt").prepend("<option value='null'>配料类型</option>")
-            for (var i = 0; i < materialtypeoptions.length; i++) {
-                $("#mt").append("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
-                //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
-                //materialtypeoptions[i]
-            }
-            form.render('select');
-
-
-            $.ajax({
-                url:"http://127.0.0.1:8000/bom/material/?name=null&class_obj=null&id=null",
-                type:"GET",
-                xhrFields:{
-                    withCredentials:true
-                },
-                success:function(msg){
-                    console.log(msg.data)
-                    mdata=msg.data
-
-                    tableIns.reload({
-                    data:mdata,
-                    page:true
-                    });
-
-                    mdatanum=mdata.length
-                    $("#mdcount").text("共有数据："+mdatanum+"条")
-                },
-                error:function(error){
-                    console.log(error)
-                    // alert("dsf")
+                $("#mt").prepend("<option value='null'>配料类型</option>")
+                for (var i = 0; i < materialtypeoptions.length; i++) {
+                    $("#mt").append("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
+                    //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
+                    //materialtypeoptions[i]
                 }
+                form.render('select');
+
+
+                $.ajax({
+                    url:"http://127.0.0.1:8000/bom/material/?name=null&class_obj=null&id=null",
+                    type:"GET",
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(msg){
+                        console.log(msg.data)
+                        mdata=msg.data
+
+                        tableIns.reload({
+                        data:mdata,
+                        page:true
+                        });
+
+                        mdatanum=mdata.length
+                        $("#mdcount").text("共有数据："+mdatanum+"条")
+                    },
+                    error:function(error){
+                        console.log(error)
+                        // alert("dsf")
+                    }
+                });
+
+
+                //第一个实例
+                var tableIns=table.render({
+                elem: '#materialtable'
+                ,height: 315
+                ,data:mdata //数据接口
+                ,page: true //开启分页
+                ,cols: [[ //表头
+                    {field:'',title:'kh',type:'checkbox'}
+                  ,{field: 'id', title: 'ID', width:'25%', sort: true}
+                  ,{field: 'name', title: '名称', width:'25%'}
+                  ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
+                  ,{title: '操作', width:'25%',templet:'#med'} 
+                ]]
+                });        
+
             });
-
-
-            //第一个实例
-            var tableIns=table.render({
-            elem: '#materialtable'
-            ,height: 315
-            ,data:mdata //数据接口
-            ,page: true //开启分页
-            ,cols: [[ //表头
-                {field:'',title:'kh',type:'checkbox'}
-              ,{field: 'id', title: 'ID', width:'25%', sort: true}
-              ,{field: 'name', title: '名称', width:'25%'}
-              ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
-              ,{title: '操作', width:'25%',templet:'#med'} 
-            ]]
-            });        
-
-        });
         </script>
     </head>
 
@@ -114,7 +114,7 @@
             </div>
             <div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
-                <button class="layui-btn" onclick="WeAdminShow('添加物料','./AddParets.html',550,405)"><i class="fas fa-plus"></i> 新增物料</button>
+                <button class="layui-btn" onclick="WeAdminShow('创建物料','./CreateParets.html',550,405)"><i class="fas fa-plus"></i> 创建物料</button>
                 <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
                 <span class="fr" style="line-height:40px" id="mdcount"></span>
             </div>
@@ -125,75 +125,51 @@
 
 
         <script>
-        layui.use(['form','table'], function(){
-            var $=layui.jquery;
-            var table = layui.table;
-            var form=layui.form;
-            //第一个实例
-            var tableIns=table.render({
-            elem: '#materialtable'
-            ,height: 315
-            ,data:mdata //数据接口
-            ,page: true //开启分页
-            ,cols: [[ //表头
-                {field:'',title:'kh',type:'checkbox'}
-              ,{field: 'id', title: 'ID', width:'25%', sort: true}
-              ,{field: 'name', title: '名称', width:'25%'}
-              ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
-              ,{title: '操作', width:'25%',templet:'#med'} 
-            ]]
-            });
+            layui.use(['form','table'], function(){
+                var $=layui.jquery;
+                var table = layui.table;
+                var form=layui.form;
+                //第一个实例
+                var tableIns=table.render({
+                elem: '#materialtable'
+                ,height: 315
+                ,data:mdata //数据接口
+                ,page: true //开启分页
+                ,cols: [[ //表头
+                    {field:'',title:'kh',type:'checkbox'}
+                  ,{field: 'id', title: 'ID', width:'25%', sort: true}
+                  ,{field: 'name', title: '名称', width:'25%'}
+                  ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
+                  ,{title: '操作', width:'25%',templet:'#med'} 
+                ]]
+                });
 
-            form.on('submit(search)',function(data){
-                var materialname=data.field.materialname
-                var materialtype=data.field.materialtype
-                if(materialname==""){
-                    materialname="null";
-                }
-                // alert(materialname)
-                var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_obj="+materialtype+"&id=null";
-                // alert(urltogo)
-                $.ajax({
-                    url:urltogo,
-                    type:"GET",
-                    xhrFields:{
-                        withCredentials:true
-                    },
-                    success:function(msg){
-                        console.log(msg.data)
-                        mdata=msg.data
-
-                        tableIns.reload({
-                        data:mdata,
-                        page:true
-                        });
-
-                        mdatanum=mdata.length
-                        $("#mdcount").text("共有数据："+mdata.length+"条")
-
-                    },
-                    error:function(error){
-                        console.log(error)
+                form.on('submit(search)',function(data){
+                    var materialname=data.field.materialname
+                    var materialtype=data.field.materialtype
+                    if(materialname==""){
+                        materialname="null";
                     }
-
-                });
-                return false;
-            });          
-
-            window.member_del = function (obj, id) {
-                var urltogo="http://127.0.0.1:8000/bom/material/"+id;
-                layer.confirm('确认要删除吗？', function(index) {
+                    // alert(materialname)
+                    var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_obj="+materialtype+"&id=null";
+                    // alert(urltogo)
                     $.ajax({
                         url:urltogo,
-                        type:"DELETE",
+                        type:"GET",
                         xhrFields:{
                             withCredentials:true
                         },
                         success:function(msg){
-                            console.log(msg)
+                            console.log(msg.data)
+                            mdata=msg.data
 
-                            mdatanum-=1
-                            $("#mdcount").text("共有数据："+mdatanum+"条")
+                            tableIns.reload({
+                            data:mdata,
+                            page:true
+                            });
+
+                            mdatanum=mdata.length
+                            $("#mdcount").text("共有数据："+mdata.length+"条")
 
                         },
                         error:function(error){
@@ -201,51 +177,75 @@
                         }
 
                     });
-                    $(obj).parents("tr").remove();
-                    layer.msg('已删除!', {
-                        icon: 1,
-                        time: 1000
-                    });
                     return false;
-                });
-            }
+                });          
 
-            window.delAll = function () {
-                var checkStatus=table.checkStatus('materialtable');
-                //var data = tableCheck.getData();
-                var urltogo="http://127.0.0.1:8000/bom/material/";
-                layer.confirm('确认要删除这些记录吗？', function(index) {
-                    console.log(checkStatus)
-                    $.ajax({
-                        url:urltogo,
-                        type:"DELETE",
-                        data:{todelete:checkStatus},
-                        dataType:"json",
-                        xhrFields:{
-                            withCredentials:true
-                        },
-                        success:function(msg){
-                            console.log(msg)
+                window.member_del = function (obj, id) {
+                    var urltogo="http://127.0.0.1:8000/bom/material/"+id;
+                    layer.confirm('确认要删除吗？', function(index) {
+                        $.ajax({
+                            url:urltogo,
+                            type:"DELETE",
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            success:function(msg){
+                                console.log(msg)
 
-                            mdatanum-=checkStatus.data.length
+                                mdatanum-=1
+                                $("#mdcount").text("共有数据："+mdatanum+"条")
 
-                            $("#mdcount").text("共有数据："+mdatanum+"条")
+                            },
+                            error:function(error){
+                                console.log(error)
+                            }
 
-                        },
-                        error:function(error){
-                            console.log(error)
-                        }
-
+                        });
+                        $(obj).parents("tr").remove();
+                        layer.msg('已删除!', {
+                            icon: 1,
+                            time: 1000
+                        });
+                        return false;
                     });
-                    layer.msg('删除成功', {
-                        icon: 1
-                    });
-                    $(".layui-form-checked").not('.header').parents('tr').remove();
-                    return false;
-                });
-            }            
+                }
 
-        });
+                window.delAll = function () {
+                    var checkStatus=table.checkStatus('materialtable');
+                    //var data = tableCheck.getData();
+                    var urltogo="http://127.0.0.1:8000/bom/material/";
+                    layer.confirm('确认要删除这些记录吗？', function(index) {
+                        console.log(checkStatus)
+                        $.ajax({
+                            url:urltogo,
+                            type:"DELETE",
+                            data:{todelete:checkStatus},
+                            dataType:"json",
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            success:function(msg){
+                                console.log(msg)
+
+                                mdatanum-=checkStatus.data.length
+
+                                $("#mdcount").text("共有数据："+mdatanum+"条")
+
+                            },
+                            error:function(error){
+                                console.log(error)
+                            }
+
+                        });
+                        layer.msg('删除成功', {
+                            icon: 1
+                        });
+                        $(".layui-form-checked").not('.header').parents('tr').remove();
+                        return false;
+                    });
+                }            
+
+            });
         </script>
 
         <script type="text/html" id="med">
