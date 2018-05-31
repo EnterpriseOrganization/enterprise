@@ -10,9 +10,92 @@
         <link rel="stylesheet" href="../../static/css/font.css">
         <link rel="stylesheet" href="../../static/css/weadmin.css">
         <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
-
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
-            var mdata=[{name:'fuckdds',class_obj:'hhjhj',id:2},{id:2,name:'fuckdds',class_obj:'hhjhj'}]
+            var mdata=[]
+        </script>
+      
+        <script>
+        layui.use(['form','table'], function(){
+            var $=layui.jquery;
+            $.ajax({
+                url:"http://127.0.0.1:8000/bom/material/?name=null&class_obj=null&id=null",
+                type:"GET",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:function(msg){
+                    console.log(msg.data)
+                    mdata=msg.data
+
+                    tableIns.reload({
+                    data:mdata,
+                    page:true
+                    });
+
+                    $("#mdcount").text("共有数据："+mdata.length+"条")
+                },
+                error:function(error){
+                    console.log(error)
+                    // alert("dsf")
+                }
+            });
+
+            var table = layui.table;
+            var form=layui.form;
+            //第一个实例
+            var tableIns=table.render({
+            elem: '#demo'
+            ,height: 315
+            ,data:mdata //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {field:'',title:'kh',type:'checkbox'}
+              ,{field: 'id', title: 'ID', width:'25%', sort: true}
+              ,{field: 'name', title: '名称', width:'25%'}
+              ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
+              ,{title: '操作', width:'25%',templet:'#med'} 
+            ]]
+            });
+
+            form.on('submit(search)',function(data){
+                var materialname=data.field.materialname
+                var materialtype=data.field.materialtype
+                if(materialname==""){
+                    materialname="null";
+                }
+                // alert(materialname)
+                var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_obj="+materialtype+"&id=null";
+                // alert(urltogo)
+                $.ajax({
+                    url:urltogo,
+                    type:"GET",
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(msg){
+                        console.log(msg.data)
+                        mdata=msg.data
+
+                        tableIns.reload({
+                        data:mdata,
+                        page:true
+                        });
+
+                        //window.location.href="main";
+                    },
+                    error:function(error){
+                        console.log(error)
+                        // alert("dsf")
+                    }
+
+                });
+                return false;
+            });          
+
+
+        });
         </script>
     </head>
 
@@ -58,51 +141,13 @@
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
                 <button class="layui-btn" onclick="WeAdminShow('添加物料','./AddParets.html',550,405)"><i class="fas fa-plus"></i> 新增物料</button>
                 <button class="layui-btn" onclick="addTable();"><i class="fas fa-share"></i> 全部导出</button>
-                <span class="fr" style="line-height:40px">共有数据：88 条</span>
+                <span class="fr" style="line-height:40px" id="mdcount"></span>
             </div>
-            <table class="layui-table" id="abc">
-                <thead>
-                    <tr>
-                        <th>
-                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                        </th>
-                        <th>编号</th>
-                        <th>名称</th>
-                        <th>类型</th>
-                        <!--<th>参考价格(元)</th>-->
-                        <!--<th>备注</th>-->
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
-                        <td>1</td>
-                        <td>330V 变电器</td>
-                        <td>供电类</td>
-                        <!--<td>120</td>-->
-                       <!--<td>需搭配1000V+ 的保险丝使用</td>-->
-                        <td class="td-manage">
-                            <a title="修改" onclick="WeAdminShow('编辑配料','./ParetsDetail.html',550,400)" href="javascript:;">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-
-
-                </tbody>
-            </table>
 
         <table id="demo" lay-filter="test"></table>
 
         </div>
-        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+
 
         <script>
         layui.use(['form','table'], function(){
@@ -120,7 +165,7 @@
               ,{field: 'id', title: 'ID', width:'25%', sort: true}
               ,{field: 'name', title: '名称', width:'25%'}
               ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
-              ,{title: '操作', width:'25%'} 
+              ,{title: '操作', width:'25%',templet:'#med'} 
             ]]
             });
 
@@ -148,85 +193,60 @@
                         page:true
                         });
 
-                        //window.location.href="main";
+                        $("#mdcount").text("共有数据："+mdata.length+"条")
+
                     },
                     error:function(error){
                         console.log(error)
-                        // alert("dsf")
                     }
 
                 });
                 return false;
             });          
 
+            window.member_del = function (obj, id) {
+                var urltogo="http://127.0.0.1:8000/bom/material/"+id;
+                layer.confirm('确认要删除吗？', function(index) {
+                    $.ajax({
+                        url:urltogo,
+                        type:"DELETE",
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(msg){
+                            console.log(msg.data)
+                            mdata=msg.data
+
+                            tableIns.reload({
+                            data:mdata,
+                            page:true
+                            });
+
+                            $("#mdcount").text("共有数据："+mdata.length+"条")
+
+                        },
+                        error:function(error){
+                            console.log(error)
+                        }
+
+                    });
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!', {
+                        icon: 1,
+                        time: 1000
+                    });
+                    return false;
+                });
+            }
 
         });
         </script>
 
-        <script>
-            function ad(){
-                layui.use(['form','table'],function(){
-                    var $=layui.jquery;
-                    var form=layui.form;
-                    var table=layui.table;
-                });
-            }
-
-
-            layui.use(['form','table'],function(){
-                var $=layui.jquery;
-                var form=layui.form;
-                var table=layui.table;
-                form.on('select(*)', function(data){
-                  console.log(data.elem); //得到select原始DOM对象
-                  console.log(data.value); //得到被选中的值
-                  console.log(data.othis); //得到美化后的DOM对象
-                }); 
-                //form.render(null,"materialsearch")
-                      
-
-
-                window.addTable=function(){
-                    var rowHtml=addRow();
-                    var elements=$('#abc').children().length;
-                    $('#abc').children().eq(elements-1).after(rowHtml);
-                }
-            });
-
-
-            function addRow(){
-                rowHtml="";
-                rowHtml+='<tr>' +
-                '<td>'+
-                '<div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id="2">'+
-                '<i class="layui-icon">'+
-                '&#xe605;'+
-                '</i>'+
-                '</div>'+
-                '</td>'+
-                '<td>1</td>' +
-                '<td>hjkhj</td>' +
-                '<td>hkjh</td>' +
-                '<td class="td-manage">'+
-                '<a title="修改" onclick="WeAdminShow(\'编辑配料\',\'./ParetsDetail.html\',550,400)" href="javascript:;">'+
-                '<i class="fas fa-edit">'+
-                '</i>'+
-                '</a>'+
-                '<a title="删除" onclick="member_del(this,\'要删除的id\')" href="javascript:;">'+
-                '<i class="fas fa-trash-alt">'+
-                '</i>'+
-                '</a>'+
-                '</td>' +
-                '</tr>';
-                return rowHtml;               
-            }
-        </script>
-
-        <script type="text/html" id="aaa">
+        <script type="text/html" id="med">
             <a title="修改" onclick="WeAdminShow('编辑配料','./ParetsDetail.html',550,400)" href="javascript:;">
                 <i class="fas fa-edit"></i>
             </a>
-            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+            <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
                 <i class="fas fa-trash-alt"></i>
             </a>
         </script>
