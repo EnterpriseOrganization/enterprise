@@ -6,5 +6,4 @@ urlpatterns = [
     url(r'^addorder',views.AddOrder), # 添加一条订单的信息
     url(r'^deleteorder',views.DeleteOrder), # 删除一条订单的信息
     url(r'^updateorder',views.UpdateOrder), # 更新一条订单的信息
-    
 ]

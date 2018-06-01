@@ -67,8 +67,17 @@ def AddOrder(request):
 
 # by ymk
 # 删除一条订单记录
+# 通过主键id值来删除
 def DeleteOrder(request):
 	info="Delete an Order"
+	if request.method == 'post':
+		diction = json.loads(request.raw_post_data)
+
+		id = diction[0]['id']
+		Order.objects.filter(id=id).delete()
+		info="delete an order successfully"
+	else:
+		info="get no json data"
 	return HttpResponse(info)
 
 # by zlz
