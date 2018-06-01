@@ -3,18 +3,20 @@ import json
 from django.http import HttpResponse
 from enterprise.models import *
 from django.core import serializers
-
-# 测试用的例子
+# by ymk
+# 测试用的例子 
 def testExample(request):
     resp = {'errorcode': 100, 'detail': 'Get success'}
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
+# by ymk
 # 获取到所有的订单信息
 def GetAllOrder(request):
 	Response=serializers.serialize("json", Order.objects.all());
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
-# 获取post得到的json文件，然后将一条order数据添加到数据库，并返回是否添加成功的信息
+# by ymk
+# 获取post得到的json文件，然后将一条order数据添加到数据库，并返回是否添加成功的信息 
 def AddOrder(request):
 	info = "add order msg"
 	#用于返回信息，是否增加成功
@@ -62,3 +64,16 @@ def AddOrder(request):
 	else:
 		info="get no json data"
 	return HttpResponse(info)
+
+# by ymk
+# 删除一条订单记录
+def DeleteOrder(request):
+	info="Delete an Order"
+	return HttpResponse(info)
+
+# by zlz
+# 修改一条订单记录
+def UpdateOrder(request):
+	info="Update an Order"
+	return HttpResponse(info)
+
