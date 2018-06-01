@@ -8,15 +8,11 @@ from enterprise.models import SupplierMaterial
 import datetime
 
 
-def hello(request):
-	res = {'title': 'hello', 'content': 'test'}
-	return JsonResponse(res)
-
-
 @method_decorator(csrf_exempt)
 def get_quotation_list(request):
 	"""
-	get all quotations
+	获取所有出价记录
+	return list
 	"""
 	if request.method == 'POST':
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').all()
@@ -40,9 +36,24 @@ def get_quotation_list(request):
 @method_decorator(csrf_exempt)
 def add_quotation(request):
 	"""
+	增加
 	"""
 	if request.method == 'POST':
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		params = request.POST
+		# 得到所有参数
+		material_id = params.get('material_id')
+		material_name = params.get('material_id')
+		supplier_id = params.get('supplier_id')
+		price = params.get('price')
+		# 只有所有参数都收到且不为空
+		if material_id and material_name and supplier_id and price:
+			sp = Supplier.objects.get(id=supplier_id)
+			mt = Material.objects.get(id=material_id)
+			sm = SupplierMaterial(price=price, material=mt, supplier=sp)
+			sm.save()
+			return JsonResponse({'msg': 200, 'result': 'success'})
+		else:
+			return JsonResponse({'msg': 'Incomplete parameters', 'result': 'null'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
