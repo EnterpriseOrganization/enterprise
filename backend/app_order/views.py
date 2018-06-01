@@ -109,7 +109,7 @@ def UpdateOrder(request):
 		o.save()
 		info = "update an order successfully"
 	else:
-		info = "get no json data"
+		info = 'get no json data'
 
 	return HttpResponse(info)
 
