@@ -74,6 +74,42 @@ def DeleteOrder(request):
 # by zlz
 # 修改一条订单记录
 def UpdateOrder(request):
-	info="Update an Order"
+	info = "Update an Order"
+	
+	if request.method == 'post':
+		diction = json.loads(request.raw_post_data)
+
+		id = diction[0]['id']
+		date =diction[0]['date']
+		indentor =diction[0]['indentor']
+		receiver = diction[0]['receiver']
+		checker =diction[0]['checker']
+		recevieraddress =diction[0]['recevieraddress']
+		indentorphonenumber =diction[0]['indentorphonenumber']
+		totalprice =diction[0]['totalprice']
+		status =diction[0]['status']
+		deliverydate =diction[0]['deliverydate']
+		paymentway = diction[0]['paymentway']
+
+		Order.objects.filter(id=id).delete()
+		
+		o = Order(
+			id=id,
+			date=date,
+			indentor=indentor,
+			receiver=receiver,
+			checker=checker,
+			recevieraddress=recevieraddress,
+			indentorphonenumber=indentorphonenumber,
+			totalprice=totalprice,
+			status=status,
+			deliverydate=deliverydate,
+			paymentway=paymentway
+			)
+		o.save()
+		info = "update an order successfully"
+	else:
+		info = "get no json data"
+
 	return HttpResponse(info)
 
