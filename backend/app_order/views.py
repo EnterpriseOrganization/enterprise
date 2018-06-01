@@ -100,21 +100,19 @@ def UpdateOrder(request):
 		deliverydate =diction[0]['deliverydate']
 		paymentway = diction[0]['paymentway']
 
-		Order.objects.filter(id=id).delete()
+		o = Order.objects.filter(id=id)
 		
-		o = Order(
-			id=id,
-			date=date,
-			indentor=indentor,
-			receiver=receiver,
-			checker=checker,
-			recevieraddress=recevieraddress,
-			indentorphonenumber=indentorphonenumber,
-			totalprice=totalprice,
-			status=status,
-			deliverydate=deliverydate,
-			paymentway=paymentway
-			)
+		o.date=date,
+		o.indentor=indentor,
+		o.receiver=receiver,
+		o.checker=checker,
+		o.recevieraddress=recevieraddress,
+		o.indentorphonenumber=indentorphonenumber,
+		o.totalprice=totalprice,
+		o.status=status,
+		o.deliverydate=deliverydate,
+		o.paymentway=paymentway
+		# 提高修改效率
 		o.save()
 		info = "update an order successfully"
 	else:
@@ -122,3 +120,27 @@ def UpdateOrder(request):
 
 	return HttpResponse(info)
 
+# by ymk
+# 后端返回一个订单的所有产品函数 
+# 后端返回一个订单的所有产品函数 ,接收一个json文件，获取到订单的id，显示出该订单中所有的产品
+# 返回的是 单价 货品名字 货品id 货品数量 总价在前端计算
+# 返回样例 {'price': Decimal('20'), 'name': 'testPro1', 'product': 1, 'number': 1}{'price': Decimal('30'), 'name': 'testPro2', 'product': 2, 'number': 1}
+def ShowOrderProduct(request):
+	data = '[{"id" : 1000000000}]'
+	id_diction=json.loads(data)
+	order_id=id_diction[0]['id']
+	#获取到订单的id
+	product_list =OrderProduct.objects.filter(order=order_id).values('product','number')
+
+
+	res=[] #创建列表
+	for pro in range(len(product_list)):
+		productID=product_list[pro]['product']
+		product_item=Product.objects.filter(id=productID).values('name','price')
+		price = float(product_item[0]['price'])
+		product_item[0]['price'] = price
+		temp={} #合并字典
+		temp.update(product_list[pro])
+		temp.update(product_item[0])
+		res.append(temp) #将字典添加入列表
+	return HttpResponse(res)
