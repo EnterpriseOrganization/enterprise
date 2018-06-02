@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <button onclick="post()">点我</button>
+</body>
+<script>
+    function post(){
+        console.log('hello');
+        // var temp = document.createElement("form");
+        // temp.action = 'http://127.0.0.1:8000/warehouse/new-inventory';
+        // temp.method = "POST";
+        // var params = {
+            // 'id':'1',
+            // 'name':'a-504',
+            // 'number':100,
+            // 'shelfnumber':'A-504',
+        // }
+        // var opt = document.createElement("textarea");
+        // opt.id = params['id'];
+        // opt.name = params['name'];
+        // opt.textContent = 
+        // temp.appendChild(opt);
+        // document.body.appendChild(temp);
+        // console.log(temp)
+        // temp.submit();
+        // return temp;
+        fetch('http://127.0.0.1:8000/warehouse/new-inventory',{
+            method: "DELETE",
+            headers: {
+                'User-Agent': 'Mozilla/4.0 MDN Example',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*',
+                'Accept':'application/json'
+            },
+            credentials: 'include',
+            body:JSON.stringify({
+                'id':'1',
+                'name':'a-504',
+                'number':100,
+                'shelfnumber':'A-504',
+            }),
+            mode: 'no-cors',
+            // mode:'cors-with-forced-preflight',
+        }).then(response=>{
+            alert("success!")
+        })
+    }
+</script>
+</html>
