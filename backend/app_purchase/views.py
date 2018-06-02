@@ -288,9 +288,21 @@ def delete_purchases(request):
 @method_decorator(csrf_exempt)
 def get_purchase_list(request):
 	"""
+	获取采购单列表
 	"""
 	if request.method == 'POST':
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		purchases = Purchase.objects.select_related('supplier').all()
+		result = []
+		for purchase in purchases:
+			res = {
+				'id': purchase.id,
+				'date':purchase.date,
+				'checker': purchase.checker,
+				'supplier_name': purchase.supplier.name
+			}
+			result.append(res)
+
+		return JsonResponse({'msg': 200, 'result': result})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
