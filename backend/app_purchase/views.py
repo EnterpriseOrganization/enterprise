@@ -1,14 +1,15 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.utils import IntegrityError
-from django.db.utils import Error
 from django.http import JsonResponse
+from enterprise.models import UserTable
 from enterprise.models import Purchase
+from enterprise.models import PurchaseProduct
 from enterprise.models import InventorInformation
 from enterprise.models import Material
 from enterprise.models import Supplier
 from enterprise.models import SupplierMaterial
-import datetime
+import json
 
 
 @method_decorator(csrf_exempt)
@@ -57,7 +58,7 @@ def add_quotation(request):
 				# 捕获找不到对象异常
 				return JsonResponse({'msg': 'there is doesn`t have this material'})
 
-			sm = SupplierMaterial(price=price, material=mt[0], supplier=sp[0])
+			sm = SupplierMaterial(price=price, material=mt, supplier=sp)
 			try:
 				sm.save()
 				return JsonResponse({'msg': 200, 'result': 'success'})
@@ -116,7 +117,6 @@ def quotation_query(request):
 			where_args['material__name'] = material_name
 
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').filter(**where_args)
-		# attributes = SupplierMaterial._meta.get_fields()
 		result = []
 		for sm in sms:
 			res = {
@@ -210,6 +210,55 @@ def add_purchase(request):
 	传入参数：采购人,审核人,采购商品列表字典items(matreial_id,num,price,supplier_id)
 	"""
 	if request.method == 'POST':
+		params = request.POST
+		purchaser_id = params.get('purchaser')
+		checker_id = params.get('checker')
+		supplier_id = params.get('supplier')
+		items = params.get('items')
+		if purchaser_id and checker_id and items:
+			# 计算总价
+			total_price = 0
+			items_dict = json.loads(items)
+			price = int(items_dict['price'])
+			total_price += price
+			try:
+				purchaser = Purchase.objects.get(id=purchaser_id)
+				checker = UserTable.objects.get(id=checker_id)
+				supplier = Purchase.objects.get(id=supplier_id)
+			except UserTable.DoesNotExist:
+				return JsonResponse({'msg': 'this checker does not exist'})
+			except Purchase.DoesNotExist:
+				return JsonResponse({'msg': 'this purchaser does not exist'})
+			except Supplier.DoesNotExist:
+				return JsonResponse({'msg': 'this supplier does not exist'})
+			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier, totalprice=total_price)
+			try:
+				purchase.save()
+			except IntegrityError:
+				return JsonResponse({'msg': ' primary key error'})
+			
+			# 这里有问题，应该先转成列表，再判断字典
+			for item in items_dict:
+				matreial_id = items_dict[item]
+				num = items_dict[item]
+				price = item.price
+
+				if supplier_id and matreial_id and num and price:
+					try:
+						matreial = Material.objects.get(id=matreial_id)
+						purchase_item = PurchaseProduct(purchase=purchase, matreial=matreial, num=num, price=price)
+						purchase_item.save()
+						return JsonResponse({'msg': 200, 'result': 'success'})
+					except IntegrityError:		# 捕获主键唯一冲突异常
+						return JsonResponse({'msg': ' primary key error'})
+					except Material.DoesNotExist:		# 捕获get异常
+						return JsonResponse({'msg': 'this Material does not exist'})
+					except Supplier.DoesNotExist:
+						return JsonResponse({'msg': 'this Supplier does not exist'})
+
+				else:
+					return JsonResponse({'msg': 'Incomplete parameters'})
+
 		return JsonResponse({'msg': 200, 'result': 'ok'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
