@@ -211,25 +211,22 @@ def add_purchase(request):
 	"""
 	if request.method == 'POST':
 		params = request.POST
-		purchaser_id = params.get('purchaser')
+		purchaser = params.get('purchaser')
 		checker_id = params.get('checker')
 		supplier_id = params.get('supplier')
 		items = params.get('items')
 		return JsonResponse({'msg': 'sorry'})
-		if purchaser_id and checker_id and items:
+		if purchas and checker_id and items:
 			# 计算总价
 			total_price = 0
 			items_dict = json.loads(items)
 			price = int(items_dict['price'])
 			total_price += price
 			try:
-				purchaser = Purchase.objects.get(id=purchaser_id)
 				checker = UserTable.objects.get(id=checker_id)
 				supplier = Purchase.objects.get(id=supplier_id)
 			except UserTable.DoesNotExist:
 				return JsonResponse({'msg': 'this checker does not exist'})
-			except Purchase.DoesNotExist:
-				return JsonResponse({'msg': 'this purchaser does not exist'})
 			except Supplier.DoesNotExist:
 				return JsonResponse({'msg': 'this supplier does not exist'})
 			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier, totalprice=total_price)
@@ -298,7 +295,8 @@ def get_purchase_list(request):
 				'date':purchase.date,
 				'checker': purchase.checker,
 				'supplier_name': purchase.supplier.name,
-				'totalprice': purchase.totalprice
+				'totalprice': purchase.totalprice,
+				'purchaser': purchase.purchaser
 			}
 			result.append(res)
 
@@ -324,7 +322,8 @@ def get_purchase_detail(request):
 					'date': purchase.date,
 					'checker': purchase.checker,
 					'supplier_name': purchase.supplier.name,
-					'totalprice': purchase.totalprice
+					'totalprice': purchase.totalprice,
+					'purchaser':purchase.purchaser
 				}
 				for purchase_product in purchase_products:
 					res['material_id'] = purchase_product.material.id
@@ -344,9 +343,40 @@ def get_purchase_detail(request):
 @method_decorator(csrf_exempt)
 def purchase_query(request):
 	"""
+	条件查询采购单（订单编号,物料编号,日期,采购人(字符串)）
 	"""
 	if request.method == 'POST':
+		params = request.POST
+		# 得到所有参数
+		purchaser = params.get('purchaser')
+		material_id = params.get('material_id')
+		purchase_id = params.get('purchase_id')
+		date = params.get('date')
+		where_args = {}
+		# 都有什么条件
+		if purchaser:
+			where_args['purchaser'] = purchaser
+		if material_id:
+			where_args['material_id'] = material_id
+		if purchase_id:
+			where_args['purchase_id'] = purchase_id
+		if date:
+			where_args['date'] = date
 
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		purchases = Purchase.objects.select_related('supplier').filter(**where_args)
+		result = []
+		for purchase in purchases:
+			for purchase in purchases:
+				res = {
+					'id': purchase.id,
+					'date': purchase.date,
+					'checker': purchase.checker,
+					'supplier_name': purchase.supplier.name,
+					'totalprice': purchase.totalprice,
+					'purchaser':purchase.purchaser
+				}
+				result.append(res)
+
+		return JsonResponse({'msg': 200, 'result': result})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
