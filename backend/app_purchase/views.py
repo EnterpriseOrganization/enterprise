@@ -146,7 +146,14 @@ def add_supplier(request):
 	if request.method == 'POST':
 		params = request.POST
 		# 得到所有参数
-		
+		supplier_name = params.get('supplier_name')
+		supplier_phone = params.get('supplier_phone')
+		supplier_address = params.get('supplier_address')
+		if supplier_address and supplier_name and supplier_phone:
+			sp = Supplier(name=supplier_name, contact='no', phonenumber=supplier_phone, address=supplier_address)
+			sp.save()
+		else:
+			return JsonResponse({'msg': 'Incomplete parameters'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
