@@ -120,6 +120,39 @@ def UpdateOrder(request):
 
 	return HttpResponse(info)
 
+# by zlz
+# 删除一个订单的某个产品
+def DeleteOrderProduct(request):
+	if request.method == 'post':
+		diction = json.loads(request.raw_post_data)
+		id = diction[0]['id']  # orderproduct primary key
+
+		order_product = OrderProduct.objects.get(id=id)
+		order_id = order_product.orderID
+		price = order_product.price
+		order_product.delete()
+
+		o = Order.objects.get(id=order_id)
+		o.totalprice -= price
+		o.save()
+		info = 'delete an order product successfully'
+	else:
+		info = 'get no json data'
+	
+	return HttpResponse(info)
+
+
+
+
+# by zlz
+# 后端修改一个订单的
+def UpdateOrderProduct(request):
+	# if request.method == 'post':
+	# 	diction = json.loads(request.raw_post_data)
+
+
+
+
 # by ymk
 # 后端返回一个订单的所有产品函数 
 # 后端返回一个订单的所有产品函数 ,接收一个json文件，获取到订单的id，显示出该订单中所有的产品
@@ -144,3 +177,5 @@ def ShowOrderProduct(request):
 		temp.update(product_item[0])
 		res.append(temp) #将字典添加入列表
 	return HttpResponse(res)
+
+
