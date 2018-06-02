@@ -145,7 +145,6 @@ def deleteOrderProduct(request):
 
 	return HttpResponse(info)
 
-
 # by zlz
 # 后端修改一个订单所订购的产品数量
 # 修改产品订购数量后对相应的订单的 totalprice 进行更新
@@ -173,14 +172,11 @@ def updateOrderProduct(request):
 		info = 'get no json data'
 	return HttpResponse(info)
 
-
-
-
 # by ymk
 # 后端返回一个订单的所有产品函数 
 # 后端返回一个订单的所有产品函数 ,接收一个json文件，获取到订单的id，显示出该订单中所有的产品
 # 返回的是 单价 货品名字 货品id 货品数量 总价在前端计算
-# 返回样例 {'price': Decimal('20'), 'name': 'testPro1', 'product': 1, 'number': 1}{'price': Decimal('30'), 'name': 'testPro2', 'product': 2, 'number': 1}
+# 返回样例 [{"name": "testPro1", "number": 5, "price": 20.0, "product": 1}, {"name": "testPro2", "number": 7, "price": 32.0, "product": 2}]
 def showOrderProduct(request):
 	# 测试用样例
 	# data = '[{"id" : 1000000000}]'
@@ -209,13 +205,6 @@ def showOrderProduct(request):
 		return HttpResponse(json.dumps(res))
 	else:
 		return HttpResponse("get no json")
-
-
-# by ymk
-# 测试用
-def getAllOrderProduct(request):
-	Response=serializers.serialize("json", OrderProduct.objects.all());
-	return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
 # 添加一条orderproduct记录，接受从前端返回的json，订单的order_id，商品名称，单价，数量，（总价）？
@@ -250,3 +239,8 @@ def addOrderProduct(request):
 	
 	return HttpResponse(info)
 
+# by ymk
+# 测试用
+def getAllOrderProduct(request):
+	Response=serializers.serialize("json", OrderProduct.objects.all());
+	return HttpResponse(json.dumps(Response), content_type="application/json")
