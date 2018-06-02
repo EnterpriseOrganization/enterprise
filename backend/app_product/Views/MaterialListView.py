@@ -25,5 +25,8 @@ def getMaterialList(request):
 
     """
     product_id, product_num = request.GET.get("product_id"), request.GET.get("product_num")
-    material_list = MaterialList.getMaterialList(product_id, product_num)
-    return JsonResponse(material_list)
+    if(product_id and product_num):
+        material_list = MaterialList.getMaterialList(product_id, product_num)
+        return JsonResponse(material_list)
+    else:
+        return JsonResponse({}, status=401)

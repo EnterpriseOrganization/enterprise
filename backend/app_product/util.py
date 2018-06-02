@@ -2,6 +2,8 @@ ErrMsg = [
     "Format Error, {}"
 ]
 
+MyServer = "http://localhost:8000/"
+
 def wrapTaskDTO(task): # task should be querySet object
     # 0: 未分配 1：已分配,待领料 2： 已领料,待生产 3: 生产完成
     if task.status == 0: status = "等待领料"
@@ -23,8 +25,8 @@ def wrapTaskDTO(task): # task should be querySet object
         "material_getter": task.material_getter,
         "material_checker": task.material_checker,
         "material_distribute_date": task.material_distributon_date,
-        "done_url": "http://localhost:8000/product/task/done/{}".format(task.workshop.id), # TODO: get server address
-        "update_getmaterial_url": "http://localhost:8000/product/task/material-allocated/{}".format(task.workshop.id)
+        "done_url": MyServer + "product/task/done?task_id={}".format(task.id),
+        "update_getmaterial_url": MyServer + "product/task/material-allocated?task_id={}".format(task.id)
     }
     return taskDTO
 

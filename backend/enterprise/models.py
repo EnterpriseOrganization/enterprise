@@ -92,6 +92,7 @@ class ProduceTaskBasic(models.Model):
     order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', blank=True, null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
     begindate = models.DateTimeField(db_column='beginDate',auto_now_add=True)  # Field name made lowercase.
+    done_checker = models.CharField(null=True, max_length=100, default="")
     # deadline = models.DateTimeField(null=True)
     deadline = models.DateField(null=True)
     material_getter = models.CharField(max_length=100, default="")

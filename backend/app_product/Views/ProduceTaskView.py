@@ -25,15 +25,13 @@ def getAllTasks(request):
             }
     """
 
-    res = {
-        "allocated": ProduceTask.getAllocatedOrders(),
-        "unallocated": ProduceTask.getUnallocatedOrders()
-    }
-    return JsonResponse(res)
+    l = ProduceTask.getAllocatedOrders()
+    l.extend(ProduceTask.getUnallocatedOrders())
+    return JsonResponse({"tasks": l})
 
 
 @require_GET
-def getOrderTasks(request, order_id=-1):
+def getOrderTasks(request):
     """
     返回指定order的所有生产任务
     :param request: GET /product/tasks/byorder/<order_id>
@@ -42,6 +40,7 @@ def getOrderTasks(request, order_id=-1):
         "tasks": [{ taskDTO }]
     }
     """
+    order_id = request.GET.get("order_id")
     if order_id != -1:
         tasks = ProduceTask.getTasksByOrderID(order_id)
         return JsonResponse({"tasks": tasks})
@@ -93,7 +92,7 @@ def getWorkshops(request):
 
 
 @require_GET
-def getWorkshopByProduct(request, product_id=-1):
+def getWorkshopByProduct(request):
     """
     返回可以生产指定成品的所有车间
     :param request:
@@ -104,16 +103,17 @@ def getWorkshopByProduct(request, product_id=-1):
         }
     }
     """
+    product_id = request.GET.get("product_id")
     workshops = ProduceTask.getWorkshops(product_id)
     return JsonResponse({"workshops": workshops})
 
 
 @csrf_exempt
 @require_POST
-def createTasks(request, order_id=-1):
+def createTasks(request):
     """
     为指定订单创建生产任务
-    :param request:  POST product/create
+    :param request:  POST product/task/create
     :param order_id: 为哪个订单创建的请求
     :param json body: {
         "tasks": [{
@@ -140,8 +140,11 @@ def createTasks(request, order_id=-1):
         }]
     }
     """
+    # order_id = request.body.get("order_id")
     body_unicode = request.body.decode('utf-8')
     params = json.loads(body_unicode)
+    order_id = params["order_id"]
+
     if order_id != -1:
         try:
             tasks = ProduceTask.createTasks(params["tasks"], order_id)
@@ -160,9 +163,9 @@ def checkUpdateInfo(form):
 
 @csrf_exempt
 @require_POST
-def updateTaskMaterialGet(request, task_id=-1):
+def updateTaskMaterialGet(request):
     """
-    更新生产任务状态为已领料 并更新审核人, 领取人
+    更新生产任务状态为已领料 并更新审核人, 领取人 POST /product/task/material-allocated
     :param request:
     :param task_id:
     :return: {
@@ -171,9 +174,11 @@ def updateTaskMaterialGet(request, task_id=-1):
     """
     body_unicode = request.body.decode('utf-8')
     params = json.loads(body_unicode)
-    if task_id != -1 and checkUpdateInfo(params):
-        params["status"] = 1
-        task = ProduceTask.updateTask(task_id, params)
+    task_id = params["task_id"]
+    info = params["info"]
+    if task_id != -1 and checkUpdateInfo(info):
+        info["status"] = 1
+        task = ProduceTask.updateTask(task_id, info)
         return JsonResponse({"task": task})
     else:
         return JsonResponse({}, status=401)
@@ -181,16 +186,19 @@ def updateTaskMaterialGet(request, task_id=-1):
 
 @csrf_exempt
 @require_POST
-def updateTaskDone(request, task_id=-1):
+def updateTaskDone(request):
     """
-    更新指定任务为已完成
+    更新指定任务为已完成  POST /product/task/done
     :param request:
     :param task_id:
     :return: {
         "task": taskDTO
     }
     """
-    if task_id != -1:
+    body_unicode = request.body.decode('utf-8')
+    params = json.loads(body_unicode)
+    task_id = params["task_id"]
+    if task_id:
         params = {
             "status": 2
         }

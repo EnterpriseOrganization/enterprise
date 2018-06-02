@@ -31,17 +31,23 @@ def getProductsByOrderStatus(gte, lte): # 想精确搜索就让 gte == lte
         }
     """
     products = OrderProduct.objects.select_related('order', 'product') \
-        .values('order_id', 'product_id', 'product__name', 'number') \
+        .values('order_id', 'product_id','order__status','order__date', 'order__deliverydate', 'product__name', 'number') \
         .filter(order__status__gte=gte, order__status__lte=lte)
-    orders = {}
+    orders = []
     for product in products:
         order_id = product["order_id"]
-        orders[order_id] = orders.get(order_id, {"products": []})
+        # orders[order_id] = orders.get(order_id, {"products": []})
         # 拿到了每个订单下的产品列表
-        orders[order_id]["products"].append({
+        orders.append({
+            "order_id": order_id,
+            "status": product["order__status"],
+            "deadline": product["order__deliverydate"],
+            "create_time": product["order__date"],
             "product_id": product['product_id'],
             "product_name": product['product__name'],
-            "amount": product["number"]
+            "amount": product["number"],
+            "tip": "comments",
+            "detail": util.MyServer + "product/tasks/byorder?order_id={}".format(order_id)
         })
     return orders
 
@@ -93,8 +99,9 @@ def createTasks(tasks, order_id=-1):
         "amount": number,
         "accurate_date": datetime string,
         "deadline": datetime string,
-        "begin_date": datetime string
-    }]
+        "begin_date": datetime stringBasic
+    }]    print(order_id)
+
     """
     if order_id != -1:
         # deleteTasksByOrderID(order_id)   太危险 不敢测试..
@@ -112,7 +119,7 @@ def createTasks(tasks, order_id=-1):
             task.order_id = order_id
             task.workshop_id = form.get("workshop_id")
             task.number = form.get("amount")
-            # task.deadline = datetime(form.get("deadline"))
+            task.deadline = parse_date(form.get("deadline"))
             task.personincharge = form.get("person_in_charge", "")
             task.topic = form.get("topic", "")
             task.save()
@@ -133,6 +140,7 @@ def getWorkshops(product_id=-1):
         }
     }
     """
+    
     if product_id != -1:
         workshop_group = {}
         workshops = Workshop.objects.filter(product_id=product_id)
