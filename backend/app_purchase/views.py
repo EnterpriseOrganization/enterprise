@@ -10,6 +10,7 @@ from enterprise.models import Material
 from enterprise.models import Supplier
 from enterprise.models import SupplierMaterial
 from django.db.models import Q
+from django.db.models import F
 import json
 
 
@@ -185,17 +186,15 @@ def get_lack_list(request):
 	return list
 	"""
 	if request.method == 'POST':
-		inifs = InventorInformation.objects.select_related('material').all()
+		inifs = InventorInformation.objects.select_related('material').filter(number__lt=F('threshold'))
 		result = []
 		for inif in inifs:
-			# 返回当前数量低于阈值的
-			if inif.threshold <= inif.number:
-				continue
 			res = {
 				'id': inif.id,
 				'material_id':inif.material.id,
 				'material_name': inif.material.name,
-				'number': inif.number
+				'number': inif.number,
+				'threshold':inif.threshold
 			}
 			result.append(res)
 
