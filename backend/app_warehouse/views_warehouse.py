@@ -68,7 +68,7 @@ def toDict(queryset):
 	"""
 	answer = defaultdict(dict)
 	count = 0
-	for record in answer_list:
+	for record in queryset:
 		material = record.material
 		temp = {
 		        'name':material.name,
