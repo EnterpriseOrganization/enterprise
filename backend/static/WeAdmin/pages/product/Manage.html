@@ -72,10 +72,13 @@
             var status = new Array(); // 记录分配的任务的状态 null则表示删除掉了这一条记录
             var value = new Array(); // 记录值
             var optionsData = new Array();
+            var allocate = new Array();
             var order_id; // 用于记录当前的订单编号
             var product_id; // 用于记录当前的货品编号，用来向后端发送
             var product_name;
             var product_num;
+            let workshop_map = {};
+            const produceStatus = {0:'已分配',1:'已领料',2:'已完成'};
 
             function resetData() {
                 num = 0;
@@ -85,7 +88,7 @@
 
             $.ajax({ // 从后台拿到数据
                 type: 'GET',
-                url: 'http://localhost:8002/product/tasks',
+                url: 'http://localhost:8000/product/tasks',
                 dataType: 'json',
                 cache: false,
                 async: false,
@@ -149,32 +152,60 @@
                     product_name = data.product_name;
                     product_num = data.amount;
                     // TODO: 加载数据
-                    $.ajax({ // 从后台拿到数据
+                    $.ajax({ // 从后台拿到订单分配数据
                         type: 'GET',
-                        url: 'http://localhost:8002/product/workshop/byproduct',
+                        url: 'http://localhost:8000/product/tasks/byorder',
+                        dataType: 'json',
+                        data: { "order_id": order_id },
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            allocate = data["tasks"];
+                        }
+                    });
+
+                    $.ajax({ // 从后台拿到可选的车间名称
+                        type: 'GET',
+                        url: 'http://localhost:8000/product/workshop/byproduct',
                         dataType: 'json',
                         data: { "product_id": product_id },
                         cache: false,
                         async: false,
                         success: function (data) {
+                            workshop_map = data["workshops"];
                             for(var key in data["workshops"]){
                                 optionsData.push(key);
                             }
                         }
                     });
 
+
                     $('#num').html('/' + product_num); // 展示订单分配情况
                     $('#now').html(0);
 
                     for (var i = 0; i < num; i++) { // 删除掉现在展示的table
-                        if (status[i] != null) {
+                        if (status[i] != -1) {
                             removeTr(i);
                         }
                     }
 
                     resetData(); // 换表单的时候重置数据
+
+                    for(var i=0;i<allocate.length;i++){
+                        addRow();
+                        setValue(i,allocate[i]['amount'],allocate[i]['workshop_name'],allocate[i]['status']);
+                    }
+                    form.render();
+
                 }
             });
+
+            function setValue(i,amount,workshop_name,status){
+                $('#workshopName'+i).val(workshop_name);
+                $('#goodsNum'+i).val(amount);
+                $('#button'+i).text(produceStatus[status]);
+                // TODO: 初始CSS
+            };
 
             window.addRow = function () {
                 if (order_id === undefined) { // 如果还没选择哪个订单就不响应
@@ -232,18 +263,34 @@
                     }
                 })
 
-                status[num] = false;
+                status[num] = 0;
                 value[num] = 0;
                 num++;
             };
 
             // TODO: 发送数据
             window.submit = function () {
+                let data = Array();
+                let count =0;
+
                 for (var i = 0; i < num; i++) {
-                    if (status[i] != null) { // 如果是null就是删除掉的行，提取不到数据
+                    if (status[i] != -1) { // 如果是null就是删除掉的行，提取不到数据
                         // var comp_name = $("#ordercomp").val();
-                        const tmp = '#goodsName' + i;
-                        console.log($(tmp).val());
+
+                        /*
+                        * :param json body: {
+                            "tasks": [{
+                                "workshop_id": id necessary,
+                                "amount": number necessary,
+                                "person_in_charge": string,
+                                "topic": string
+                                "deadline": datetime string
+                            }]
+                        }
+                        * */
+                        Array[count] = {};
+                        Array[count]['workshop_id'] = workshop_map[$('#workshopName' + i).val()];
+
                     }
                 }
             };
@@ -251,19 +298,24 @@
             // 变换状态
             window.changeStatus = function (num) {
                 const id = "#button" + num;
-                status[num] = !status[num]; // 改变状态
-                if (status[num] == true) {
-                    $(id).text('已完成');
+                status[num] = status[num]+1; // 改变状态
+                if (status[num] === 0) {
+                    $(id).text('已分配');
+                } else if(status[num]===1) {
+                    $(id).text('已领料');
+                    $(id).toggleClass("layui-btn-normal")
                 } else {
-                    $(id).text('未完成');
+                    $(id).text('已完成');
+                    // TODO：只让点一次
+                    $(id).toggleClass("layui-btn-normal"); // 改变CSS
+                    $(id).toggleClass("layui-btn-warm");
                 }
-                $(id).toggleClass("layui-btn-normal"); // 改变CSS
             };
 
             //删除行
             window.removeTr = function (trNum) {
                 // TODO: 改变显示
-                status[trNum] = null;
+                status[trNum] = -1;
                 value[trNum] = 0;
                 $("#tr" + trNum).remove();
 
@@ -303,10 +355,12 @@
         <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
     </script>
     <script type="text/html" id="assignStatusTpl">
-        {{# if (d.status === true) { }}
+        {{# if (d.status === 0) { }}
         <span class="layui-btn layui-btn-xs">已分配</span>
-        {{# } else { }}
-        <span class="layui-btn layui-btn-normal layui-btn-xs">未分配</span>
+        {{# } else if (d.status === 1) { }}
+        <span class="layui-btn layui-btn-normal layui-btn-xs">已领料</span>
+        {{# } else  { }}
+        <span class="layui-btn layui-btn-warm layui-btn-xs">已完成</span>
         {{# } }}
     </script>
     <script type="text/html" id="finishStatusTpl">
