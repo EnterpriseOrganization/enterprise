@@ -4,6 +4,7 @@ from django.db.utils import IntegrityError
 from django.db.utils import Error
 from django.http import JsonResponse
 from enterprise.models import Purchase
+from enterprise.models import InventorInformation
 from enterprise.models import Material
 from enterprise.models import Supplier
 from enterprise.models import SupplierMaterial
@@ -13,7 +14,7 @@ import datetime
 @method_decorator(csrf_exempt)
 def get_quotation_list(request):
 	"""
-	获取所有出价记录
+	获取所有报价记录
 	return list
 	"""
 	if request.method == 'POST':
@@ -27,7 +28,6 @@ def get_quotation_list(request):
 				'price': sm.price,
 				'supplier_name':sm.supplier.name,
 			}
-			print(res)
 			result.append(res)
 
 		return JsonResponse({'msg': 200, 'result': result})
@@ -104,11 +104,30 @@ def quotation_query(request):
 		params = request.POST
 		# 得到所有参数
 		quotation_id = params.get('quotation_id')
-		price = params.get('new_price')
-		# 判断是否参数完整
-		if quotation_id and price:
-			pass
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		material_name = params.get('material_name')
+		supplier_name = params.get('supplier_name')
+		where_args = {}
+		# 都有什么条件
+		if quotation_id:
+			where_args['id'] = quotation_id
+		if supplier_name:
+			where_args['supplier.name'] = material_name
+		if material_name:
+			where_args['material.name'] = supplier_name
+
+		sms = SupplierMaterial.objects.select_related('supplier', 'material').filter(**where_args)
+		# attributes = SupplierMaterial._meta.get_fields()
+		result = []
+		for sm in sms:
+			res = {
+				'id': sm.id,
+				'material_name': sm.material.name,
+				'price': sm.price,
+				'supplier_name': sm.supplier.name,
+			}
+			result.append(res)
+
+		return JsonResponse({'msg': 200, 'result': result})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
@@ -161,9 +180,25 @@ def add_supplier(request):
 @method_decorator(csrf_exempt)
 def get_lack_list(request):
 	"""
+	获取所有缺料记录
+	return list
 	"""
 	if request.method == 'POST':
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		inifs = InventorInformation.objects.select_related('material').all()
+		result = []
+		for inif in inifs:
+			# 返回当前数量低于阈值的
+			if inif.threshold <= inif.number:
+				continue
+			res = {
+				'id': inif.id,
+				'material_id':inif.material.id,
+				'material_name': inif.material.name,
+				'number': inif.number
+			}
+			result.append(res)
+
+		return JsonResponse({'msg': 200, 'result': result})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
