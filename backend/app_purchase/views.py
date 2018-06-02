@@ -111,10 +111,10 @@ def quotation_query(request):
 		if quotation_id:
 			where_args['id'] = quotation_id
 		if supplier_name:
-			where_args['supplier.name'] = material_name
+			where_args['supplier__name'] = supplier_name
 		if material_name:
-			where_args['material.name'] = supplier_name
-
+			where_args['material__name'] = material_name
+		
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').filter(**where_args)
 		# attributes = SupplierMaterial._meta.get_fields()
 		result = []
