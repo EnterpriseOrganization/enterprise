@@ -114,7 +114,7 @@ def quotation_query(request):
 			where_args['supplier__name'] = supplier_name
 		if material_name:
 			where_args['material__name'] = material_name
-		
+
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').filter(**where_args)
 		# attributes = SupplierMaterial._meta.get_fields()
 		result = []
@@ -206,6 +206,8 @@ def get_lack_list(request):
 @method_decorator(csrf_exempt)
 def add_purchase(request):
 	"""
+	新增购买记录(填写采购单)
+	传入参数：采购人,审核人,采购商品列表字典items(matreial_id,num,price,supplier_id)
 	"""
 	if request.method == 'POST':
 		return JsonResponse({'msg': 200, 'result': 'ok'})
