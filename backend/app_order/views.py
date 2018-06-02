@@ -1,5 +1,6 @@
 # Create your views here.
 import json
+from decimal import *
 from django.http import HttpResponse
 from enterprise.models import *
 from django.core import serializers
@@ -120,56 +121,57 @@ def UpdateOrder(request):
 
 	return HttpResponse(info)
 
-# by zlz
-# 删除一个订单的某个产品
-def DeleteOrderProduct(request):
-	if request.method == 'post':
-		diction = json.loads(request.raw_post_data)
-		id = diction[0]['id']  # orderproduct primary key
+# # by zlz
+# # 删除一个订单的某个产品
+# def DeleteOrderProduct(request):
+# 	if request.method == 'post':
+# 		diction = json.loads(request.raw_post_data)
+# 		id = diction[0]['id']  # orderproduct primary key
 
-		order_product = OrderProduct.objects.get(id=id)
-		order_id = order_product.orderID
-		price = order_product.price
-		order_product.delete()
+# 		order_product = OrderProduct.objects.get(id=id)
+# 		order_id = order_product.orderID
+# 		price = order_product.price
+# 		order_product.delete()
 
-		o = Order.objects.get(id=order_id)
-		o.totalprice -= price
-		o.save()
-		info = 'delete an order product successfully'
-	else:
-		info = 'get no json data'
+# 		o = Order.objects.get(id=order_id)
+# 		o.totalprice -= price
+# 		o.save()
+# 		info = 'delete an order product successfully'
+# 	else:
+# 		info = 'get no json data'
 	
-	return HttpResponse(info)
+# 	return HttpResponse(info)
 
 
-# by zlz
-# 后端修改一个订单所订购的产品数量
-def UpdateOrderProduct(request):
-	if request.method == 'post':
-		diction = json.loads(request.raw_post_data)
-		id = diction[0]['id']
-		number = diction[0]['number']
-		orderID = diction[0]['orderID']
-		productID = diction[0]['productID']
+# # by zlz
+# # 后端修改一个订单所订购的产品数量
+# def UpdateOrderProduct(request):
+# 	if request.method == 'post':
+# 		diction = json.loads(request.raw_post_data)
+# 		id = diction[0]['id']
+# 		number = diction[0]['number']
+# 		orderID = diction[0]['orderID']
+# 		productID = diction[0]['productID']
 
-		p = Product.objects.get(id=productID)
-		product_price = p.price  # 产品单价
+# 		p = Product.objects.get(id=productID)
+# 		product_price = p.price  # 产品单价
 
-		op = OrderProduct.objects.get(id=id)
-		orderproduct_price_before = op.price
-		orderproduct_price_after = number * product_price
-		op.price = orderproduct_price_after
-		op.number = number
-		op.save()
+# 		op = OrderProduct.objects.get(id=id)
+# 		orderproduct_price_before = op.price
+# 		orderproduct_price_after = number * product_price
+# 		op.price = orderproduct_price_after
+# 		op.number = number
+# 		op.save()
 
-		o = Order.objects.get(id=orderID)
-		o.totalprice += orderproduct_price_after - orderproduct_price_before
-		o.save()
-		info = 'update an order product successfully'
-	else:
-		info = 'get no json data'
+# 		o = Order.objects.get(id=orderID)
+# 		o.totalprice += orderproduct_price_after - orderproduct_price_before
+# 		o.save()
+# 		info = 'update an order product successfully'
+# 	else:
+# 		info = 'get no json data'
 
-	return HttpResponse(info)
+# 	return HttpResponse(info)
+
 
 
 
@@ -184,18 +186,62 @@ def ShowOrderProduct(request):
 	order_id=id_diction[0]['id']
 	#获取到订单的id
 	product_list =OrderProduct.objects.filter(order=order_id).values('product','number')
+	# 获取到订单下的产品id
 
-
+	price ="" 
 	res=[] #创建列表
+	# 遍历产品id
 	for pro in range(len(product_list)):
 		productID=product_list[pro]['product']
 		product_item=Product.objects.filter(id=productID).values('name','price')
-		price = float(product_item[0]['price'])
-		product_item[0]['price'] = price
+		# 获取到产品的列表和单价
+		# price = str(product_item[0]['price'].quantize(Decimal('0.0')))
+		# product_item[0]['price'] = price
 		temp={} #合并字典
+
 		temp.update(product_list[pro])
 		temp.update(product_item[0])
 		res.append(temp) #将字典添加入列表
-	return HttpResponse(res)
+		price=temp['price']
+	return HttpResponse(price)
 
+
+# by ymk
+# 测试用
+def GetAllOrderProduct(request):
+	Response=serializers.serialize("json", OrderProduct.objects.all());
+	return HttpResponse(json.dumps(Response), content_type="application/json")
+
+# by ymk
+# 添加一条orderproduct记录，接受从前端返回的json，订单的order_id，商品名称，单价，数量，（总价）？
+# 传入的json 每一条应该包含的内容：订单id order，产品名字 name
+def AddOrderProduct(request):
+	info = "add orderproduct msg"
+	if request.method == 'post':
+		diction = json.loads(request.raw_post_data)#加载json文件，将json转化为python的字典列表
+		获取相关的key值
+	# data='[{"order": 1000000000, "name": "testPro1", "number": 5, "price": 20},{"order": 1000000000, "name": "testPro2", "number": 7, "price": 32}]'
+	# t=1
+	# if t==1:
+	# 	diction = json.loads(data)#加载json文件，将json转化为python的字典列表
+	# 	# 测试用
+		for dict_temp in range(len(diction)):
+			order_id =diction[dict_temp]['order']#获取表单id
+			order=Order.objects.get(id=order_id)# 获取order对象
+			name =diction[dict_temp]['name']#获取product的名字
+			product=Product.objects.get(name=name) #获取product对象
+			number=diction[dict_temp]['number']#获取数量
+			price=diction[dict_temp]['price']#获取单价
+			op =OrderProduct(
+				order=order,
+				product=product,
+				number=number,
+				price=price
+				)
+			op.save()
+			info="add an order successfully"
+	else:
+		info="get no json data"
+	
+	return HttpResponse(info)
 
