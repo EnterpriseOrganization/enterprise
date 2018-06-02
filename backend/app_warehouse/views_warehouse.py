@@ -8,7 +8,7 @@ from django.core import serializers
 # Create your views here.
 from collections import defaultdict
 def getInventor(req):
-	anslist = InventorInformation.objects.all()
+	anslist = InventoryInformation.objects.all()
 	answer = defaultdict(dict)
 	count = 0
 	for record in anslist:
