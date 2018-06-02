@@ -9,6 +9,7 @@ from enterprise.models import InventorInformation
 from enterprise.models import Material
 from enterprise.models import Supplier
 from enterprise.models import SupplierMaterial
+from django.db.models import Q
 import json
 
 
@@ -215,6 +216,7 @@ def add_purchase(request):
 		checker_id = params.get('checker')
 		supplier_id = params.get('supplier')
 		items = params.get('items')
+		return JsonResponse({'msg': 'sorry'})
 		if purchaser_id and checker_id and items:
 			# 计算总价
 			total_price = 0
@@ -236,7 +238,7 @@ def add_purchase(request):
 				purchase.save()
 			except IntegrityError:
 				return JsonResponse({'msg': ' primary key error'})
-			
+
 			# 这里有问题，应该先转成列表，再判断字典
 			for item in items_dict:
 				matreial_id = items_dict[item]
@@ -269,6 +271,15 @@ def delete_purchases(request):
 	"""
 	"""
 	if request.method == 'POST':
+		ids = request.POST.get('ids')
+		if ids:
+			ids = ids.split(',')
+
+		q = Q()
+		q.connector = 'OR'
+		for id in ids:
+			q.children.append(('id', id))
+		Purchase.objects.filter(q).delete()
 		return JsonResponse({'msg': 200, 'result': 'ok'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
