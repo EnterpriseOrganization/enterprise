@@ -107,7 +107,7 @@ class Supplier(models.Model):
         db_table = 'supplier'
 
 
-class InventorInformation(models.Model):
+class InventoryInformation(models.Model):
     # id = models.AutoField(primary_key=True)
     material = models.OneToOneField((Material), models.DO_NOTHING, db_column='(material)ID')  # Field name made lowercase.
     shelfnumber = models.CharField(db_column='shelfNumber', max_length=45, blank=True, null=True)  # Field name made lowercase.
@@ -117,7 +117,7 @@ class InventorInformation(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'inventorinformation'
+        db_table = 'inventoryinformation'
 
 
 class InWarehouse(models.Model):
