@@ -1,5 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.db.utils import IntegrityError
+from django.db.utils import Error
 from django.http import JsonResponse
 from enterprise.models import Purchase
 from enterprise.models import Material
@@ -36,43 +38,76 @@ def get_quotation_list(request):
 @method_decorator(csrf_exempt)
 def add_quotation(request):
 	"""
-	增加
+	增加供应商报价信息
 	"""
 	if request.method == 'POST':
 		params = request.POST
 		# 得到所有参数
 		material_id = params.get('material_id')
-		material_name = params.get('material_id')
 		supplier_id = params.get('supplier_id')
 		price = params.get('price')
 		# 只有所有参数都收到且不为空
-		if material_id and material_name and supplier_id and price:
-			sp = Supplier.objects.get(id=supplier_id)
-			mt = Material.objects.get(id=material_id)
-			sm = SupplierMaterial(price=price, material=mt, supplier=sp)
-			sm.save()
-			return JsonResponse({'msg': 200, 'result': 'success'})
+		if material_id and supplier_id and price:
+			try:
+				sp = Supplier.objects.get(id=supplier_id)
+				mt = Material.objects.get(id=material_id)
+			except Supplier.DoesNotExist:
+				return JsonResponse({'msg': 'there is doesn`t have this supplier'})
+			except Material.DoesNotExist:
+				# 捕获找不到对象异常
+				return JsonResponse({'msg': 'there is doesn`t have this material'})
+
+			sm = SupplierMaterial(price=price, material=mt[0], supplier=sp[0])
+			try:
+				sm.save()
+				return JsonResponse({'msg': 200, 'result': 'success'})
+			except IntegrityError:
+				# 捕获主键唯一冲突异常
+				return JsonResponse({'msg': 'this supplier has already bid'})
 		else:
-			return JsonResponse({'msg': 'Incomplete parameters', 'result': 'null'})
+			return JsonResponse({'msg': 'Incomplete parameters'})
 	else:
-		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+		return JsonResponse({'msg': 'Please use POST'})
 
 
 @method_decorator(csrf_exempt)
 def delete_quotation(request):
 	"""
+	删除某一条供应商报价
 	"""
 	if request.method == 'POST':
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		params = request.POST
+		# 得到所有参数
+		quotation_id = params.get('quotation_id')
+		# 判断参数是否存在
+		if quotation_id:
+			try:
+				sm = SupplierMaterial.objects.get(id=quotation_id)
+			except SupplierMaterial.DoesNotExist:
+				# 捕获get不到的异常
+				return JsonResponse({'msg': 'this quotation does not exist'})
+			# normal
+			sm.delete()
+			return JsonResponse({'msg': 200, 'result': 'success'})
+		else:
+			return JsonResponse({'msg': 'Incomplete parameters'})
 	else:
-		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+		return JsonResponse({'msg': 'Please use POST'})
 
 
 @method_decorator(csrf_exempt)
 def quotation_query(request):
 	"""
+	条件查询
 	"""
 	if request.method == 'POST':
+		params = request.POST
+		# 得到所有参数
+		quotation_id = params.get('quotation_id')
+		price = params.get('new_price')
+		# 判断是否参数完整
+		if quotation_id and price:
+			pass
 		return JsonResponse({'msg': 200, 'result': 'ok'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
@@ -81,9 +116,24 @@ def quotation_query(request):
 @method_decorator(csrf_exempt)
 def update_quotation_price(request):
 	"""
+	更新物料报价信息, 传入报价编号和准备修改的名字
 	"""
 	if request.method == 'POST':
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		params = request.POST
+		# 得到所有参数
+		quotation_id = params.get('quotation_id')
+		price = params.get('new_price')
+		# 判断是否参数完整
+		if quotation_id and price:
+			try:
+				sm = SupplierMaterial.objects.get(id=quotation_id)
+			except SupplierMaterial.DoesNotExist:
+				return JsonResponse({'msg': 'this quotation does not exist'})
+			sm.price = price
+			sm.save()
+			return JsonResponse({'msg': 200, 'result': 'ok'})
+		else:
+			return JsonResponse({'msg': 'update failed, Incomplete parameters'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
