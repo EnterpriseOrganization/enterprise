@@ -142,14 +142,34 @@ def DeleteOrderProduct(request):
 	return HttpResponse(info)
 
 
-
-
 # by zlz
-# 后端修改一个订单的
+# 后端修改一个订单所订购的产品数量
 def UpdateOrderProduct(request):
-	# if request.method == 'post':
-	# 	diction = json.loads(request.raw_post_data)
+	if request.method == 'post':
+		diction = json.loads(request.raw_post_data)
+		id = diction[0]['id']
+		number = diction[0]['number']
+		orderID = diction[0]['orderID']
+		productID = diction[0]['productID']
 
+		p = Product.objects.get(id=productID)
+		product_price = p.price  # 产品单价
+
+		op = OrderProduct.objects.get(id=id)
+		orderproduct_price_before = op.price
+		orderproduct_price_after = number * product_price
+		op.price = orderproduct_price_after
+		op.number = number
+		op.save()
+
+		o = Order.objects.get(id=orderID)
+		o.totalprice += orderproduct_price_after - orderproduct_price_before
+		o.save()
+		info = 'update an order product successfully'
+	else:
+		info = 'get no json data'
+
+	return HttpResponse(info)
 
 
 

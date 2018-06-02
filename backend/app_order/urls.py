@@ -10,5 +10,6 @@ urlpatterns = [
     
     # OrderProduct表，这个功能主要用来显示订单的明细
     url(r'^showallorderproduct', views.ShowOrderProduct) #后端返回一个订单的所有产品函数 ,接收一个json文件，获取到订单的id，显示出该订单中所有的产品
-    url(r'^deleteorderproduct', views.DeleteOrderProduct)  # 删除一个订单的某个产品
+    url(r'^deleteorderproduct', views.DeleteOrderProduct) # 删除一个订单的某个产品
+    url(r'^updateorderproduct', views.UpdateOrderProduct)  # # 后端修改一个订单所订购的产品数量
 ]
