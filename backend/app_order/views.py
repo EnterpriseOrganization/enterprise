@@ -5,20 +5,20 @@ from django.http import HttpResponse
 from enterprise.models import *
 from django.core import serializers
 # by ymk
-# 测试用的例子 
+# 测试用的例子
 def testExample(request):
     resp = {'errorcode': 100, 'detail': 'Get success'}
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 # by ymk
 # 获取到所有的订单信息
-def GetAllOrder(request):
-	Response=serializers.serialize("json", Order.objects.all());
+def getAllOrder(request):
+	Response = serializers.serialize("json", Order.objects.all());
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
-# 获取post得到的json文件，然后将一条order数据添加到数据库，并返回是否添加成功的信息 
-def AddOrder(request):
+# 获取post得到的json文件，然后将一条order数据添加到数据库，并返回是否添加成功的信息
+def addOrder(request):
 	info = "add order msg"
 	#用于返回信息，是否增加成功
 	# data = '[{"date": "2018-05-30T00:00:00Z", "indentor": "jack", "receiver": "nancy", "checker": "brad", "recevieraddress": "hsd", "indentorphonenumber": "1511468", "totalprice": "80", "status": 1, "deliverydate": "2018-06-20T00:00:00Z", "paymentway": "wechat"}]'
@@ -36,20 +36,20 @@ def AddOrder(request):
 		# deliverydate = req['deliverydate']
 		# paymentway= req['paymentway']
 	if request.method == 'post':
-		diction = json.loads(request.raw_post_data)#加载json文件，将json转化为python的字典列表
+		diction = json.loads(request.raw_post_data)  # 加载json文件，将json转化为python的字典列表
 		# 获取相关的key值
-		date =diction[0]['date']
-		indentor =diction[0]['indentor']
+		date = diction[0]['date']
+		indentor = diction[0]['indentor']
 		receiver = diction[0]['receiver']
-		checker =diction[0]['checker']
-		recevieraddress =diction[0]['recevieraddress']
-		indentorphonenumber =diction[0]['indentorphonenumber']
-		totalprice =diction[0]['totalprice']
-		status =diction[0]['status']
-		deliverydate =diction[0]['deliverydate']
-		paymentway =diction[0]['paymentway']
+		checker = diction[0]['checker']
+		recevieraddress = diction[0]['recevieraddress']
+		indentorphonenumber = diction[0]['indentorphonenumber']
+		totalprice = diction[0]['totalprice']
+		status = diction[0]['status']
+		deliverydate = diction[0]['deliverydate']
+		paymentway = diction[0]['paymentway']
 
-		o=Order(date=date,
+		o = Order(date=date,
 			indentor=indentor,
 			receiver=receiver,
 			checker=checker,
@@ -61,58 +61,58 @@ def AddOrder(request):
 			paymentway=paymentway
 			)
 		o.save()
-		info="add an order successfully"
+		info = "add an order successfully"
 	else:
-		info="get no json data"
+		info = "get no json data"
 	return HttpResponse(info)
 
 # by ymk
 # 删除一条订单记录
 # 通过主键id值来删除
-def DeleteOrder(request):
-	info="Delete an Order"
+def deleteOrder(request):
+	info = "Delete an Order"
 	if request.method == 'post':
 		diction = json.loads(request.raw_post_data)
 
 		id = diction[0]['id']
 		Order.objects.filter(id=id).delete()
-		info="delete an order successfully"
+		info = "delete an order successfully"
 	else:
-		info="get no json data"
+		info = "get no json data"
 	return HttpResponse(info)
 
 # by zlz
 # 修改一条订单记录
-def UpdateOrder(request):
+def updateOrder(request):
 	info = "Update an Order"
-	
+
 	if request.method == 'post':
 		diction = json.loads(request.raw_post_data)
 
 		id = diction[0]['id']
-		date =diction[0]['date']
-		indentor =diction[0]['indentor']
+		date = diction[0]['date']
+		indentor = diction[0]['indentor']
 		receiver = diction[0]['receiver']
-		checker =diction[0]['checker']
-		recevieraddress =diction[0]['recevieraddress']
-		indentorphonenumber =diction[0]['indentorphonenumber']
-		totalprice =diction[0]['totalprice']
-		status =diction[0]['status']
-		deliverydate =diction[0]['deliverydate']
+		checker = diction[0]['checker']
+		recevieraddress = diction[0]['recevieraddress']
+		indentorphonenumber = diction[0]['indentorphonenumber']
+		totalprice = diction[0]['totalprice']
+		status = diction[0]['status']
+		deliverydate = diction[0]['deliverydate']
 		paymentway = diction[0]['paymentway']
 
 		o = Order.objects.filter(id=id)
-		
-		o.date=date,
-		o.indentor=indentor,
-		o.receiver=receiver,
-		o.checker=checker,
-		o.recevieraddress=recevieraddress,
-		o.indentorphonenumber=indentorphonenumber,
-		o.totalprice=totalprice,
-		o.status=status,
-		o.deliverydate=deliverydate,
-		o.paymentway=paymentway
+
+		o.date = date,
+		o.indentor = indentor,
+		o.receiver = receiver,
+		o.checker = checker,
+		o.recevieraddress = recevieraddress,
+		o.indentorphonenumber = indentorphonenumber,
+		o.totalprice = totalprice,
+		o.status = status,
+		o.deliverydate = deliverydate,
+		o.paymentway = paymentway
 		# 提高修改效率
 		o.save()
 		info = "update an order successfully"
@@ -121,56 +121,57 @@ def UpdateOrder(request):
 
 	return HttpResponse(info)
 
-# # by zlz
-# # 删除一个订单的某个产品
-# def DeleteOrderProduct(request):
-# 	if request.method == 'post':
-# 		diction = json.loads(request.raw_post_data)
-# 		id = diction[0]['id']  # orderproduct primary key
+# by zlz
+# 删除一个订单的某个产品
+# 如果前端存储 id 的话使用 id 得到唯一记录
+# 否则使用 productID 和 orderID 确定唯一记录（如果两者能确定一条记录）
+def deleteOrderProduct(request):
+	raw_post_data = '[{"id": 2, "orderID": 1000000000, "productID": 55}]'
+	diction = json.loads(raw_post_data)
+	id = diction[0]['id']
+	order_id = diction[0]['orderID']
+	product_id = diction[0]['productID']
 
-# 		order_product = OrderProduct.objects.get(id=id)
-# 		order_id = order_product.orderID
-# 		price = order_product.price
-# 		order_product.delete()
+	op = OrderProduct.objects.get(id=id)
+	order_id = op.order.id
+	price = op.price
+	number = op.number
+	op.delete()
 
-# 		o = Order.objects.get(id=order_id)
-# 		o.totalprice -= price
-# 		o.save()
-# 		info = 'delete an order product successfully'
-# 	else:
-# 		info = 'get no json data'
-	
-# 	return HttpResponse(info)
+	o = Order.objects.get(id=order_id)
+	o.totalprice -= price * number
+	o.save()
+	info = 'delete an order product successfully'
+
+	return HttpResponse(info)
 
 
-# # by zlz
-# # 后端修改一个订单所订购的产品数量
-# def UpdateOrderProduct(request):
-# 	if request.method == 'post':
-# 		diction = json.loads(request.raw_post_data)
-# 		id = diction[0]['id']
-# 		number = diction[0]['number']
-# 		orderID = diction[0]['orderID']
-# 		productID = diction[0]['productID']
+# by zlz
+# 后端修改一个订单所订购的产品数量
+# 修改产品订购数量后对相应的订单的 totalprice 进行更新
+def updateOrderProduct(request):
+	info=""
+	if request.method == 'post':
+		# raw_post_data = '[{"id": 2, "number": 5, "orderID": 1000000000, "productID": 55}]'
+		diction = json.loads(request.raw_post_data)
+		id = diction[0]['id']
+		number = diction[0]['number']
+		order_id = diction[0]['orderID']
+		product_id = diction[0]['productID']	
 
-# 		p = Product.objects.get(id=productID)
-# 		product_price = p.price  # 产品单价
+		op = OrderProduct.objects.get(id=id)
+		price = op.price
+		number_before = op.number
+		op.number = number
+		op.save()
 
-# 		op = OrderProduct.objects.get(id=id)
-# 		orderproduct_price_before = op.price
-# 		orderproduct_price_after = number * product_price
-# 		op.price = orderproduct_price_after
-# 		op.number = number
-# 		op.save()
-
-# 		o = Order.objects.get(id=orderID)
-# 		o.totalprice += orderproduct_price_after - orderproduct_price_before
-# 		o.save()
-# 		info = 'update an order product successfully'
-# 	else:
-# 		info = 'get no json data'
-
-# 	return HttpResponse(info)
+		o = Order.objects.get(id=order_id)
+		o.totalprice += (number - number_before) * price
+		o.save()
+		info = 'update an order product successfully'
+	else:
+		info = 'get no json data'
+	return HttpResponse(info)
 
 
 
@@ -180,7 +181,7 @@ def UpdateOrder(request):
 # 后端返回一个订单的所有产品函数 ,接收一个json文件，获取到订单的id，显示出该订单中所有的产品
 # 返回的是 单价 货品名字 货品id 货品数量 总价在前端计算
 # 返回样例 {'price': Decimal('20'), 'name': 'testPro1', 'product': 1, 'number': 1}{'price': Decimal('30'), 'name': 'testPro2', 'product': 2, 'number': 1}
-def ShowOrderProduct(request):
+def showOrderProduct(request):
 	data = '[{"id" : 1000000000}]'
 	id_diction=json.loads(data)
 	order_id=id_diction[0]['id']
@@ -208,14 +209,14 @@ def ShowOrderProduct(request):
 
 # by ymk
 # 测试用
-def GetAllOrderProduct(request):
+def getAllOrderProduct(request):
 	Response=serializers.serialize("json", OrderProduct.objects.all());
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
 # 添加一条orderproduct记录，接受从前端返回的json，订单的order_id，商品名称，单价，数量，（总价）？
 # 传入的json 每一条应该包含的内容：订单id order，产品名字 name
-def AddOrderProduct(request):
+def addOrderProduct(request):
 	info = "add orderproduct msg"
 	if request.method == 'post':
 		diction = json.loads(request.raw_post_data)#加载json文件，将json转化为python的字典列表
