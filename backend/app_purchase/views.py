@@ -297,7 +297,8 @@ def get_purchase_list(request):
 				'id': purchase.id,
 				'date':purchase.date,
 				'checker': purchase.checker,
-				'supplier_name': purchase.supplier.name
+				'supplier_name': purchase.supplier.name,
+				'totalprice': purchase.totalprice
 			}
 			result.append(res)
 
@@ -309,9 +310,33 @@ def get_purchase_list(request):
 @method_decorator(csrf_exempt)
 def get_purchase_detail(request):
 	"""
+	获取采购单详细信息
+	传入参数：purchase_id:
 	"""
 	if request.method == 'POST':
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		purchase_id = request.POST.get('purchase_id')
+		if purchase_id:
+			try:
+				purchase = Purchase.objects.select_related('supplier').get(id=purchase_id)
+				purchase_products = PurchaseProduct.objects.select_related('material').filter(purchase=purchase)
+				res = {
+					'id': purchase.id,
+					'date': purchase.date,
+					'checker': purchase.checker,
+					'supplier_name': purchase.supplier.name,
+					'totalprice': purchase.totalprice
+				}
+				for purchase_product in purchase_products:
+					res['material_id'] = purchase_product.material.id
+					res['material_name'] = purchase_product.material.name
+					res['number'] = purchase_product.number
+					res['price'] = purchase_product.price
+
+				return JsonResponse({'msg': 200, 'result': res})
+			except IntegrityError:
+				return JsonResponse({'msg': 'this purchase is not fount'})
+		else:
+			return JsonResponse({'msg': 'Incomplete parameters'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
