@@ -182,29 +182,33 @@ def updateOrderProduct(request):
 # 返回的是 单价 货品名字 货品id 货品数量 总价在前端计算
 # 返回样例 {'price': Decimal('20'), 'name': 'testPro1', 'product': 1, 'number': 1}{'price': Decimal('30'), 'name': 'testPro2', 'product': 2, 'number': 1}
 def showOrderProduct(request):
-	data = '[{"id" : 1000000000}]'
-	id_diction=json.loads(data)
-	order_id=id_diction[0]['id']
-	#获取到订单的id
-	product_list =OrderProduct.objects.filter(order=order_id).values('product','number')
-	# 获取到订单下的产品id
+	# 测试用样例
+	# data = '[{"id" : 1000000000}]'
+	if request.method == 'post':
+		id_diction=json.loads(request.raw_post_data)
+		order_id=id_diction[0]['id']
+		#获取到订单的id
+		product_list =OrderProduct.objects.filter(order=order_id).values('product','number')
+		# 获取到订单下的产品id
+		res=[] #创建列表
+		# 遍历产品id
+		for pro in range(len(product_list)):
+			productID=product_list[pro]['product']
+			product_item=Product.objects.filter(id=productID).values('name','price')
+			# 获取到产品的列表和单价
+			# price = str(product_item[0]['price'].quantize(Decimal('0.0')))
+			# product_item[0]['price'] = price
+			temp={} #合并字典
 
-	price ="" 
-	res=[] #创建列表
-	# 遍历产品id
-	for pro in range(len(product_list)):
-		productID=product_list[pro]['product']
-		product_item=Product.objects.filter(id=productID).values('name','price')
-		# 获取到产品的列表和单价
-		# price = str(product_item[0]['price'].quantize(Decimal('0.0')))
-		# product_item[0]['price'] = price
-		temp={} #合并字典
-
-		temp.update(product_list[pro])
-		temp.update(product_item[0])
-		res.append(temp) #将字典添加入列表
-		price=temp['price']
-	return HttpResponse(price)
+			temp.update(product_list[pro])
+			temp.update(product_item[0])
+			res.append(temp) #将字典添加入列表
+			for item in res:
+				item['price'] = float(item['price'])
+				#将decimal转换为float
+		return HttpResponse(json.dumps(res))
+	else:
+		return HttpResponse("get no json")
 
 
 # by ymk
