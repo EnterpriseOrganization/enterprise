@@ -7,6 +7,7 @@ urlpatterns = [
 	url(r'^delete_quotation', views.delete_quotation),
 	url(r'^update_quotation_price', views.update_quotation_price),
 	url(r'^quotation_query', views.quotation_query),
+	url(r'^add_suppler', views.add_supplier),
 	url(r'^get_lack_list', views.get_lack_list),
 	url(r'^add_purchase', views.add_purchase),
 	url(r'^delete_purchases', views.delete_purchases),
