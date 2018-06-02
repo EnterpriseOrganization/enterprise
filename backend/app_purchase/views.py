@@ -139,6 +139,19 @@ def update_quotation_price(request):
 
 
 @method_decorator(csrf_exempt)
+def add_supplier(request):
+	"""
+	更新物料报价信息, 传入报价编号和准备修改的名字
+	"""
+	if request.method == 'POST':
+		params = request.POST
+		# 得到所有参数
+		
+	else:
+		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+
+
+@method_decorator(csrf_exempt)
 def get_lack_list(request):
 	"""
 	"""
