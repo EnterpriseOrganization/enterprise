@@ -253,6 +253,19 @@ mysql -uroot -p [password] enterprise < db.sql
    ./manage.py runserver 0:8000
    ```
 
+## 跨域请求问题详解
+已经在master的setting.py中配置，需要大家安装中间件
+
+```
+pip install django-cors-headers
+```
+
+之后前端请求页面时需要在ajax请求中添加
+```
+xhrFields:{
+    withCredentials:true
+},
+```
 **后端配置有问题，找严骅/唐鹏森/孟宇航咨询**
 
 ## 四、系统架构图
