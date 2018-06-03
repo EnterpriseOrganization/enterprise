@@ -11,21 +11,21 @@ import json
 class MaterialClassProcessor:
 
     @staticmethod
-    def materialclass_list_to_json(result):
+    def materialclassListToJson(result):
         ret = {"data": []}
         for item in result:
-            ret["data"].append(MaterialClassProcessor.single_materialclass_to_dict(item))
+            ret["data"].append(MaterialClassProcessor.singleMaterialclassToDict(item))
         return json.dumps(ret)
 
     @staticmethod
-    def single_materialclass_to_dict(item):
+    def singleMaterialclassToDict(item):
         return {"class_field": item.class_field, "class_id": item.id}
 
     @staticmethod
     def get(request):
         if request.method == "GET":
             result = MaterialClass.objects.all()
-            return HttpResponse(MaterialClassProcessor.materialclass_list_to_json(result), content_type="application/json")
+            return HttpResponse(MaterialClassProcessor.materialclassListToJson(result), content_type="application/json")
         else:
             print("Not valid operation for material class")
             return HttpResponse(status=400)
@@ -37,14 +37,14 @@ class MaterialClassProcessor:
 class MaterialProcessor:
     #util
     @staticmethod
-    def material_list_to_json(result):
+    def materialListToJson(result):
         ret = {"data": []}
         for item in result:
-            ret["data"].append(MaterialProcessor.single_material_to_dict(item))
+            ret["data"].append(MaterialProcessor.singleMaterialToDict(item))
         return json.dumps(ret)
 
     @staticmethod
-    def single_material_to_dict(item):
+    def singleMaterialToDict(item):
         return {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id, 
@@ -52,7 +52,7 @@ class MaterialProcessor:
                 }
 
     @staticmethod
-    def get_material_Q(request):
+    def getMaterialQ(request):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
         id_str = request.GET.get("id")
@@ -67,29 +67,29 @@ class MaterialProcessor:
 
     # process all
     @staticmethod
-    def process_material(request):
+    def processMaterial(request):
         if request.method == "GET":
-            return MaterialProcessor.filter_material(request)
+            return MaterialProcessor.filterMaterial(request)
         if request.method == "DELETE":
-            return MaterialProcessor.delete_material(request)
+            return MaterialProcessor.deleteMaterial(request)
         if request.method == "POST":
-            return MaterialProcessor.create_material(request)
+            return MaterialProcessor.createMaterial(request)
             
     @staticmethod
-    def filter_material(request):
-        Q_list = MaterialProcessor.get_material_Q(request)
+    def filterMaterial(request):
+        Q_list = MaterialProcessor.getMaterialQ(request)
         if Q_list:
             print(Q_list)
             final_Q = reduce(lambda x,y: x|y, Q_list)
             result = Material.objects.filter(final_Q)
-            return HttpResponse(MaterialProcessor.material_list_to_json(result), content_type="application/json")
+            return HttpResponse(MaterialProcessor.materialListToJson(result), content_type="application/json")
         else:
             print("null request for all objects")
             result = Material.objects.all()
-            return HttpResponse(MaterialProcessor.material_list_to_json(result), content_type="application/json")
+            return HttpResponse(MaterialProcessor.materialListToJson(result), content_type="application/json")
 
     @staticmethod
-    def delete_material(request):
+    def deleteMaterial(request):
         data = json.loads(request.body.decode())["data"]
         id_list = [item["id"] for item in data]
         for i in id_list:
@@ -98,7 +98,7 @@ class MaterialProcessor:
         return HttpResponse(status=204)
 
     @staticmethod
-    def create_material(request):
+    def createMaterial(request):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
         class_obj = MaterialClass.objects.get(id=int(class_id_str))
@@ -108,17 +108,17 @@ class MaterialProcessor:
 
     #process specific material
     @staticmethod
-    def process_specific_material(request, param_id):
+    def processSpecificMaterial(request, param_id):
         if request.method == "PUT":
-            return MaterialProcessor.modify_specific_material(request, param_id)
+            return MaterialProcessor.modifySpecificMaterial(request, param_id)
         if request.method == "DELETE":
-            return MaterialProcessor.delete_specific_material(request, param_id)
+            return MaterialProcessor.deleteSpecificMaterial(request, param_id)
         if request.method == "GET":
-            return MaterialProcessor.get_specific_material(request, param_id)
+            return MaterialProcessor.getSpecificMaterial(request, param_id)
 
     #TODO: Object not found
     @staticmethod
-    def modify_specific_material(request, param_id):
+    def modifySpecificMaterial(request, param_id):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
         class_obj = MaterialClass.objects.get(id=int(class_id_str))
@@ -128,37 +128,37 @@ class MaterialProcessor:
         item.save()
         return HttpResponse(status=201)
 
-    #TODO: Object not found
+    # TODO: Object not found
     @staticmethod
-    def delete_specific_material(request, param_id):
+    def deleteSpecificMaterial(request, param_id):
         item = Material.objects.get(id=int(param_id))
         item.delete()
         return HttpResponse(status=204)    
 
     @staticmethod
-    def get_specific_material(request, param_id):
+    def getSpecificMaterial(request, param_id):
         item = Material.objects.get(id=int(param_id))
-        return HttpResponse(json.dumps(MaterialProcessor.single_material_to_dict(item)), content_type="application/json")
+        return HttpResponse(json.dumps(MaterialProcessor.singleMaterialToDict(item)), content_type="application/json")
 
 
 class ProductClassProcessor:
 
     @staticmethod
-    def productclass_list_to_json(result):
+    def productclassListToJson(result):
         ret = {"data": []}
         for item in result:
-            ret["data"].append(ProductClassProcessor.single_productclass_to_dict(item))
+            ret["data"].append(ProductClassProcessor.singleProductclassToDict(item))
         return json.dumps(ret)
 
     @staticmethod
-    def single_productclass_to_dict(item):
+    def singleProductclassToDict(item):
         return {"class_field": item.class_field, "class_id": item.id}
 
     @staticmethod
     def get(request):
         if request.method == "GET":
             result = ProductClass.objects.all()
-            return HttpResponse(ProductClassProcessor.productclass_list_to_json(result), content_type="application/json")
+            return HttpResponse(ProductClassProcessor.productclassListToJson(result), content_type="application/json")
         else:
             print("Not valid operation for product class")
             return HttpResponse(status=400)
@@ -166,14 +166,14 @@ class ProductClassProcessor:
 class ProductProcessor:
     #util
     @staticmethod
-    def product_list_to_json(result):
+    def productListToJson(result):
         ret = {"data": []}
         for item in result:
-            ret["data"].append(ProductProcessor.single_product_to_dict(item))
+            ret["data"].append(ProductProcessor.singleProductToDict(item))
         return json.dumps(ret)
 
     @staticmethod
-    def single_product_to_dict(item):
+    def singleProductToDict(item):
         return {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id,
@@ -183,7 +183,7 @@ class ProductProcessor:
 
     # TODO: filter for price
     @staticmethod
-    def get_product_Q(request):
+    def getProductQ(request):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
         id_str = request.GET.get("id")
@@ -198,29 +198,29 @@ class ProductProcessor:
 
     # process all
     @staticmethod
-    def process_product(request):
+    def processProduct(request):
         if request.method == "GET":
-            return ProductProcessor.filter_product(request)
+            return ProductProcessor.filterProduct(request)
         if request.method == "DELETE":
-            return ProductProcessor.delete_product(request)
+            return ProductProcessor.deleteProduct(request)
         if request.method == "POST":
-            return ProductProcessor.create_product(request)
+            return ProductProcessor.createProduct(request)
             
     @staticmethod
-    def filter_product(request):
-        Q_list = ProductProcessor.get_product_Q(request)
+    def filterProduct(request):
+        Q_list = ProductProcessor.getProductQ(request)
         if Q_list:
             print(Q_list)
             final_Q = reduce(lambda x,y: x|y, Q_list)
             result = Product.objects.filter(final_Q)
-            return HttpResponse(ProductProcessor.product_list_to_json(result), content_type="application/json")
+            return HttpResponse(ProductProcessor.productListToJson(result), content_type="application/json")
         else:
             print("null request for all objects")
             result = Product.objects.all()
-            return HttpResponse(ProductProcessor.product_list_to_json(result), content_type="application/json")
+            return HttpResponse(ProductProcessor.productListToJson(result), content_type="application/json")
 
     @staticmethod
-    def delete_product(request):
+    def deleteProduct(request):
         data = json.loads(request.body.decode())["data"]
         id_list = [item["id"] for item in data]
         for i in id_list:
@@ -229,7 +229,7 @@ class ProductProcessor:
         return HttpResponse(status=204)
 
     @staticmethod
-    def create_product(request):
+    def createProduct(request):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
         class_obj = ProductClass.objects.get(class_field=int(class_id_str))
@@ -240,17 +240,17 @@ class ProductProcessor:
 
     #process specific Product
     @staticmethod
-    def process_specific_product(request, param_id):
+    def processSpecificProduct(request, param_id):
         if request.method == "PUT":
-            return ProductProcessor.modify_specific_product(request, param_id)
+            return ProductProcessor.modifySpecificProduct(request, param_id)
         if request.method == "DELETE":
-            return ProductProcessor.delete_specific_product(request, param_id)
+            return ProductProcessor.deleteSpecificProduct(request, param_id)
         if request.method == "GET":
-            return ProcessProcessor.get_specific_product(request, param_id)
+            return ProductProcessor.getSpecificProduct(request, param_id)
 
     #TODO: Object not found
     @staticmethod
-    def modify_specific_product(request, param_id):
+    def modifySpecificProduct(request, param_id):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
         class_obj = ProductClass.objects.get(id=int(class_id_str))
@@ -264,12 +264,12 @@ class ProductProcessor:
 
     #TODO: Object not found
     @staticmethod
-    def delete_specific_product(request, param_id):
+    def deleteSpecificProduct(request, param_id):
         item = Product.objects.get(id=int(param_id))
         item.delete()
         return HttpResponse(status=204)    
 
     @staticmethod
-        def get_specific_product(request, param_id):
-            item = Product.objects.get(id=int(param_id))
-            return HttpResponse(json.dumps(ProductProcessor.single_product_to_dict(item)), content_type="application/json")
+    def getSpecificProduct(request, param_id):
+        item = Product.objects.get(id=int(param_id))
+        return HttpResponse(json.dumps(ProductProcessor.singleProductToDict(item)), content_type="application/json")
