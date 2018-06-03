@@ -31,11 +31,9 @@ class MaterialClassProcessor:
             return HttpResponse(status=400)
 
 
-
-
 # Material Operations
 class MaterialProcessor:
-    #util
+    # util
     @staticmethod
     def materialListToJson(result):
         ret = {"data": []}
@@ -106,7 +104,7 @@ class MaterialProcessor:
         m.save()
         return HttpResponse(201)
 
-    #process specific material
+    # process specific material
     @staticmethod
     def processSpecificMaterial(request, param_id):
         if request.method == "PUT":
@@ -116,7 +114,7 @@ class MaterialProcessor:
         if request.method == "GET":
             return MaterialProcessor.getSpecificMaterial(request, param_id)
 
-    #TODO: Object not found
+    # TODO: Object not found
     @staticmethod
     def modifySpecificMaterial(request, param_id):
         name_str = request.GET.get("name")
@@ -164,7 +162,7 @@ class ProductClassProcessor:
             return HttpResponse(status=400)
 
 class ProductProcessor:
-    #util
+    # util
     @staticmethod
     def productListToJson(result):
         ret = {"data": []}
@@ -238,7 +236,7 @@ class ProductProcessor:
         m.save()
         return HttpResponse(201)
 
-    #process specific Product
+    # process specific Product
     @staticmethod
     def processSpecificProduct(request, param_id):
         if request.method == "PUT":
@@ -248,7 +246,7 @@ class ProductProcessor:
         if request.method == "GET":
             return ProductProcessor.getSpecificProduct(request, param_id)
 
-    #TODO: Object not found
+    # TODO: Object not found
     @staticmethod
     def modifySpecificProduct(request, param_id):
         name_str = request.GET.get("name")
@@ -262,7 +260,7 @@ class ProductProcessor:
         item.save()
         return HttpResponse(status=201)
 
-    #TODO: Object not found
+    # TODO: Object not found
     @staticmethod
     def deleteSpecificProduct(request, param_id):
         item = Product.objects.get(id=int(param_id))
