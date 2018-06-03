@@ -14,7 +14,7 @@ class MaterialClassProcessor:
     def materialclass_list_to_json(result):
         ret = {"data": []}
         for item in result:
-            ret["data"].append(MaterialClassProcessor.single_materialclass_to_dict)
+            ret["data"].append(MaterialClassProcessor.single_materialclass_to_dict(item))
         return json.dumps(ret)
 
     @staticmethod
@@ -55,7 +55,7 @@ class MaterialProcessor:
         Q_list = []
         if name_str != "null":
             Q_list.append(Q(name=name_str))
-        if class_obj_str != "null":
+        if class_id_str and class_id_str != "null":
             Q_list.append(Q(class_obj__id=int(class_id_str)))
         if id_str != "null":
             Q_list.append(Q(id=int(id_str)))
@@ -86,10 +86,11 @@ class MaterialProcessor:
 
     @staticmethod
     def delete_material(request):
-        data = json.loads(request.body)["data"]
+        print(request.body.decode())
+        data = json.loads(request.body.decode())["data"]
         id_list = [item["id"] for item in data]
         for i in id_list:
-            m = Material.objects.get(id=i)
+            m = Material.objects.get(id=int(i))
             m.delete()
         return HttpResponse(status=204)
 
@@ -99,6 +100,7 @@ class MaterialProcessor:
         class_id_str = request.GET.get("class_id")
         class_obj = MaterialClass.objects.get(id=int(class_id_str))
         m = Material(name=name_str, class_obj=class_obj)
+        m.save()
         return HttpResponse(201)
 
     #process specific material
@@ -176,7 +178,7 @@ class ProductProcessor:
         Q_list = []
         if name_str != "null":
             Q_list.append(Q(name=name_str))
-        if class_obj_str != "null":
+        if class_id_str and class_id_str != "null":
             Q_list.append(Q(class_obj__id=int(class_id_str)))
         if id_str != "null":
             Q_list.append(Q(id=int(id_str)))
@@ -221,6 +223,7 @@ class ProductProcessor:
         class_obj = ProductClass.objects.get(class_field=int(class_id_str))
         price_str = request.GET.get("price")
         m = Product(name=name_str, class_obj=class_obj, price=float(price_str))
+        m.save()
         return HttpResponse(201)
 
     #process specific Product

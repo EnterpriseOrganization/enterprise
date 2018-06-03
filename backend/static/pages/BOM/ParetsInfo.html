@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>删除会员-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <title>配料管理</title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -15,6 +15,7 @@
         <script>
             var mdata=[]
             var mdatanum=0
+            var curedit=0
         </script>
       
         <script>
@@ -23,19 +24,32 @@
                 var table = layui.table;
                 var form=layui.form;
 
-                var materialtypeoptions=["sfs","sdfsdf","sdfdsfs"];
+                $.ajax({
+                    url:"http://127.0.0.1:8000/bom/materialclass/",
+                    type:"GET",
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(msg){
+                        console.log(msg.data)
+                        var materialtypeoptions=msg.data;
+                        $("#mt").prepend("<option value='null'>配料类型</option>")
+                        for (var i = 0; i < materialtypeoptions.length; i++) {
+                            $("#mt").append("<option value='"+materialtypeoptions[i].class_id+"'>"+materialtypeoptions[i].class_field+"</option>")
+                            //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
+                            //materialtypeoptions[i]
+                        }
+                        form.render('select');
+                    },
+                    error:function(error){
+                        console.log(error)
+                    }        
+                });
 
-                $("#mt").prepend("<option value='null'>配料类型</option>")
-                for (var i = 0; i < materialtypeoptions.length; i++) {
-                    $("#mt").append("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
-                    //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
-                    //materialtypeoptions[i]
-                }
-                form.render('select');
 
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/material/?name=null&class_obj=null&id=null",
+                    url:"http://127.0.0.1:8000/bom/material/?name=null&class_id=null&id=null",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -54,7 +68,6 @@
                     },
                     error:function(error){
                         console.log(error)
-                        // alert("dsf")
                     }
                 });
 
@@ -151,7 +164,7 @@
                         materialname="null";
                     }
                     // alert(materialname)
-                    var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_obj="+materialtype+"&id=null";
+                    var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_id="+materialtype+"&id=null";
                     // alert(urltogo)
                     $.ajax({
                         url:urltogo,
@@ -193,25 +206,33 @@
                                 console.log(msg)
 
                                 mdatanum-=1
-                                $("#mdcount").text("共有数据："+mdatanum+"条")
 
+                                $(obj).parents("tr").remove();
+                                $("#mdcount").text("共有数据："+mdatanum+"条")
+                                layer.msg('已删除!', {
+                                    icon: 1,
+                                    time: 1000
+                                });                                
                             },
                             error:function(error){
                                 console.log(error)
+                                layer.msg('删除失败！', {
+                                    icon: 1,
+                                    time: 1000
+                                });                                 
                             }
 
                         });
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
+
+
                         return false;
                     });
                 }
 
                 window.delAll = function () {
                     var checkStatus=table.checkStatus('materialtable');
+                    
+                    console.log(checkStatus)
                     //var data = tableCheck.getData();
                     var urltogo="http://127.0.0.1:8000/bom/material/";
                     layer.confirm('确认要删除这些记录吗？', function(index) {
@@ -219,7 +240,7 @@
                         $.ajax({
                             url:urltogo,
                             type:"DELETE",
-                            data:{todelete:checkStatus},
+                            data:JSON.stringify({"data":checkStatus.data}),
                             dataType:"json",
                             xhrFields:{
                                 withCredentials:true
@@ -231,16 +252,20 @@
 
                                 $("#mdcount").text("共有数据："+mdatanum+"条")
 
+                                $(".layui-form-checked").not('.header').parents('tr').remove();
+                                layer.msg('删除成功!', {
+                                    icon: 1
+                                });
                             },
                             error:function(error){
                                 console.log(error)
+                                layer.msg('删除失败!', {
+                                    icon: 1
+                                });
                             }
 
                         });
-                        layer.msg('删除成功', {
-                            icon: 1
-                        });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
+
                         return false;
                     });
                 }            
@@ -248,8 +273,16 @@
             });
         </script>
 
+        <script>
+
+            function changecuredit(id){
+                curedit=id;
+                alert(curedit)
+            }
+        </script>
+
         <script type="text/html" id="med">
-            <a title="修改" onclick="WeAdminShow('编辑配料','./ParetsDetail.html',550,400)" href="javascript:;">
+            <a title="修改" onclick="changecuredit({{d.id}});WeAdminShow('编辑配料','./ParetsDetailsp.html',550,400)" href="javascript:;">
                 <i class="fas fa-edit"></i>
             </a>
             <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
