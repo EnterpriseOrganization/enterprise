@@ -33,8 +33,17 @@ def addInventory(req):
 	print(user.has_perm("add_InventoryInformation"))
 	#print(params)
 	if(user.has_perm("add_InventoryInformation")):
-		material = Material.objects.get(name = params['material'])
-		InventoryInformation.objects.create( material = material, name =\
+		
+		try:
+			material = Material.objects.get(name = params['material']) 
+		except: # 如果这种原料不存在，则报错
+			return JsonResponse({'res':'Sorry! material does not exist!'})
+		try:
+			inventory = InventoryInformation.objects.get(material = material)
+			inventory.number += int(params['number'])
+			inventory.save()
+		except: # 如果这种库存不存在，那么就创建它
+			InventoryInformation.objects.create( material = material, name =\
 			                             params['name'], shelfnumber = params['shelfnumber'], number =\
 			                             params['number'], newestinwarehousedate = time.localtime() )
 		return JsonResponse({'res':'add success!'})		
@@ -47,7 +56,8 @@ def addInventory(req):
 #TODO 待完成更改库存操作
 def modifyInventory(req):
 	params = getParams(req)
-	InventoryInformation.objects.filter()
+	material = material.objects.get(id = params['material'])
+	inventory = InventoryInformation.objects.filter(material = material)
 	return JsonResponse({'res':'modify success!'})
 
 #TODO:待完成移除库存操作
