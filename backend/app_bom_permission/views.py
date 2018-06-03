@@ -175,7 +175,7 @@ class ProductProcessor:
         return {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id,
-                "price": item.price,
+                "price": float(item.price),
                 "class_field": item.class_obj.class_field
                 }
 

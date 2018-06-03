@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>配料管理</title>
+        <title>物料管理</title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -33,7 +33,7 @@
                     success:function(msg){
                         console.log(msg.data)
                         var materialtypeoptions=msg.data;
-                        $("#mt").prepend("<option value='null'>配料类型</option>")
+                        $("#mt").prepend("<option value='null'>物料类别</option>")
                         for (var i = 0; i < materialtypeoptions.length; i++) {
                             $("#mt").append("<option value='"+materialtypeoptions[i].class_id+"'>"+materialtypeoptions[i].class_field+"</option>")
                             //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
@@ -59,8 +59,10 @@
                         mdata=msg.data
 
                         tableIns.reload({
-                        data:mdata,
-                        page:true
+                            data:mdata,
+                            page:{
+                                curr:1
+                            }
                         });
 
                         mdatanum=mdata.length
@@ -71,21 +73,21 @@
                     }
                 });
 
-
                 //第一个实例
                 var tableIns=table.render({
-                elem: '#materialtable'
-                ,height: 315
-                ,data:mdata //数据接口
-                ,page: true //开启分页
-                ,cols: [[ //表头
-                    {field:'',title:'kh',type:'checkbox'}
-                  ,{field: 'id', title: 'ID', width:'25%', sort: true}
-                  ,{field: 'name', title: '名称', width:'25%'}
-                  ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
-                  ,{title: '操作', width:'25%',templet:'#med'} 
-                ]]
-                });        
+                    elem: '#materialtable'
+                    ,height: 315
+                    ,data:mdata //数据接口
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {field:'',title:'kh',type:'checkbox'}
+                        ,{field: 'id', title: '物料编号', width:'25%', sort: true}
+                        ,{field: 'name', title: '物料名称', width:'25%'}
+                        ,{field: 'class_field', title: '物料类别', width:'25%', sort: true}
+                        ,{title: '操作', width:'25%',templet:'#med'} 
+                    ]]
+                });
+        
 
             });
         </script>
@@ -97,7 +99,7 @@
         <a href="">首页</a>
         <a href="">BOM信息管理</a>
         <a>
-          <cite>配料管理</cite></a>
+          <cite>物料管理</cite></a>
       </span>
             <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
@@ -107,10 +109,10 @@
                 <form class="layui-form layui-col-md12 we-search" lay-filter="materialsearch">
                     <i class="fas fa-filter"> </i>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="名称" name="materialname" >
+                        <input class="layui-input" placeholder="物料名称" name="materialname" >
                     </div>
                     <div class="layui-inline">
-                        <select id="mt" name="materialtype" lay-verify="required">
+                        <select id="mt" name="materialtype" lay-search>
 
                         </select>
                     </div>
@@ -144,17 +146,17 @@
                 var form=layui.form;
                 //第一个实例
                 var tableIns=table.render({
-                elem: '#materialtable'
-                ,height: 315
-                ,data:mdata //数据接口
-                ,page: true //开启分页
-                ,cols: [[ //表头
-                    {field:'',title:'kh',type:'checkbox'}
-                  ,{field: 'id', title: 'ID', width:'25%', sort: true}
-                  ,{field: 'name', title: '名称', width:'25%'}
-                  ,{field: 'class_obj', title: '类别', width:'25%', sort: true}
-                  ,{title: '操作', width:'25%',templet:'#med'} 
-                ]]
+                    elem: '#materialtable'
+                    ,height: 315
+                    ,data:mdata //数据接口
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {field:'',title:'kh',type:'checkbox'}
+                        ,{field: 'id', title: '物料编号', width:'25%', sort: true}
+                        ,{field: 'name', title: '物料名称', width:'25%'}
+                        ,{field: 'class_field', title: '物料类别', width:'25%', sort: true}
+                        ,{title: '操作', width:'25%',templet:'#med'} 
+                    ]]
                 });
 
                 form.on('submit(search)',function(data){
@@ -177,8 +179,10 @@
                             mdata=msg.data
 
                             tableIns.reload({
-                            data:mdata,
-                            page:true
+                                data:mdata,
+                                page:{
+                                    curr:1
+                                }
                             });
 
                             mdatanum=mdata.length
@@ -282,7 +286,7 @@
         </script>
 
         <script type="text/html" id="med">
-            <a title="修改" onclick="changecuredit({{d.id}});WeAdminShow('编辑配料','./ParetsDetailsp.html',550,400)" href="javascript:;">
+            <a title="修改" onclick="changecuredit({{d.id}});WeAdminShow('编辑物料','./ParetsDetailsp.html',550,400)" href="javascript:;">
                 <i class="fas fa-edit"></i>
             </a>
             <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
