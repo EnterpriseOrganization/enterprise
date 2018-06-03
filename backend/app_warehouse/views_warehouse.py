@@ -2,7 +2,7 @@
 # from django.shortcuts import render
 from django.http import JsonResponse
 import time
-from enterprise.models import InventorInformation
+from enterprise.models import InventoryInformation
 from django.core import serializers
 # Create your views here.
 from collections import defaultdict
@@ -24,7 +24,6 @@ def getInventory(req):
 	return JsonResponse(answer)
 
 #TODO 待完成添加库存操作
-@ensure_csrf_cookie
 def addInventory(req):
 	params = getParams(req)
 	print(params)

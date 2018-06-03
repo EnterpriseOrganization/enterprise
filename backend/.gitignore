@@ -1,4 +1,4 @@
 ﻿#不提交settings.py文件
-/mysite/settings.py
+*/settings.py
 /enterprise/migrations
 *.pyc
