@@ -4,7 +4,7 @@ from django.http import JsonResponse
 import time
 from enterprise.models import InventoryInformation
 from django.core import serializers
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf	 import csrf_exempt
 # Create your views here.
 from collections import defaultdict
 import json

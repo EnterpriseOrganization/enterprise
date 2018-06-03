@@ -117,7 +117,7 @@ class InventoryInformation(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'inventorinformation'
+        db_table = 'inventoryinformation'
 
 
 class InWarehouse(models.Model):

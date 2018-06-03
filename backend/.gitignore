@@ -1,4 +1,6 @@
-﻿#不提交settings.py文件
-*/settings.py
+#settings.py
+/mysite/settings.py
 /enterprise/migrations
+*.wpr
+*.wpu
 *.pyc
