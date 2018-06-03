@@ -1,3 +1,4 @@
+ï»¿
 # from django.shortcuts import render
 import sys
 from django.http import JsonResponse
@@ -11,8 +12,8 @@ from collections import defaultdict
 import json
 def getInventory(req):
 	"""
-	:req Ç°¶Ë·¢ÆğµÄÇëÇó
-	:return ²éÑ¯½á¹û
+	:req å‰ç«¯å‘èµ·çš„è¯·æ±‚
+	:return æŸ¥è¯¢ç»“æœ
 	"""
 	queryset = getParams(req)
 	has_query_condition = hasQueryCondition(queryset)
@@ -25,7 +26,7 @@ def getInventory(req):
 		answer = {'res':'Sorry, the record doesn\'t exist.'}
 	return JsonResponse(answer)
 
-#TODO ´ıÍê³ÉÌí¼Ó¿â´æ²Ù×÷
+#TODO å¾…å®Œæˆæ·»åŠ åº“å­˜æ“ä½œ
 @ensure_csrf_cookie
 def addInventory(req):
 	params = getParams(req)
@@ -35,20 +36,20 @@ def addInventory(req):
 	                                     params['number'], newestinwarehousedate = time.localtime() )
 	return JsonResponse({'res':'add success!'})
 
-#TODO ´ıÍê³É¸ü¸Ä¿â´æ²Ù×÷
+#TODO å¾…å®Œæˆæ›´æ”¹åº“å­˜æ“ä½œ
 def modifyInventory(req):
 	params = getParams(req)
 	InventoryInformation.objects.filter()
 	return JsonResponse({'res':'modify success!'})
 
-#TODO:´ıÍê³ÉÒÆ³ı¿â´æ²Ù×÷
+#TODO:å¾…å®Œæˆç§»é™¤åº“å­˜æ“ä½œ
 def removeRecord(req):
 	return JsonResponse({'res':'remove success!'})
 
 def getParams(req):
 	"""
-	:req Ç°¶ËÇëÇóÌå
-	:return ÇëÇóÌåËù´øµÄ²ÎÊı×Öµä
+	:req å‰ç«¯è¯·æ±‚ä½“
+	:return è¯·æ±‚ä½“æ‰€å¸¦çš„å‚æ•°å­—å…¸
 	"""
 	if(req.method == 'GET'):
 		params = dict(req.GET)
@@ -61,13 +62,12 @@ def getParams(req):
 		params = json.loads(req.body.decode('utf-8'))
 		print(params)
 		return params
-	
 
 
 def hasQueryCondition(queryset):
 	"""
-	:queryset Ç°¶ËÏòºó¶Ë·¢ÆğµÄÇëÇó²ÎÊı
-	:return bool±äÁ¿£¬È·ÈÏÊÇ·ñÓĞ²éÑ¯Ìõ¼ş
+	:queryset å‰ç«¯å‘åç«¯å‘èµ·çš„è¯·æ±‚å‚æ•°
+	:return boolå˜é‡ï¼Œç¡®è®¤æ˜¯å¦æœ‰æŸ¥è¯¢æ¡ä»¶
 	"""
 	for i in queryset:
 		if(queryset[i] != ''):
@@ -76,11 +76,11 @@ def hasQueryCondition(queryset):
 
 def getInventoryByConditions(params):
 	"""
-	:params ²éÑ¯Ìõ¼şÁĞ±í
-	:return ²éÑ¯½á¹û×Öµä
+	:params æŸ¥è¯¢æ¡ä»¶åˆ—è¡¨
+	:return æŸ¥è¯¢ç»“æœå­—å…¸
 	"""
 	params_list = ['material','shelfnumber','number','threshold','newestinwarehousedate']
-	
+
 	old_query_answer = None
 	if('material' in list(params.keys())):
 		query_material = Material.objects.filter(id = params['material'][id])
@@ -102,7 +102,7 @@ def getInventoryByConditions(params):
 
 def getAllInventory():
 	"""
-	:return ²éÑ¯½á¹û×Öµä
+	:return æŸ¥è¯¢ç»“æœå­—å…¸
 	"""
 	answer_list = InventoryInformation.objects.all()
 	answer = toDict(answer_list)
@@ -110,8 +110,8 @@ def getAllInventory():
 
 def toDict(queryset):
 	"""
-	:queryset ²éÑ¯Ö®ºóµÄquerysetµÄ½á¹û
-	:return ½«queryset×ª»»³É´¿json¸ñÊ½µÄdict×Öµä
+	:queryset æŸ¥è¯¢ä¹‹åçš„querysetçš„ç»“æœ
+	:return å°†querysetè½¬æ¢æˆçº¯jsonæ ¼å¼çš„dictå­—å…¸
 	"""
 	answer = defaultdict(dict)
 	count = 0

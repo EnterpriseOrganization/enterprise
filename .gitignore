@@ -1,3 +1,6 @@
 __pycache__/
-*/.DS_Store
-
+*.pyc
+*.wpr
+*.wpu
+*.DS_Store
+*.cpython-36.pyc
