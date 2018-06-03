@@ -10,6 +10,10 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from collections import defaultdict
 import json
 def getInventory(req):
+	"""
+	:req 前端发起的请求
+	:return 查询结果
+	"""
 	queryset = getParams(req)
 	has_query_condition = hasQueryCondition(queryset)
 	answer = {}
@@ -17,7 +21,49 @@ def getInventory(req):
 		answer = getInventoryByConditions(queryset)
 	else:
 		answer = getAllInventory(queryset)
+	if(len(answer) == 0):
+		answer = {'res':'Sorry, the record doesn\'t exist.'}
 	return JsonResponse(answer)
+
+#TODO 待完成添加库存操作
+@ensure_csrf_cookie
+def addInventory(req):
+	params = getParams(req)
+	print(params)
+	InventoryInformation.objects.create( material = params['material'], name =\
+	                                     params['name'], shelfnumber = params['shelfnumber'], number =\
+	                                     params['number'], newestinwarehousedate = time.localtime() )
+	return JsonResponse({'res':'add success!'})
+
+#TODO 待完成更改库存操作
+def modifyInventory(req):
+	params = getParams(req)
+	InventoryInformation.objects.filter()
+	return JsonResponse({'res':'modify success!'})
+
+#TODO:待完成移除库存操作
+def removeRecord(req):
+	return JsonResponse({'res':'remove success!'})
+
+def getParams(req):
+	"""
+	:req 前端请求体
+	:return 请求体所带的参数字典
+	"""
+	if(req.method == 'GET'):
+		params = dict(req.GET)
+		return params
+	elif(req.method == 'POST'):
+		params = json.loads(req.body.decode('utf-8'))
+		return params
+	elif(req.method == 'DELETE'):
+		print("in delete")
+		params = json.loads(req.body.decode('utf-8'))
+		print(params)
+		return params
+	
+
+
 def hasQueryCondition(queryset):
 	"""
 	:queryset 前端向后端发起的请求参数
@@ -27,6 +73,7 @@ def hasQueryCondition(queryset):
 		if(queryset[i] != ''):
 			return True
 	return False
+
 def getInventoryByConditions(params):
 	"""
 	:params 查询条件列表
@@ -79,40 +126,3 @@ def toDict(queryset):
 		answer.setdefault(count,temp)
 		count+=1	
 	return answer
-#TODO 待完成添加库存操作
-@ensure_csrf_cookie
-def addInventory(req):
-	params = getParams(req)
-	print(params)
-	InventoryInformation.objects.create( material = params['material'], name =\
-	                                     params['name'], shelfnumber = params['shelfnumber'], number =\
-	                                     params['number'], newestinwarehousedate = time.localtime() )
-	return JsonResponse({'res':'add success!'})
-
-#TODO 待完成更改库存操作
-def modifyInventory(req):
-	params = getParams(req)
-	InventoryInformation.objects.filter()
-	return JsonResponse({'res':'modify success!'})
-
-#TODO:待完成移除库存操作
-def removeRecord(req):
-	return JsonResponse({'res':'remove success!'})
-
-def getParams(req):
-	"""
-	:req 前端请求体
-	:return 请求体所带的参数字典
-	"""
-	if(req.method == 'GET'):
-		params = dict(req.GET)
-		return params
-	elif(req.method == 'POST'):
-		params = json.loads(req.body.decode('utf-8'))
-		return params
-	elif(req.method == 'DELETE'):
-		print("in delete")
-		params = json.loads(req.body.decode('utf-8'))
-		print(params)
-		return params
-	
