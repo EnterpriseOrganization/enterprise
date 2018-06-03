@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^product/([0-9]*)/$', bom_view.ProductProcessor.processSpecificProduct),
     url(r'^materialclass/$', bom_view.MaterialClassProcessor.get),
     url(r'^productclass/$', bom_view.ProductClassProcessor.get),
-    url(r'^productmaterial/product/[0-9]*/$', bom_view.ProductmaterialProcessor.processProductmaterialForCertainProduct), # get 
-    url(r'^procuctmaterial/$', bom_view.ProductmaterialProcessor.processProductmaterial), # delete 批量删除 create
-    url(r'^productmaterial/[0-9]*/$', bom_view.ProductmaterialProcessor.processSpecificProductmaterial), # (get) <- 可能不需要  put delete
+    url(r'^productmaterial/product/([0-9]*)/$', bom_view.ProductmaterialProcessor.processProductmaterialForCertainProduct), # get 
+    url(r'^productmaterial/$', bom_view.ProductmaterialProcessor.processProductmaterial), # delete 批量删除 create
+    url(r'^productmaterial/([0-9]*)/$', bom_view.ProductmaterialProcessor.processSpecificProductmaterial), # (get) <- 可能不需要  put delete
 ]

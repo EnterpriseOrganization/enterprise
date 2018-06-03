@@ -54,7 +54,7 @@
                         console.log(msg)
                         $("#pi").val(String(msg.id))
                         $("#pn").val(msg.name)
-                        $("#pp").val("32")
+                        $("#pp").val(String(msg.price))
                     },
                     error:function(error){
                         console.log(error)
@@ -109,6 +109,47 @@
             </form>
         </div>
 
+        <script>
+            layui.use('form',function(){
+                var $=layui.jquery;
+                var form=layui.form;
+
+                form.on('submit(edit)',function(data){
+                    var productid=data.field.productid;
+                    var productname=data.field.productname;
+                    var producttype=data.field.producttype;
+                    var productprice=data.field.productprice
+
+                    var urltogo="http://127.0.0.1:8000/bom/product/"+productid+"/?name="+productname+"&class_id="+producttype+"&price="+productprice;
+
+                    $.ajax({
+                        url:urltogo,
+                        type:"PUT",
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(msg){
+                            console.log(msg)
+                            layer.alert("修改成功",{
+                                icon:6
+                            },function(){
+                                var index=parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index)
+                            });
+                        },
+                        error:function(error){
+                            console.log(error)
+                            layer.alert("修改失败",{
+                                icon:6
+                            });
+                        }
+
+                    });
+                    return false;
+
+                });
+            });
+        </script>
 
     </body>
 

@@ -287,9 +287,11 @@ class ProductmaterialProcessor:
     def singleProductmaterialToDict(item):
         return {"id": item.id,
                 "product_id": item.product.id,
-                "product_class_field": item.product.class_field,
+                "product_name": item.product.name,
+                "product_class_field": item.product.class_obj.class_field,
                 "material_id": item.material.id,
-                "material_class_field": item.material.class_field,
+                "material_name": item.material.name,
+                "material_class_field": item.material.class_obj.class_field,
                 "procedure": item.procedure,
                 "number": item.number,
                 "comments": item.comments
@@ -356,8 +358,8 @@ class ProductmaterialProcessor:
     @staticmethod
     def filterProductmaterialForCertainProduct(request, product_id):
         product = Product.objects.get(id=product_id)
-        result = ProductMaterial.objects.get(product=product)
-        return HttpResponse(json.dumps(ProductmaterialProcessor.productmaterialListToJson(result), content_type="application/json"))
+        result = ProductMaterial.objects.filter(product=product)
+        return HttpResponse(ProductmaterialProcessor.productmaterialListToJson(result), content_type="application/json")
 
 
 
@@ -365,30 +367,27 @@ class ProductmaterialProcessor:
     @staticmethod
     def processSpecificProductmaterial(request, param_id):
         if request.method == "PUT":
-            return ProductmaterialProcessor.modifySpecificProduct(request, param_id)
+            return ProductmaterialProcessor.modifySpecificProductmaterial(request, param_id)
         if request.method == "DELETE":
-            return ProductmaterialProcessor.deleteSpecificProduct(request, param_id)
+            return ProductmaterialProcessor.deleteSpecificProductmaterial(request, param_id)
         if request.method == "GET":
-            return ProductmaterialProcessor.getSpecificProduct(request, param_id)
+            return ProductmaterialProcessor.getSpecificProductmaterial(request, param_id)
 
     # TODO: Object not found
     @staticmethod
     def modifySpecificProductmaterial(request, param_id):
         productmaterial = ProductMaterial.objects.get(id=int(param_id))
-        product_id = request.GET.get("product_id")
-        product = Product.objects.get(id=product_id)
+        
         material_id = request.GET.get("material_id")
         material = Material.objects.get(id=material_id)
         procedure = int(request.GET.get("procedure"))
         number = int(request.GET.get("number"))
         comments = request.GET.get("comments")
-        m = ProductMaterial(product=product, 
-                            material=material, 
-                            procedure=procedure, 
-                            number=number,
-                            comments=comments
-                            )
-        m.save()
+        productmaterial.material = material
+        productmaterial.procedure = procedure
+        productmaterial.number = number
+        productmaterial.comments = comments
+        productmaterial.save()
         return HttpResponse(status=201)
 
     # TODO: Object not found
