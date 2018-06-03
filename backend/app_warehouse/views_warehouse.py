@@ -24,7 +24,6 @@ def getInventory(req):
 		answer = {'res':'Sorry, the record doesn\'t exist.'}
 	return JsonResponse(answer)
 
-#TODO 待完成添加库存操作
 @csrf_exempt
 def addInventory(req):
 	params = getParams(req)
@@ -53,15 +52,23 @@ def addInventory(req):
 		print(response.content)
 		return response
 	
-#TODO 待完成更改库存操作
 def modifyInventory(req):
 	params = getParams(req)
 	material = material.objects.get(id = params['material'])
 	inventory = InventoryInformation.objects.filter(material = material)
+	for param in params:
+		if(param == 'shelfnumber'):
+			inventory.shelfnumber = params[param]
+		elif(param == 'number'):
+			inventory.number = params[param]
+		elif(param == 'newestinwarehousedate'):
+			inventory.newestinwarehousedate = params[param]
+	inventory.save()
 	return JsonResponse({'res':'modify success!'})
 
 #TODO:待完成移除库存操作
 def removeRecord(req):
+	
 	return JsonResponse({'res':'remove success!'})
 
 def getParams(req):
