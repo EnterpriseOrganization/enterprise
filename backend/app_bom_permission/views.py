@@ -19,7 +19,7 @@ class MaterialClassProcessor:
 
     @staticmethod
     def single_materialclass_to_dict(item):
-        return {"class_field": item.class_field}
+        return {"class_field": item.class_field, "class_id": item.id}
 
     @staticmethod
     def get(request):
@@ -45,18 +45,18 @@ class MaterialProcessor:
 
     @staticmethod
     def single_material_to_dict(item):
-        return {"name": item.name, "class_obj": item.class_obj.class_field, "id": item.id}
+        return {"name": item.name, "class_id": item.class_obj.id, "id": item.id}
 
     @staticmethod
     def get_material_Q(request):
         name_str = request.GET.get("name")
-        class_obj_str = request.GET.get("class_obj")
+        class_id_str = request.GET.get("class_id")
         id_str = request.GET.get("id")
         Q_list = []
         if name_str != "null":
             Q_list.append(Q(name=name_str))
         if class_obj_str != "null":
-            Q_list.append(Q(class_obj__class_field=class_obj_str))
+            Q_list.append(Q(class_obj__id=int(class_id_str)))
         if id_str != "null":
             Q_list.append(Q(id=int(id_str)))
         return Q_list
@@ -96,8 +96,8 @@ class MaterialProcessor:
     @staticmethod
     def create_material(request):
         name_str = request.GET.get("name")
-        class_obj_str = request.GET.get("class_obj")
-        class_obj = MaterialClass.objects.get(class_field=class_obj_str)
+        class_id_str = request.GET.get("class_id")
+        class_obj = MaterialClass.objects.get(id=int(class_id_str))
         m = Material(name=name_str, class_obj=class_obj)
         return HttpResponse(201)
 
@@ -113,8 +113,8 @@ class MaterialProcessor:
     @staticmethod
     def modify_specific_material(request, param_id):
         name_str = request.GET.get("name")
-        class_obj_str = request.GET.get("class_obj")
-        class_obj = MaterialClass.objects.get(class_field=class_obj_str)
+        class_id_str = request.GET.get("class_id")
+        class_obj = MaterialClass.objects.get(class_field=int(class_id_str))
         item = Material.objects.get(id=int(param_id))
         item.name = name_str
         item.class_obj = class_obj
@@ -134,12 +134,12 @@ class ProductClassProcessor:
     def productclass_list_to_json(result):
         ret = {"data": []}
         for item in result:
-            ret["data"].append(ProductClassProcessor.single_productclass_to_dict)
+            ret["data"].append(ProductClassProcessor.single_productclass_to_dict(item))
         return json.dumps(ret)
 
     @staticmethod
     def single_productclass_to_dict(item):
-        return {"class_field": item.class_field}
+        return {"class_field": item.class_field, "class_id": item.id}
 
     @staticmethod
     def get(request):
@@ -162,7 +162,7 @@ class ProductProcessor:
     @staticmethod
     def single_product_to_dict(item):
         return {"name": item.name, 
-                "class_obj": item.class_obj.class_field, 
+                "class_id": item.class_obj.id, 
                 "id": item.id,
                 "price": item.price
                 }
@@ -171,13 +171,13 @@ class ProductProcessor:
     @staticmethod
     def get_product_Q(request):
         name_str = request.GET.get("name")
-        class_obj_str = request.GET.get("class_obj")
+        class_id_str = request.GET.get("class_id")
         id_str = request.GET.get("id")
         Q_list = []
         if name_str != "null":
             Q_list.append(Q(name=name_str))
         if class_obj_str != "null":
-            Q_list.append(Q(class_obj__class_field=class_obj_str))
+            Q_list.append(Q(class_obj__id=int(class_id_str)))
         if id_str != "null":
             Q_list.append(Q(id=int(id_str)))
         return Q_list
@@ -217,10 +217,10 @@ class ProductProcessor:
     @staticmethod
     def create_product(request):
         name_str = request.GET.get("name")
-        class_obj_str = request.GET.get("class_obj")
-        class_obj = ProductClass.objects.get(class_field=class_obj_str)
+        class_id_str = request.GET.get("class_id")
+        class_obj = ProductClass.objects.get(class_field=int(class_id_str))
         price_str = request.GET.get("price")
-        m = Product(name=name_str, class_obj=class_obj, price=float(price))
+        m = Product(name=name_str, class_obj=class_obj, price=float(price_str))
         return HttpResponse(201)
 
     #process specific Product
@@ -235,8 +235,8 @@ class ProductProcessor:
     @staticmethod
     def modify_specific_product(request, param_id):
         name_str = request.GET.get("name")
-        class_obj_str = request.GET.get("class_obj")
-        class_obj = ProductClass.objects.get(class_field=class_obj_str)
+        class_id_str = request.GET.get("class_id")
+        class_obj = ProductClass.objects.get(class_field=int(class_id_str))
         price_str = request.GET.get("price")
         item = Product.objects.get(id=int(param_id))
         item.name = name_str
