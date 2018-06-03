@@ -1,2 +1,7 @@
 __pycache__/
-*.DS_STORE
+*.pyc
+*.wpr
+*.wpu
+*.DS_Store
+*.cpython-36.pyc
+*.pyc
