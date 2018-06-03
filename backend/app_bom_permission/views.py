@@ -118,7 +118,7 @@ class MaterialProcessor:
     def modify_specific_material(request, param_id):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
-        class_obj = MaterialClass.objects.get(class_field=int(class_id_str))
+        class_obj = MaterialClass.objects.get(id=int(class_id_str))
         item = Material.objects.get(id=int(param_id))
         item.name = name_str
         item.class_obj = class_obj
@@ -135,7 +135,7 @@ class MaterialProcessor:
     @staticmethod
     def get_specific_material(request, param_id):
         item = Material.objects.get(id=int(param_id))
-        return json.dumps(MaterialProcessor.single_material_to_dict(item))
+        return HttpResponse(json.dumps(MaterialProcessor.single_material_to_dict(item)), content_type="application/json")
 
 
 class ProductClassProcessor:
@@ -247,7 +247,7 @@ class ProductProcessor:
     def modify_specific_product(request, param_id):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
-        class_obj = ProductClass.objects.get(class_field=int(class_id_str))
+        class_obj = ProductClass.objects.get(id=int(class_id_str))
         price_str = request.GET.get("price")
         item = Product.objects.get(id=int(param_id))
         item.name = name_str
