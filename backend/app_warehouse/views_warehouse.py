@@ -4,6 +4,7 @@ from django.http import JsonResponse
 import time
 from enterprise.models import InventoryInformation
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 from collections import defaultdict
 import json
@@ -18,20 +19,31 @@ def getInventory(req):
 	if(has_query_condition):
 		answer = getInventoryByConditions(queryset)
 	else:
-		answer = getAllInventory(queryset)
+		answer = getAllInventory()
 	if(len(answer) == 0):
 		answer = {'res':'Sorry, the record doesn\'t exist.'}
 	return JsonResponse(answer)
 
 #TODO 待完成添加库存操作
+@csrf_exempt
 def addInventory(req):
 	params = getParams(req)
-	print(params)
-	InventoryInformation.objects.create( material = params['material'], name =\
-	                                     params['name'], shelfnumber = params['shelfnumber'], number =\
-	                                     params['number'], newestinwarehousedate = time.localtime() )
-	return JsonResponse({'res':'add success!'})
-
+	user = req.user
+	print("user is ",user)
+	print(user.has_perm("add_InventoryInformation"))
+	#print(params)
+	if(user.has_perm("add_InventoryInformation")):
+		material = Material.objects.get(name = params['material'])
+		InventoryInformation.objects.create( material = material, name =\
+			                             params['name'], shelfnumber = params['shelfnumber'], number =\
+			                             params['number'], newestinwarehousedate = time.localtime() )
+		return JsonResponse({'res':'add success!'})		
+	else:
+		print("return from false")
+		response = JsonResponse({'res':'Sorry! You don\'t have the permission to do this operation!'})
+		print(response.content)
+		return response
+	
 #TODO 待完成更改库存操作
 def modifyInventory(req):
 	params = getParams(req)
