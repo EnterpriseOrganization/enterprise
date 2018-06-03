@@ -45,7 +45,7 @@ class MaterialProcessor:
 
     @staticmethod
     def single_material_to_dict(item):
-        return {"name": item.name, "class_id": item.class_obj.id, "id": item.id}
+        return {"name": item.name, "class_id": item.class_obj.id, "id": item.id, "class_field": item.class_obj.class_field}
 
     @staticmethod
     def get_material_Q(request):
