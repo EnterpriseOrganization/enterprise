@@ -33,11 +33,12 @@
                         <input type="text" name="username" placeholder="物料编号" autocomplete="off" class="layui-input">
                     </div>
                     <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                </form>
-            </div>
+                    </form>
+                </div>
              <div class="weadmin-block"> <!--缺料项是自动生成的自动消失的（当达到数量后） 应该不用手动添加-->   
                 <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="delAll()"><i class="fas fa-check"></i> 批量完成</button>
-                <span class="fr" style="line-height:40px">共有数据：3 条</span>
+                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加成品','./AddPurchase.html',600,400)"><i class="fas fa-plus"></i> 填写采购单</button>
+                 <span class="fr" style="line-height:40px">共有数据：3 条</span>
             </div> 
             <table class="layui-table">
                 <thead>
@@ -48,8 +49,7 @@
                         <th>订单编号</th>
                         <th>物料编号</th>
                         <th>物料名称</th>
-                        <th>缺货数量</th>
-                        <th>操作</th>
+                        <th>当前数量</th>
                 </thead>
                 <tbody>
                     <tr>
@@ -65,15 +65,7 @@
                             </div>
                             300/1000
                         </td>
-                        <td class="td-status">
-                            <a title="新增" onclick="WeAdminShow('编辑','./MissPutIn.html', 400, 400)" href="javascript:;">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            <a title="强制完成" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                <i class="fas fa-check"></i>
-                            </a>
-                            
-                        </td>
+
                     </tr>
                     <tr>
                         <td>
@@ -88,15 +80,6 @@
                             </div>
                             900/1000
                         </td>
-                        <td class="td-status">
-                            <a title="新增" onclick="WeAdminShow('编辑','./MissPutIn.html', 400, 400)" href="javascript:;">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            <a title="强制完成" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                <i class="fas fa-check"></i>
-                            </a>
-                            
-                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -110,15 +93,6 @@
                                 <div class="layui-progress-bar layui-bg-orange" lay-percent="50%"></div>
                             </div>
                             25/50
-                        </td>
-                        <td class="td-status">
-                            <a title="新增" onclick="WeAdminShow('编辑','./MissPutIn.html', 400, 400)" href="javascript:;">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            <a title="强制完成" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                <i class="fas fa-check"></i>
-                            </a>
-                            
                         </td>
                     </tr>
                 </tbody>

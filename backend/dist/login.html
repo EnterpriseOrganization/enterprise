@@ -26,6 +26,9 @@
             <hr class="hr15">
             <input class="loginin" value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
             <hr class="hr20" >
+            <div>
+                前端静态展示，请随意输入，即可登录。
+            </div>
         </form>
     </div>
 
@@ -34,45 +37,18 @@
             layui.extend({
                 admin: '{/}./static/js/admin'
             });
-            layui.use(['form','admin','jquery'], function(){
-                var form = layui.form
+            layui.use(['form','admin'], function(){
+              var form = layui.form
                   ,admin = layui.admin;
-                var $ = layui.$
               // layer.msg('玩命卖萌中', function(){
               //   //关闭后的操作
               //   });
-              //监听提交 
+              //监听提交
               form.on('submit(login)', function(data){
-                // 后端检测密码正确性
-                var username = data.field.username
-                var password = data.field.password
-                console.log(username)
-                // 如果登陆成功
-                $.ajax({  
-                    url:'http://127.0.0.1:8000/user/login/',  
-                    type:'POST',  //POST提交数据  
-                    data:{
-                        'username':username,
-                        'password':password
-                    },
-                    xhrFields:{
-                        withCredentials:true
-                    },
-                    success:function(arg){  //请求成功后的回调函数。  
-                        //var obj = jQuery.parseJSON(arg); //解析后台返回数据  
-                        if(arg.status==200){
-                            layer.msg('登陆成功',{anim: 5},function(){
-                                location.href='./index.html'
-                            })
-                        }else{
-                            layer.msg('用户名或密码不正确',{anim:5})
-                        }
-                    },  
-                    error:function(){  //请求失败时调用此函数。  
-                        layer.msg('网络错误',{anim:5})
-                    }  
+                // alert(888)
+                layer.msg(JSON.stringify(data.field),function(){
+                    location.href='./index.html'
                 });
-
                 return false;
               });
             });   

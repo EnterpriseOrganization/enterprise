@@ -11,77 +11,59 @@
         <link rel="stylesheet" href="../../static/css/weadmin.css">
         <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
     </head>
 
     <body>
         <div class="weadmin-nav">
             <span class="layui-breadcrumb">
                 <a href="">首页</a>
-                <a href="">订单管理</a>
-                <a><cite>订单列表</cite></a>
+                <a href="">成本管理</a>
+                <a><cite>货品成本</cite></a>
             </span>
             <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
         </div>
-        <div class="weadmin-body">
+        <div class="weadmin-body">            
             <div class="layui-row">
                 <form class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
-                        <select name="city" lay-verify="">
-                            <option value="">订单状态</option>
-                            <option value="010">已完成</option>
-                            <option value="021">未完成</option>
-                        </select>
+                        <input type="text" name="title" required lay-verify="required"
+                             placeholder="请输入订单编号" autocomplete="off" class="layui-input">    
                     </div>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="开始时间" name="start" id="start">
+                        <input class="layui-input" placeholder="订单开始时间" name="start" id="start">
                     </div>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="截止时间" name="end" id="end">
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input">
+                        <input class="layui-input" placeholder="订单截止时间" name="end" id="end">
                     </div>
                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                 </form>
             </div>
-            <div class="weadmin-block">
-                <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="fas fa-trash"></i> 批量删除</button>
-                <button class="layui-btn layui-btn-warm" onclick=""><i class="fas fa-check"></i> 标记为完成</button>
-                <button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')"><i class="fas fa-plus"></i> 添加</button>
-                <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
+
+            <!--<div class="weadmin-block">
+                <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+                <button class="layui-btn" onclick="WeAdminShow('添加订单','./add.html')"><i class="layui-icon"></i>添加</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
-            </div>
+            </div>-->
+            <table id="order-cost" lay-filter="test">
+            </table>
 
-            <table class="layui-hide" id="orderList" style="width:auto;"></table>
 
-            <script id="statusTpl">
-                <span class="layui-btn layui-btn-danger layui-btn-xs">未完成</span>
-            </script>
-            <script type="text/html" id="operateTpl">
-                <a title="编辑" onclick="WeAdminEdit('修改订单','./OrderModify.html')" href="javascript:;">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                    <i class="fas fa-trash" activated></i>
-                </a>
-                <a title="完成" href="javascript:;">
-                    <i class="fas fa-check" activated></i>
-                </a>
-            </script>
-            <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-            <script src="../../static/js/OrderList.js" type="text/javascript" charset="utf-8"></script>
-
-            
 
         </div>
-        <script>
+        <script>    
             layui.extend({
                 admin: '{/}../../static/js/admin'
             });
-            layui.use(['laydate','jquery','admin'], function() {
+            layui.use(['laydate', 'jquery','admin'], function() {
                 var laydate = layui.laydate,
                     $ = layui.jquery,
+                    layer = layui.layer,
                     admin = layui.admin;
                 //执行一个laydate实例
                 laydate.render({
@@ -105,7 +87,7 @@
                                 icon: 5,
                                 time: 1000
                             });
-    
+
                         } else {
                             $(obj).attr('title', '启用')
                             $(obj).find('i').html('&#xe601;');
@@ -142,8 +124,57 @@
                     });
                 }
             });
+
+            
             
         </script>
+        <style>
+            .amount-input {
+                width: 70px;
+            }
+        </style>
     </body>
+
+    <script>
+        layui.use('table', function(){
+            var table = layui.table;
+
+            //第一个实例
+            table.render({
+                elem: '#order-cost'
+                ,height: 315
+                ,width: 1000
+                // ,url: '' //数据接口
+                ,page: true //开启分页
+                ,cols: [[ //表头
+                    {field: 'id', title: '订单编号', width:200, sort: true, fixed: 'left'}
+                    ,{field: 'start_time', title: '开始时间', width:150, sort: true}
+                    ,{field: 'end_time', title: '完成时间', width:150, sort: true}
+                    ,{field: 'cost', title: '成本总和', width:100, sort: true} 
+                    ,{field: 'profit', title: '总利润', width: 100, sort: true}
+                    ,{field: 'detail', title: '订单细节', width: 300}
+                ]],
+                data:[
+                {
+                        "id" : "10000",
+                        "start_time" : "2016-11-1",
+                        "end_time" : "2222-11-1",
+                        "cost" : "10000",
+                        "profit" : "1",
+                        "detail" : "none"
+                },
+                {
+                        "id" : "10000",
+                        "start_time" : "2015-11-1",
+                        "end_time" : "2221-11-1",
+                        "cost" : "10000",
+                        "profit" : "1",
+                        "detail" : "none"
+                }
+                ]
+            });
+
+        });
+    </script>
 
 </html>
