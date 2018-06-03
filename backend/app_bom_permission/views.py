@@ -110,6 +110,8 @@ class MaterialProcessor:
             return MaterialProcessor.modify_specific_material(request, param_id)
         if request.method == "DELETE":
             return MaterialProcessor.delete_specific_material(request, param_id)
+        if request.method == "GET":
+            return MaterialProcessor.get_specific_material(request, param_id)
 
     #TODO: Object not found
     @staticmethod
@@ -129,6 +131,12 @@ class MaterialProcessor:
         item = Material.objects.get(id=int(param_id))
         item.delete()
         return HttpResponse(status=204)    
+
+    @staticmethod
+    def get_specific_material(request, param_id):
+        item = Material.objects.get(id=int(param_id))
+        return json.dumps(MaterialProcessor.single_material_to_dict(item))
+
 
 class ProductClassProcessor:
 
