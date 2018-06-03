@@ -45,7 +45,11 @@ class MaterialProcessor:
 
     @staticmethod
     def single_material_to_dict(item):
-        return {"name": item.name, "class_id": item.class_obj.id, "id": item.id, "class_field": item.class_obj.class_field}
+        return {"name": item.name, 
+                "class_id": item.class_obj.id, 
+                "id": item.id, 
+                "class_field": item.class_obj.class_field
+                }
 
     @staticmethod
     def get_material_Q(request):
@@ -53,11 +57,11 @@ class MaterialProcessor:
         class_id_str = request.GET.get("class_id")
         id_str = request.GET.get("id")
         Q_list = []
-        if name_str != "null":
+        if name_str and name_str != "null":
             Q_list.append(Q(name=name_str))
         if class_id_str and class_id_str != "null":
             Q_list.append(Q(class_obj__id=int(class_id_str)))
-        if id_str != "null":
+        if name_str and id_str != "null":
             Q_list.append(Q(id=int(id_str)))
         return Q_list
 
@@ -86,7 +90,6 @@ class MaterialProcessor:
 
     @staticmethod
     def delete_material(request):
-        print(request.body.decode())
         data = json.loads(request.body.decode())["data"]
         id_list = [item["id"] for item in data]
         for i in id_list:
@@ -174,7 +177,8 @@ class ProductProcessor:
         return {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id,
-                "price": item.price
+                "price": item.price,
+                "class_field": item.class_obj.class_field
                 }
 
     # TODO: filter for price
@@ -184,11 +188,11 @@ class ProductProcessor:
         class_id_str = request.GET.get("class_id")
         id_str = request.GET.get("id")
         Q_list = []
-        if name_str != "null":
+        if name_str and name_str != "null":
             Q_list.append(Q(name=name_str))
         if class_id_str and class_id_str != "null":
             Q_list.append(Q(class_obj__id=int(class_id_str)))
-        if id_str != "null":
+        if name_str and id_str != "null":
             Q_list.append(Q(id=int(id_str)))
         return Q_list
 
@@ -217,7 +221,7 @@ class ProductProcessor:
 
     @staticmethod
     def delete_product(request):
-        data = json.loads(request.body)["data"]
+        data = json.loads(request.body.decode())["data"]
         id_list = [item["id"] for item in data]
         for i in id_list:
             m = Product.objects.get(id=i)
@@ -241,6 +245,8 @@ class ProductProcessor:
             return ProductProcessor.modify_specific_product(request, param_id)
         if request.method == "DELETE":
             return ProductProcessor.delete_specific_product(request, param_id)
+        if request.method == "GET":
+            return ProcessProcessor.get_specific_product(request, param_id)
 
     #TODO: Object not found
     @staticmethod
@@ -263,3 +269,7 @@ class ProductProcessor:
         item.delete()
         return HttpResponse(status=204)    
 
+    @staticmethod
+        def get_specific_product(request, param_id):
+            item = Product.objects.get(id=int(param_id))
+            return HttpResponse(json.dumps(ProductProcessor.single_product_to_dict(item)), content_type="application/json")
