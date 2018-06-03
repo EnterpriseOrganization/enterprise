@@ -170,6 +170,7 @@ class ProductProcessor:
         ret = {"data": []}
         for item in result:
             ret["data"].append(ProductProcessor.single_product_to_dict(item))
+        
         return json.dumps(ret)
 
     @staticmethod
@@ -177,7 +178,7 @@ class ProductProcessor:
         return {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id,
-                "price": item.price,
+                "price": float(item.price),
                 "class_field": item.class_obj.class_field
                 }
 
@@ -232,7 +233,7 @@ class ProductProcessor:
     def create_product(request):
         name_str = request.GET.get("name")
         class_id_str = request.GET.get("class_id")
-        class_obj = ProductClass.objects.get(class_field=int(class_id_str))
+        class_obj = ProductClass.objects.get(id=int(class_id_str))
         price_str = request.GET.get("price")
         m = Product(name=name_str, class_obj=class_obj, price=float(price_str))
         m.save()
@@ -246,7 +247,7 @@ class ProductProcessor:
         if request.method == "DELETE":
             return ProductProcessor.delete_specific_product(request, param_id)
         if request.method == "GET":
-            return ProcessProcessor.get_specific_product(request, param_id)
+            return ProductProcessor.get_specific_product(request, param_id)
 
     #TODO: Object not found
     @staticmethod
@@ -270,6 +271,6 @@ class ProductProcessor:
         return HttpResponse(status=204)    
 
     @staticmethod
-        def get_specific_product(request, param_id):
-            item = Product.objects.get(id=int(param_id))
-            return HttpResponse(json.dumps(ProductProcessor.single_product_to_dict(item)), content_type="application/json")
+    def get_specific_product(request, param_id):
+        item = Product.objects.get(id=int(param_id))
+        return HttpResponse(json.dumps(ProductProcessor.single_product_to_dict(item)), content_type="application/json")
