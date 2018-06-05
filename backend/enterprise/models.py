@@ -109,7 +109,7 @@ class Supplier(models.Model):
 
 class InventorInformation(models.Model):
     # id = models.AutoField(primary_key=True)
-    material = models.OneToOneField(Material, models.DO_NOTHING, db_column='materialID')  # Field name made lowercase.
+    material = models.OneToOneField((Material), models.DO_NOTHING, db_column='(material)ID')  # Field name made lowercase.
     shelfnumber = models.CharField(db_column='shelfNumber', max_length=45, blank=True, null=True)  # Field name made lowercase.
     number = models.IntegerField(blank=True, null=True)
     threshold = models.IntegerField(blank=True, null=True)
@@ -144,7 +144,7 @@ class Role(models.Model):
 class InwareHouseProduct(models.Model):
     # id = models.AutoField(primary_key=True) # django是否会自动生成 with managed=True？
     inwarehouse = models.ForeignKey(InWarehouse, models.DO_NOTHING, db_column='inwarehouseID', null=True)  # Field name made lowercase.
-    material = models.ForeignKey(Material, models.DO_NOTHING, db_column='materialID', null=True)  # Field name made lowercase.
+    (material) = models.ForeignKey(Material, models.DO_NOTHING, db_column='(material)ID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
 
     class Meta:
@@ -162,15 +162,16 @@ class MaterialRequistion(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'materialrequistion'
+        db_table = '(material)requistion'
 
 
-class OrderProduct(models.Model):
-    # id = models.AutoField(primary_key=True)
-    order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', null=True)  # Field name made lowercase.
-    product = models.ForeignKey(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
+
+class Orderproduct(models.Model):
+    order = models.OneToOneField(Order, models.DO_NOTHING, db_column='orderID', null=True)  # Field name made lowercase.
+    product = models.OneToOneField(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
-    price = models.DecimalField(default=0, decimal_places=0, max_digits=3) # 单价  能否自动生成
+    price = models.DecimalField(default=0, decimal_places=0, max_digits=3)
+
     class Meta:
         managed = True
         db_table = 'orderproduct'
@@ -180,7 +181,7 @@ class OrderProduct(models.Model):
 class OutProduct(models.Model):
     # id = models.AutoField(primary_key=True)
     outwarehouse = models.ForeignKey(OutWarehouse, models.DO_NOTHING, db_column='outwarehouseID', null=True)  # Field name made lowercase.
-    material = models.ForeignKey(Material, models.DO_NOTHING, db_column='materialID', null=True)  # Field name made lowercase.
+    (material) = models.ForeignKey((Material), models.DO_NOTHING, db_column='(material)ID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
 
     class Meta:
