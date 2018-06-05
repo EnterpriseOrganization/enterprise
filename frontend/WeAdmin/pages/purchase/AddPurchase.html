@@ -40,45 +40,55 @@
                         采购商品：
                     </label>
                 </div>
+
                 <div class="layui-form-item">
-                    <div class="layui-form-item">
-                        <label for="purchase" class="layui-form-label">
+                    <label class="layui-form-label">
+                        供应商
+                    </label>
+                    <div class="layui-input-block">
+                        <select class="layui-inline" name="factory" lay-verify="required" lay-search>
+                            <option value="">输入搜索或者点击寻找</option>
+                            <option value="0">供应商A</option>
+                            <option value="1">供应商B</option>
+                            <option value="2">供应商C</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="purchase" class="layui-form-label">
                         商品id
-                        </label>
-                        <div class="layui-input-block">
-                            <input type="text" name="p-id" id="p-id" class="layui-input" lay-verify="required|number" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label for="purchase" class="layui-form-label">
-                        数量
-                        </label>
-                        <div class="layui-input-block">
-                            <input type="text" name="p-number" id="p-number" class="layui-input" lay-verify="required|number" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label for="purchase" class="layui-form-label">
-                        单价
-                        </label>
-                        <div class="layui-input-block">
-                            <input type="text" name="p-price" id="p-price" class="layui-input" lay-verify="required|number" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label for="purchase" class="layui-form-label">
-                        厂商
-                        </label>
-                        <div class="layui-input-block">
-                            <input type="text" name="p-manufac" id="p-manufac" class="layui-input" lay-verify="required|number" autocomplete="off">
-                        </div>
+                    </label>
+                    <div class="layui-input-block">
+                        <select class="layui-inline" name="stuff" lay-verify="required" lay-search>
+                            <option value="">输入搜索或者点击寻找</option>
+                            <option value="0">商品A</option>
+                            <option value="1">商品B</option>
+                            <option value="2">商品C</option>
+                        </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label for="L_repass" class="layui-form-label">              	</label>
+                    <label for="purchase" class="layui-form-label">
+                        数量
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="text" name="p-number" id="p-number" class="layui-input" lay-verify="required|number" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="purchase" class="layui-form-label">
+                        单价
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="text" name="p-price" id="p-price" class="layui-input" lay-verify="required|number" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                    </label>
                     <button class="layui-btn" lay-filter="add" lay-submit="">生成采购单</button>
                 </div>
             </form>
