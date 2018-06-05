@@ -70,18 +70,22 @@ def modifyInventory(req):
 		return JsonResponse({'res':'Sorry! Permission denied!'})
 def removeRecord(req):
 	params = getParams(req)
-	try:
-		material = Material.objects.get(id = params['material'])
-	except:
-		return JsonResponse({'res':'Sorry! The material does not exist!'})
-	try:
-		inventory = Inventory.objects.get(material=materai)
-		if(inventory.number < int(params['number'])):
-			return JsonResponse({'res':'Sorry, the material is not enough to reduce.'})
-		inventory.number -= int(params['number'])
-	except:
-		return JsonResponse({'res':'Sorry! The material does not exist!'})
-	return JsonResponse({'res':'remove success!'})
+	user = req.user
+	if(user.has_perm('delete_InventoryInformation')):
+		try:
+			material = Material.objects.get(id = params['material'])
+		except:
+			return JsonResponse({'res':'Sorry! The material does not exist!'})
+		try:
+			inventory = Inventory.objects.get(material=materai)
+			if(inventory.number < int(params['number'])):
+				return JsonResponse({'res':'Sorry, the material is not enough to reduce.'})
+			inventory.number -= int(params['number'])
+		except:
+			return JsonResponse({'res':'Sorry! The material does not exist!'})
+		return JsonResponse({'res':'remove success!'})
+	else:
+		return JsonResponse({'res':'Sorry!Permission denied!'})
 
 def getParams(req):
 	"""
