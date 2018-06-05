@@ -405,7 +405,7 @@ class ProductmaterialProcessor:
         item = ProductMaterial.objects.get(id=int(param_id))
         return HttpResponse(json.dumps(ProductmaterialProcessor.singleProductmaterialToDict(item)), content_type="application/json")
 
-def user_login(request):
+def userLogin(request):
     print(request.body)
     username = request.POST['username']
     password = request.POST['password']
@@ -426,7 +426,7 @@ def user_login(request):
     return response
 
 
-def get_user(request):
+def getUser(request):
     print(request.user)
     user = request.user
     if not user.is_authenticated():
@@ -453,7 +453,7 @@ def get_user(request):
         return JsonResponse({"status ": 404})
 
 
-def change_password(request):
+def changePassword(request):
     print(request.user)
     userName = request.POST['username']
     oldPassword = request.POST['oldpassword']
@@ -467,7 +467,7 @@ def change_password(request):
         return JsonResponse({'status': 400, 'detail': "原密码错误"})
 
 
-def change_info(request):
+def changeInfo(request):
     user = User.objects.get(username=request.POST['username'])
     user.email = request.POST['newemail']
     user.last_name = request.POST['newlastname']
@@ -477,7 +477,7 @@ def change_info(request):
     return JsonResponse({'status': 200})
 
 
-def user_logout(request):
+def userLogout(request):
     user = request.user
     if user.is_authenticated():
         logout(request)

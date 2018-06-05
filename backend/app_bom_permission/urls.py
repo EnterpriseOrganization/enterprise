@@ -16,12 +16,12 @@ urlpatterns = [
     url(r'^productmaterial/product/([0-9]*)/$', bom_view.ProductmaterialProcessor.processProductmaterialForCertainProduct), # get 
     url(r'^productmaterial/$', bom_view.ProductmaterialProcessor.processProductmaterial), # delete 批量删除 create
     url(r'^productmaterial/([0-9]*)/$', bom_view.ProductmaterialProcessor.processSpecificProductmaterial), # (get) <- 可能不需要  put delete
-    url(r'^login', views.user_login),
-    url(r'^getUser',views.get_user),
-    url(r'^changeinfo',views.change_info),
-    url(r'^changePassword',views.change_password),
+    url(r'^login', views.userLogin),
+    url(r'^getUser',views.getUser),
+    url(r'^changeinfo',views.changeInfo),
+    url(r'^changePassword',views.changePassword),
     # url(r'^changenames',views.change_names)
-    url(r'^logout', views.user_logout),
+    url(r'^logout', views.userLogout),
 ]
 
 urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
