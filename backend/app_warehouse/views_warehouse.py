@@ -32,7 +32,6 @@ def addInventory(req):
 	print(user.has_perm("add_InventoryInformation"))
 	#print(params)
 	if(user.has_perm("add_InventoryInformation")):
-		
 		try:
 			material = Material.objects.get(name = params['material']) 
 		except: # 如果这种原料不存在，则报错
@@ -54,18 +53,21 @@ def addInventory(req):
 	
 def modifyInventory(req):
 	params = getParams(req)
-	material = material.objects.get(id = params['material'])
-	inventory = InventoryInformation.objects.filter(material = material)
-	for param in params:
-		if(param == 'shelfnumber'):
-			inventory.shelfnumber = params[param]
-		elif(param == 'number'):
-			inventory.number = params[param]
-		elif(param == 'newestinwarehousedate'):
-			inventory.newestinwarehousedate = params[param]
-	inventory.save()
-	return JsonResponse({'res':'modify success!'})
-
+	user = req.user
+	if(user.has_perm('modify_InventoryInformation')):
+		material = material.objects.get(id = params['material'])
+		inventory = InventoryInformation.objects.filter(material = material)
+		for param in params:
+			if(param == 'shelfnumber'):
+				inventory.shelfnumber = params[param]
+			elif(param == 'number'):
+				inventory.number = params[param]
+			elif(param == 'newestinwarehousedate'):
+				inventory.newestinwarehousedate = params[param]
+		inventory.save()
+		return JsonResponse({'res':'modify success!'})
+	else:
+		return JsonResponse({'res':'Sorry! Permission denied!'})
 def removeRecord(req):
 	params = getParams(req)
 	try:
@@ -91,14 +93,11 @@ def getParams(req):
 		return params
 	elif(req.method == 'POST'):
 		params = json.loads(req.body.decode('utf-8'))
-		return params
-	elif(req.method == 'DELETE'):
-		print("in delete")
-		params = json.loads(req.body.decode('utf-8'))
 		print(params)
 		return params
-
-
+	elif(req.method == 'DELETE'):
+		params = json.loads(req.body.decode('utf-8'))
+		return params
 
 def hasQueryCondition(queryset):
 	"""
@@ -116,7 +115,6 @@ def getInventoryByConditions(params):
 	:return 查询结果字典
 	"""
 	params_list = ['material','shelfnumber','number','threshold','newestinwarehousedate']
-
 	old_query_answer = None
 	if('material' in list(params.keys())):
 		query_material = Material.objects.filter(id = params['material'][id])
@@ -151,7 +149,7 @@ def toDict(queryset):
 	"""
 	answer = defaultdict(dict)
 	count = 0
-	for record in anslist:
+	for record in queryset:
 		material = record.material
 		#print("material is ", material.name)
 		temp = {
@@ -163,14 +161,4 @@ def toDict(queryset):
 		}
 		answer.setdefault(count,temp)
 		count+=1
-	return JsonResponse(answer)
-
-def addInventor(req):
-	return JsonResponse({'res':'add success!'})
-
-def modifyInventor(req):
-
-	return JsonResponse({'res':'modify success!'})
-
-def removeRecord(req):
-	return JsonResponse({'res':'remove success!'})
+	return answer
