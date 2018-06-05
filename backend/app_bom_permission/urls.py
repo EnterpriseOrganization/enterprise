@@ -4,7 +4,11 @@ from . import views
 from django.conf import settings
 urlpatterns = [
     url(r'^login', views.user_login),
-    url(r'^getUser',views.get_user)
+    url(r'^getUser',views.get_user),
+    url(r'^changeinfo',views.change_info),
+    url(r'^changePassword',views.change_password),
+    # url(r'^changenames',views.change_names)
+    url(r'^logout', views.user_logout),
     
 ]
 
