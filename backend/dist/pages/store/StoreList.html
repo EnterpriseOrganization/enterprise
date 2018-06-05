@@ -33,29 +33,12 @@
                 <form class="layui-form layui-col-md12 we-search">
                     筛选 <i class="fas fa-filter"></i>
                     <div class="layui-inline">
-                        <select name="city" lay-verify="">
-                            <option value="">物料状态</option>
-                            <option value="010">充足</option>
-                            <option value="021">缺货</option>
-                            <option value="021">预警</option>
-                            <option value="021">预留</option>
-                        </select>
+                        <input type="text" name="title" required lay-verify="required"
+                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
-                        <select name="city" lay-verify="" lay-search>
-                            <option value="001" selected>物料编号</option>
-                            <option value="010">BASD12342DS3</option>
-                            <option value="021">BASD12342DS3</option>
-                            <option value="0571">BASD12342DS3</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <select name="city" lay-verify="" lay-search>
-                            <option value="001" selected>物料名称</option>
-                            <option value="010">0603电阻1k</option>
-                            <option value="021">0603电阻1k</option>
-                            <option value="0571">0603电阻1k</option>
-                        </select>
+                        <input type="text" name="title" required lay-verify="required"
+                            placeholder="请输入物料名称" autocomplete="off" class="layui-input">   
                     </div>
                     <div class="layui-inline">
                         <input class="layui-input" placeholder="入库时间" name="start" id="start">
@@ -72,121 +55,16 @@
                 <button class="layui-btn" onclick="WeAdminShow('添加订单','./add.html')"><i class="layui-icon"></i>添加</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
             </div>-->
-            <table class="layui-table">
-                <thead>
-                    <tr>
-                        <th>
-                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                        </th>
-                        <th>物料编号</th>
-                        <th>物料名称</th>
-                        <th>数量</th>
-                        <th>入库时间</th>
-                        <th>状态</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-id="1">
-                        <td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
-                        <td>E34J231JAK342</td>
-                        <td>0603电阻(1K)</td>
-                        <td>10000</td>
-                        <td>2017-08-17 18:22</td>
-                        <td class="td-status">
-                                <span class="layui-btn layui-btn-normal layui-btn-xs">
-                                    充足
-                                </span>
-                            </td>
-                        <td class="td-manage">
-                            <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
-                                <i class="fas fa-minus"></i>
-                            </a>
-                        </tdtd>
-                    </tr>
-                    <tr data-id="2">
-                        <td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
-                        <td>E34J231JAK342</td>
-                        <td>0603电阻(1K)</td>
-                        <td>10000</td>
-                        <td>2017-08-17 18:22</td>
-                        <td class="td-status">
-                            <span class="layui-btn layui-btn-normal layui-btn-xs">
-                                预留
-                            </span>
-                        </td>
-                        <td class="td-manage">
-                            <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
-                                <i class="fas fa-minus"></i>
-                            </a>
-                        </tdtd>
-                    </tr>
-                    <tr data-id="3">
-                            <td>
-                                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                            </td>
-                            <td>E34J231JAK342</td>
-                            <td>0603电阻(1K)</td>
-                            <td>100</td>
-                            <td>2017-08-17 18:22</td>
-                            <td class="td-status">
-                                <span class="layui-btn layui-btn-danger layui-btn-xs">
-                                    预警
-                                </span>
-                            </td>
-                            <td class="td-manage">
-                                <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html')" href="javascript:;">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-                                <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html')" href="javascript:;">
-                                    <i class="fas fa-minus"></i>
-                                </a>
-                            </tdtd>
-                        </tr>
-                        <tr data-id="4">
-                                <td>
-                                    <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                                </td>
-                                <td>E34J231JAK342</td>
-                                <td>0603电阻(1K)</td>
-                                <td>0</td>
-                                <td>2017-08-17 18:22</td>
-                                <td class="td-status">
-                                    <span class="layui-btn layui-btn-danger layui-btn-xs">
-                                        缺货
-                                    </span>
-                                </td>
-                                <td class="td-manage">
-                                    <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
-                                        <i class="fas fa-plus"></i>
-                                    </a>
-                                    <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
-                                        <i class="fas fa-minus"></i>
-                                    </a>
-                                </tdtd>
-                            </tr>
-                </tbody>
+            <table class="layui-table" id="store-list">
             </table>
-            <div class="page">
-                <div>
-                    <a class="prev" href="">&lt;&lt;</a>
-                    <a class="num" href="">1</a>
-                    <span class="current">2</span>
-                    <a class="num" href="">3</a>
-                    <a class="num" href="">489</a>
-                    <a class="next" href="">&gt;&gt;</a>
-                </div>
-            </div>
+            <script id="tools">
+                    <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                    <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
+                        <i class="fas fa-minus"></i>
+                    </a>
+            </script>
 
         </div>
         <script>
@@ -265,5 +143,58 @@
             }
         </style>
     </body>
+    <script>
+        layui.use('table', function(){
+            var table = layui.table;
 
+            //第一个实例
+            table.render({
+                elem: '#store-list'
+                ,height: 315
+                ,width: 1000
+                // ,url: '' //数据接口
+                ,page: true //开启分页
+                ,cols: [[ //表头
+                    { checkbox: true}
+                    ,{field: 'id', title: '物料编号', width:200, sort: true}
+                    ,{field: 'name', title: '物料名称', width:150}
+                    ,{field: 'num', title: '数量', width:150}
+                    ,{field: 'time', title: '入库时间', width:200} 
+                    ,{field: 'status', title: '状态', width: 100}
+                    ,{title: '操作', width: 150, toolbar: '#tools' }
+                ]],
+                data:[
+                {
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "status" : "充足"
+                },
+                {
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "status" : "充足"
+                },
+                {
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "status" : "充足"
+                },
+                {
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "status" : "充足"
+                }
+                ]
+            });
+
+        });
+    </script>
 </html>

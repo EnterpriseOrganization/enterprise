@@ -79,7 +79,7 @@ layui.use(['form','layer','upload','laydate'],function(){
             userInfo.email = $('#email').val()
 
             $.ajax({
-                url:'http://127.0.0.1:8000/user/changeinfo',  
+                url:'http://127.0.0.1:8000/user/changenames',  
                 type:'POST',  //POST提交数据  
                 xhrFields:{
                     withCredentials:true
@@ -87,8 +87,27 @@ layui.use(['form','layer','upload','laydate'],function(){
                 data:{
                     'newfirstname':userInfo.firstname,
                     'newlastname':userInfo.lastname,
-                    'username':userInfo.username,
-                    'newemail':userInfo.email
+                    'username':userInfo.username
+                },
+                success:function(arg){  //请求成功后的回调函数。  
+                    //var obj = jQuery.parseJSON(arg); //解析后台返回数据                  
+                    if(arg.status!=200){
+                        layer.msg('网络错误',{anim:5})
+                    }
+                }, 
+                error:function(){  //请求失败时调用此函数。  
+                    layer.msg('网络错误',{anim:5})
+                }  
+            });
+            $.ajax({
+                url:'http://127.0.0.1:8000/user/changeEmail',  
+                type:'POST',  //POST提交数据  
+                xhrFields:{
+                    withCredentials:true
+                },
+                data:{
+                    'newemail':userInfo.email,
+                    'username':userInfo.username
                 },
                 success:function(arg){  //请求成功后的回调函数。  
                     //var obj = jQuery.parseJSON(arg); //解析后台返回数据                  
@@ -133,12 +152,9 @@ layui.use(['form','layer','upload','laydate'],function(){
                     }else if (arg.status ==200){
                         setTimeout(function(){
                             layer.close(index);
-                            layer.msg("密码修改成功，请重新登陆");
+                            layer.msg("密码修改成功！");
                             $(".pwd").val('');
-                            // parent.layer.close()
                         },1000);
-                        parent.location.href='../../login.html'
-
                     }
                 }, 
                 error:function(){  //请求失败时调用此函数。  

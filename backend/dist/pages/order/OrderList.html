@@ -40,15 +40,7 @@
                         <input class="layui-input" placeholder="截止时间" name="end" id="end">
                     </div>
                     <div class="layui-inline">
-                        <select name="city" lay-verify="" lay-search>
-                            <option value="001" selected>货品名称</option>
-                            <option value="010">B416下电板</option>
-                            <option value="021">B316下电板</option>
-                            <option value="0571">B216下电板</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="username" placeholder="订货人" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input">
                     </div>
                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                 </form>
@@ -56,18 +48,18 @@
             <div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="fas fa-trash"></i> 批量删除</button>
                 <button class="layui-btn layui-btn-warm" onclick=""><i class="fas fa-check"></i> 标记为完成</button>
-                <!--<button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')"><i class="fas fa-plus"></i> 添加</button>-->
+                <button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')"><i class="fas fa-plus"></i> 添加</button>
                 <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
             </div>
 
-            <table class="layui-hide" id="orderList"></table>
+            <table class="layui-hide" id="orderList" style="width:auto;"></table>
 
             <script id="statusTpl">
-                <span class="layui-btn layui-btn-danger layui-btn-xs" >未完成</span>
+                <span class="layui-btn layui-btn-danger layui-btn-xs">未完成</span>
             </script>
             <script type="text/html" id="operateTpl">
-                <a title="编辑" onclick="WeAdminEdit('修改订单','./OrderModify.html', 2, 400, 400)" href="javascript:;">
+                <a title="编辑" onclick="WeAdminEdit('修改订单','./OrderModify.html')" href="javascript:;">
                     <i class="fas fa-edit"></i>
                 </a>
                 <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
@@ -80,84 +72,7 @@
             <script src="../../lib/layui/layui.js" charset="utf-8"></script>
             <script src="../../static/js/OrderList.js" type="text/javascript" charset="utf-8"></script>
 
-            <!--<table class="layui-table">
-                <thead>
-                    <tr>
-                        <th>
-                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                        </th>
-                        <th>订单编号</th>
-                        <th>货品名称</th>
-                        <th>数量</th>
-                        <th>订单时间</th>
-                        <th>订单金额</th>
-                        <th>订货人</th>
-                        <th>订单状态</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-id="1">
-                        <td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
-                        <td>2017009171822298053</td>
-                        <td>EB38下板PNP Z=1T</td>
-                        <td>100</td>
-                        <td>2017-08-17 18:22</td>
-                        <td>7812.00</td>
-                        <td>吴彦祖</td>
-                        <td class="td-status">
-                            <span class="layui-btn layui-btn-normal layui-btn-xs">
-                                已完成
-                            </span>
-                        </td>
-                        <td class="td-manage">
-                            <a title="查看" onclick="WeAdminShow('查看','./edit.html')" href="javascript:;">
-                                <i class="layui-icon">&#xe60a;</i>
-                            </a>
-                        </tdtd>
-                    </tr>
-                    <tr data-id="2">
-                        <td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
-                        <td>2017001234522298053</td>
-                        <td>EB38下电路板P/N/C/L Z=1T</td>
-                        <td>80</td>
-                        <td>2017-08-17 18:22</td>
-                        <td>1234.00</td>
-                        <td>张三</td>
-                        <td class="td-status">
-                            <span class="layui-btn layui-btn-danger layui-btn-xs">
-                                未完成
-                            </span>
-                        </td>
-                        <td class="td-manage">
-                            <a title="查看" onclick="WeAdminShow('查看','./edit.html')" href="javascript:;">
-                                <i class="layui-icon">&#xe60a;</i>
-                            </a>
-                            <a title="编辑" onclick="WeAdminShow('编辑','./edit.html')" href="javascript:;">
-                                <i class="layui-icon">&#xe642;</i>
-                            </a>
-                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                <i class="layui-icon">&#xe640;</i>
-                            </a>
-                        </tdtd>
-                    </tr>
-                </tbody>
-            </table>-->
             
-            <!--<div class="page">
-                <div>
-                    <a class="prev" href="">&lt;&lt;</a>
-                    <a class="num" href="">1</a>
-                    <span class="current">2</span>
-                    <a class="num" href="">3</a>
-                    <a class="num" href="">489</a>
-                    <a class="next" href="">&gt;&gt;</a>
-                </div>
-            </div>-->
 
         </div>
         <script>
