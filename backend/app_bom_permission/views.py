@@ -80,7 +80,7 @@ class MaterialProcessor:
         Q_list = MaterialProcessor.getMaterialQ(request)
         if Q_list:
             print(Q_list)
-            final_Q = reduce(lambda x,y: x|y, Q_list)
+            final_Q = reduce(lambda x,y: x&y, Q_list)
             result = Material.objects.filter(final_Q)
             return HttpResponse(MaterialProcessor.materialListToJson(result), content_type="application/json")
         else:
@@ -174,6 +174,7 @@ class ProductProcessor:
 
     @staticmethod
     def singleProductToDict(item):
+        print(item.name)
         return {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id,
@@ -211,7 +212,7 @@ class ProductProcessor:
         Q_list = ProductProcessor.getProductQ(request)
         if Q_list:
             print(Q_list)
-            final_Q = reduce(lambda x,y: x|y, Q_list)
+            final_Q = reduce(lambda x,y: x&y, Q_list)
             result = Product.objects.filter(final_Q)
             return HttpResponse(ProductProcessor.productListToJson(result), content_type="application/json")
         else:
