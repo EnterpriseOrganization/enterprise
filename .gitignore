@@ -4,7 +4,6 @@ __pycache__/
 *.wpu
 *.DS_Store
 *.cpython-36.pyc
-<<<<<<< HEAD
 *.pyc
-=======
->>>>>>> 3755ed964056ce7a40f5ab4498d1a5adc97f35a6
+backend/dist/test.html
+backend/enterprise/test.html
