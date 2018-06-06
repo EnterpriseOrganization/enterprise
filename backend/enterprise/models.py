@@ -69,7 +69,7 @@ class Product(models.Model):
         db_table = 'product'
 
 class Workshop(models.Model):
-    # id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primaryf_key=True)
     name = models.CharField(max_length=45, null=True, unique=True)
     product = models.ForeignKey(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
     class Meta:

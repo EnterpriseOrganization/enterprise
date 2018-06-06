@@ -21,13 +21,7 @@ def getProductsByOrderStatus(gte, lte): # 想精确搜索就让 gte == lte
     :param lte: 订单状态的最大值（小于等于）
     :return:
         {
-            "order_id": {
-                "products": [{
-                    "product_id": id,
-                    "product_name": string,
-                    "amount": number
-                }]
-            }
+
         }
     """
     products = OrderProduct.objects.select_related('order', 'product') \
@@ -108,7 +102,6 @@ def createTasks(tasks, order_id=-1, from_outside=True):
             deleteTasksByOrderID(order_id)
         task_list = []
         if type(tasks) == type([]):
-            print(len(tasks))
             for task in tasks:
                 task_list.append(createTasks(task, order_id, False))
             return task_list
@@ -145,7 +138,7 @@ def getWorkshops(product_id=-1):
         }
     }
     """
-    
+
     if product_id != -1:
         workshop_group = {}
         workshops = Workshop.objects.filter(product_id=product_id)
@@ -174,7 +167,7 @@ def updateTask(task_id, form):
         if form.get("status"): task.status = form.get("status")
         if form.get("material_getter"): task.material_getter = form.get("material_getter")
         if form.get("material_checker"): task.material_checker = form.get("material_checker")
-        if form.get("material_distributon_date"): task.material_distributon_date = form.get("material_distributon_date")
+        if form.get("material_distributon_date"): task.material_distributon_date = datetime.now().strftime("%Y-%m-%d %H:%I:%S")
         task.save()
         return util.wrapTaskDTO(task)
     else:

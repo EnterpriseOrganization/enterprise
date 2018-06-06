@@ -71,7 +71,7 @@ def getUndoneTasks(request):
         "tasks": [taskDTO]
     }
     """
-    tasks = ProduceTask.getTasksByTaskStatus(0, 1)
+    tasks = ProduceTask.getTasksByTaskStatus(1, 1)
     return JsonResponse({"tasks": tasks})
 
 
@@ -166,8 +166,11 @@ def updateTaskMaterialGet(request):
     """
     更新生产任务状态为已领料 并更新审核人, 领取人 POST /product/task/material-allocated
     :param request body:{
-        "task_id": 
-        "info":
+        "task_id":
+        "info":{
+            "material_getter":
+            "material_checker":
+        }
     }
     :return: {
         "task": taskDTO

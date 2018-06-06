@@ -13,6 +13,8 @@ def wrapTaskDTO(task): # task should be querySet object
     taskDTO = {
         "task_id": task.id,
         "person_in_charge": task.personincharge,
+        "product_id": task.workshop.product.id,
+        "product_name": task.workshop.product.name,
         "workshop_id": task.workshop.id,
         "workshop_name": task.workshop.name,
         "order_id": task.order.id,
@@ -29,4 +31,3 @@ def wrapTaskDTO(task): # task should be querySet object
         "update_getmaterial_url": MyServer + "product/task/material-allocated?task_id={}".format(task.id)
     }
     return taskDTO
-
