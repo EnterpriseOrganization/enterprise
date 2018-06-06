@@ -28,49 +28,46 @@ def getAllCost(req):
 		}
 		answer.setdefault(count,temp)
 		count+=1
-	print(count)
 	return JsonResponse(answer)
 
 def newProduct(req):
-    data = req.body.decode("utf8")
-    resp_cmt_json = json.loads(req.body.decode("utf8"))
-    name = resp_cmt_json['name']
-    price = resp_cmt_json['price']
-    class_obj_id = 1
-    Product.objects.create(name = name, price = price, class_obj_id = class_obj_id)
-    return JsonResponse({'success': '1'})
+	data = req.body.decode("utf8")
+	resp_cmt_json = json.loads(req.body.decode("utf8"))
+	name = resp_cmt_json['name']
+	price = resp_cmt_json['price']
+	class_obj_id = 1
+	Product.objects.create(name = name, price = price, class_obj_id = class_obj_id)
+	return JsonResponse({'success': '1'})
     
 def getCostByName(req):
-    resp_cmt_json = json.loads(req.body.decode("utf8"))
-    names = resp_cmt_json['name']
-    anslist = Product.objects.filter(name = names)
-    answer = defaultdict(dict)
-    count = 0
-    for record in anslist:
-        categories = record.class_obj
-        temp = {
-            'category':categories.class_field,
-            'name':record.name,
-            'price':record.price,
-        }
-        answer.setdefault(count,temp)
-        count+=1
-    print(count)
-    return JsonResponse(answer)
+	resp_cmt_json = json.loads(req.body.decode("utf8"))
+	names = resp_cmt_json['name']
+	anslist = Product.objects.filter(name = names)
+	answer = defaultdict(dict)
+	count = 0
+	for record in anslist:
+		categories = record.class_obj
+		temp = {
+			'category':categories.class_field,
+			'name':record.name,
+			'price':record.price,
+		}
+		answer.setdefault(count,temp)
+		count+=1
+	return JsonResponse(answer)
 
 def getCostByMaterialID(req):
-    resp_cmt_json = json.loads(req.body.decode("utf8"))
-    ID = resp_cmt_json['MaterialID']
-    anslist = Product.objects.filter(materialID = ID)
-    answer = defaultdict(dict)
-    count = 0
-    for record in anslist:
-        material = record.materialID
-        temp = {
-            'name':material.name,
-            'price':record.price,
-        }
-        answer.setdefault(count,temp)
-        count+=1
-    print(count)
-    return JsonResponse(answer)
+	resp_cmt_json = json.loads(req.body.decode("utf8"))
+	ID = resp_cmt_json['MaterialID']
+	anslist = Product.objects.filter(materialID = ID)
+	answer = defaultdict(dict)
+	count = 0
+	for record in anslist:
+		material = record.materialID
+		temp = {
+			'name':material.name,
+			'price':record.price,
+		}
+		answer.setdefault(count,temp)
+		count+=1
+	return JsonResponse(answer)

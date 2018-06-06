@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from . import views_cost
 urlpatterns = [
-	url(r'^getAllCost$',views_cost.getAllCost),
-	url(r'^newProduct$',views_cost.newProduct),
-	url(r'^getCostByName$',views_cost.getCostByName)
+	url(r'^get-all-cost$',views_cost.getAllCost),
+	url(r'^new-product$',views_cost.newProduct),
+	url(r'^get-cost-by-name$',views_cost.getCostByName)
 ]

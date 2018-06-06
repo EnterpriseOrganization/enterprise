@@ -2,7 +2,7 @@
 # from django.shortcuts import render
 from django.http import JsonResponse
 import time
-from enterprise.models import InventoryInformation
+from enterprise.models import InventoryInformation,Material,MaterialClass
 from django.core import serializers
 from django.views.decorators.csrf	 import csrf_exempt
 # Create your views here.
@@ -26,11 +26,12 @@ def getInventory(req):
 
 @csrf_exempt
 def addInventory(req):
+	"""
+	:req 前端发起的请求
+	:return 查询的结果，json格式
+	"""
 	params = getParams(req)
 	user = req.user
-	print("user is ",user)
-	print(user.has_perm("add_InventoryInformation"))
-	#print(params)
 	if(user.has_perm("add_InventoryInformation")):
 		try:
 			material = Material.objects.get(name = params['material']) 
@@ -41,46 +42,55 @@ def addInventory(req):
 			inventory.number += int(params['number'])
 			inventory.save()
 		except: # 如果这种库存不存在，那么就创建它
-			InventoryInformation.objects.create( material = material, name =\
-			                             params['name'], shelfnumber = params['shelfnumber'], number =\
-			                             params['number'], newestinwarehousedate = time.localtime() )
+			InventoryInformation.objects.create( material = material,\
+			                                     shelfnumber = params['shelfnumber'], \
+			                                     number = params['number'],\
+			                                     threshold = params['threshold'],\
+			                                     newestinwarehousedate = time.localtime() )
 		return JsonResponse({'res':'add success!'})		
 	else:
-		print("return from false")
 		response = JsonResponse({'res':'Sorry! You don\'t have the permission to do this operation!'})
-		print(response.content)
 		return response
 	
 def modifyInventory(req):
+	"""
+	:req 前端发起的请求
+	:return 更新的结果
+	"""
 	params = getParams(req)
 	user = req.user
 	if(user.has_perm('modify_InventoryInformation')):
-		material = material.objects.get(id = params['material'])
+		material = Material.objects.get(name = params['material'])
 		inventory = InventoryInformation.objects.filter(material = material)
 		for param in params:
 			if(param == 'shelfnumber'):
-				inventory.shelfnumber = params[param]
+				inventory.update(shelfnumber = params[param])
 			elif(param == 'number'):
-				inventory.number = params[param]
+				inventory.update(number = params[param])
 			elif(param == 'newestinwarehousedate'):
-				inventory.newestinwarehousedate = params[param]
-		inventory.save()
+				inventory.update(newestinwarehousedate = params[param])
 		return JsonResponse({'res':'modify success!'})
 	else:
 		return JsonResponse({'res':'Sorry! Permission denied!'})
+
 def removeRecord(req):
+	"""
+	:req 前端的请求
+	:return 删除的结果
+	"""
 	params = getParams(req)
 	user = req.user
 	if(user.has_perm('delete_InventoryInformation')):
 		try:
-			material = Material.objects.get(id = params['material'])
+			material = Material.objects.get(name = params['material'])
 		except:
 			return JsonResponse({'res':'Sorry! The material does not exist!'})
 		try:
-			inventory = Inventory.objects.get(material=materai)
+			inventory = InventoryInformation.objects.get(material=material)
 			if(inventory.number < int(params['number'])):
 				return JsonResponse({'res':'Sorry, the material is not enough to reduce.'})
 			inventory.number -= int(params['number'])
+			inventory.save()
 		except:
 			return JsonResponse({'res':'Sorry! The material does not exist!'})
 		return JsonResponse({'res':'remove success!'})
@@ -97,7 +107,6 @@ def getParams(req):
 		return params
 	elif(req.method == 'POST'):
 		params = json.loads(req.body.decode('utf-8'))
-		print(params)
 		return params
 	elif(req.method == 'DELETE'):
 		params = json.loads(req.body.decode('utf-8'))
@@ -155,7 +164,6 @@ def toDict(queryset):
 	count = 0
 	for record in queryset:
 		material = record.material
-		#print("material is ", material.name)
 		temp = {
 			'id':material.id,
 			'name':material.name,
