@@ -45,7 +45,7 @@
                 });
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/product/"+parent.cureditp,
+                    url:"http://127.0.0.1:8000/bom/product/"+parent.cureditp+"/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -130,6 +130,9 @@
                         },
                         success:function(msg){
                             console.log(msg)
+                            var zto=parent.zTreeObj;
+                            zto.getNodesByParam("id","product_"+productid,null)[0].name=productname;
+                            zto.updateNode(zto.getNodesByParam("id","product_"+productid,null)[0])
                             layer.alert("修改成功",{
                                 icon:6
                             },function(){

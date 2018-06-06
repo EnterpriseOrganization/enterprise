@@ -101,6 +101,11 @@
                         },
                         success:function(msg){
                             console.log(msg)
+                            var zto=parent.zTreeObj;
+                            var nod={id:"product_"+msg.id,pid:"class_"+producttype,name:productname,isParent:false}
+                            console.log(nod)
+                            zto.addNodes(zto.getNodesByParam("id","class_"+producttype,null)[0],nod);
+                            zto.updateNode(zto.getNodesByParam("id","class_"+producttype,null)[0])
                             layer.alert("创建成功",{
                                 icon:6
                             },function(){

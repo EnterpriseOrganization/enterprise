@@ -198,7 +198,7 @@
                 });          
 
                 window.member_del = function (obj, id) {
-                    var urltogo="http://127.0.0.1:8000/bom/material/"+id;
+                    var urltogo="http://127.0.0.1:8000/bom/material/"+id+"/";
                     layer.confirm('确认要删除吗？', function(index) {
                         $.ajax({
                             url:urltogo,

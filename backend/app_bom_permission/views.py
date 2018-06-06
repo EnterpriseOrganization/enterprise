@@ -152,7 +152,14 @@ class ProductClassProcessor:
 
     @staticmethod
     def singleProductclassToDict(item):
-        return {"class_field": item.class_field, "class_id": item.id}
+        result = {"class_field": item.class_field, "class_id": item.id}
+        if item.parent_class:
+            result['parent_class_field'] = item.parent_class.class_field
+            result["parent_class_id"] = item.parent_class.id
+        else:
+            result['parent_class_field'] = "null"
+            result["parent_class_id"] = "null"
+        return result
 
     @staticmethod
     def get(request):
@@ -174,13 +181,14 @@ class ProductProcessor:
 
     @staticmethod
     def singleProductToDict(item):
-        print(item.name)
-        return {"name": item.name, 
+        result = {"name": item.name, 
                 "class_id": item.class_obj.id, 
                 "id": item.id,
                 "price": float(item.price),
                 "class_field": item.class_obj.class_field
                 }
+        
+        return result
 
     # TODO: filter for price
     @staticmethod
@@ -237,7 +245,7 @@ class ProductProcessor:
         price_str = request.GET.get("price")
         m = Product(name=name_str, class_obj=class_obj, price=float(price_str))
         m.save()
-        return HttpResponse(201)
+        return HttpResponse(json.dumps(ProductProcessor.singleProductToDict(m)), content_type="application/json")
 
     # process specific Product
     @staticmethod
