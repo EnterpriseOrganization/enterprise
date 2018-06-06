@@ -155,8 +155,8 @@ def createTasks(request):
 
 
 def checkUpdateInfo(form):
-    if form["material_checker"] == None or form["material_getter"] == None :
-        return False
+    #if form["material_checker"] == None or form["material_getter"] == None :
+        #return False
     return True
 
 
@@ -165,8 +165,10 @@ def checkUpdateInfo(form):
 def updateTaskMaterialGet(request):
     """
     更新生产任务状态为已领料 并更新审核人, 领取人 POST /product/task/material-allocated
-    :param request:
-    :param task_id:
+    :param request body:{
+        "task_id": 
+        "info":
+    }
     :return: {
         "task": taskDTO
     }

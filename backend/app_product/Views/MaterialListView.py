@@ -8,7 +8,7 @@ import json
 def getMaterialList(request):
     """
     根据产品ID和数量返回所需要的原材料ID、名称、数量，提供给前端领料单信息
-    :param request: GET task/material-list
+    :param request: GET task/material-list?product_id=*&product_num=*
     :return:
         {
             "material_requisition":[

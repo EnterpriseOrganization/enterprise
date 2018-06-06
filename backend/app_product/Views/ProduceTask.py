@@ -104,7 +104,7 @@ def createTasks(tasks, order_id=-1):
 
     """
     if order_id != -1:
-        # deleteTasksByOrderID(order_id)   太危险 不敢测试..
+        deleteTasksByOrderID(order_id)
         task_list = []
         if type(tasks) == type([]):
             for task in tasks:

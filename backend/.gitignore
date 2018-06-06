@@ -1,0 +1,6 @@
+#settings.py
+/mysite/settings.py
+/enterprise/migrations/
+*.wpr
+*.wpu
+*.pyc
