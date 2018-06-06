@@ -3,7 +3,7 @@ from django.db import models
 class MaterialClass(models.Model):
     # id = models.AutoField(primary_key=True)
     class_field = models.CharField(db_column='class', max_length=45, default='the very based class')
-    parent_class = models.ForeignKey('MaterialClass', models.DO_NOTHING, null=True)  #  on_delete暂时为DO_NOTHING 之后要级联删除； 字段暂时可以为空 之后设为基类ID
+    parent_class = models.ForeignKey('MaterialClass', models.DO_NOTHING, null=True)  #  on_delete鏆傛椂涓篋O_NOTHING 涔嬪悗瑕佺骇鑱斿垹闄わ紱 瀛楁�鏆傛椂鍙�互涓虹┖ 涔嬪悗璁句负鍩虹被ID
     class Meta:
         managed = True
         db_table = 'materialclass'
@@ -13,7 +13,7 @@ class Material(models.Model):
     # id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=45, null=True)
     # class_field = models.CharField(db_column='class', max_length=45, default='the very based class')  # Field renamed because it was a Python reserved word.
-    # class_id = models.OneToOneField(MaterialClass, models.DO_NOTHING, null=True)  # 暂时可以为空 之后设为基类ID
+    # class_id = models.OneToOneField(MaterialClass, models.DO_NOTHING, null=True)  # 鏆傛椂鍙�互涓虹┖ 涔嬪悗璁句负鍩虹被ID
     class_obj = models.ForeignKey(MaterialClass, models.DO_NOTHING, null=True)
     class Meta:
         managed = True
@@ -29,9 +29,9 @@ class Order(models.Model):
     recevieraddress = models.CharField(db_column='recevierAddress', max_length=200, null=True)  # Field name made lowercase.
     indentorphonenumber = models.CharField(db_column='indentorPhoneNumber', max_length=45, null=True)  # Field name made lowercase.
     totalprice = models.DecimalField(db_column='totalPrice', max_digits=3, decimal_places=0, null=True)  # Field name made lowercase.
-    status = models.IntegerField(default=0)  # 0: 待生产 1: 生产中 2:配送中（生产完成） 3: 采购中
+    status = models.IntegerField(default=0)  # 0: 寰呯敓浜�1: 鐢熶骇涓�2:閰嶉�涓�紙鐢熶骇瀹屾垚锛�3: 閲囪喘涓�
     deliverydate = models.DateTimeField(db_column='deliveryDate', auto_now_add=True)  # Field name made lowercase.
-    paymentway = models.CharField(db_column='paymentWay', max_length=45, default='default paymentway')  # say 顺丰
+    paymentway = models.CharField(db_column='paymentWay', max_length=45, default='default paymentway')  # say 椤轰赴
 
     class Meta:
         managed = True
@@ -40,7 +40,7 @@ class Order(models.Model):
 class ProductClass(models.Model):
     # id = models.AutoField(primary_key=True)
     class_field = models.CharField(db_column='class', max_length=45, default='the very based class')
-    parent_class = models.ForeignKey('ProductClass', models.DO_NOTHING, null=True) # on_delete之后要级联找到所有子类 删除之
+    parent_class = models.ForeignKey('ProductClass', models.DO_NOTHING, null=True) # on_delete涔嬪悗瑕佺骇鑱旀壘鍒版墍鏈夊瓙绫�鍒犻櫎涔�
 
     class Meta:
         managed = True
@@ -117,7 +117,7 @@ class InventoryInformation(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'inventorinformation'
+        db_table = 'inventoryinformation'
 
 
 class InWarehouse(models.Model):
@@ -142,7 +142,7 @@ class Role(models.Model):
 
 
 class InwareHouseProduct(models.Model):
-    # id = models.AutoField(primary_key=True) # django是否会自动生成 with managed=True？
+    # id = models.AutoField(primary_key=True) # django鏄�惁浼氳嚜鍔ㄧ敓鎴�with managed=True锛�
     inwarehouse = models.ForeignKey(InWarehouse, models.DO_NOTHING, db_column='inwarehouseID', null=True)  # Field name made lowercase.
     (material) = models.ForeignKey(Material, models.DO_NOTHING, db_column='(material)ID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
@@ -153,12 +153,12 @@ class InwareHouseProduct(models.Model):
 
 
 class MaterialRequistion(models.Model):
-    # id = models.AutoField(primary_key=Tdjango select_related 多个字段rue)
+    # id = models.AutoField(primary_key=Tdjango select_related 澶氫釜瀛楁�rue)
     distributiondate = models.DateTimeField(db_column='distributionDate', blank=True, auto_now_add=True)  # Field name made lowercase.
     requistioner = models.CharField(max_length=45, blank=True, null=True)
     checker = models.CharField(max_length=45, blank=True, null=True)
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
-    status = models.IntegerField(blank=True, default=0, null=True) # 0：未领(申请中) 1：已领
+    status = models.IntegerField(blank=True, default=0, null=True) # 0锛氭湭棰�鐢宠�涓� 1锛氬凡棰�
 
     class Meta:
         managed = True
@@ -271,8 +271,8 @@ class UserTable(models.Model):
 
 
 
-''' 暂时保留, 姑且认为物料申请表和领料表是一回事
-反正别的组也不用
+''' 鏆傛椂淇濈暀, 濮戜笖璁や负鐗╂枡鐢宠�琛ㄥ拰棰嗘枡琛ㄦ槸涓�洖浜�
+鍙嶆�鍒�殑缁勪篃涓嶇敤
 class Apply(models.Model):
     id = models.IntegerField(primary_key=True)
     workshopid = models.OneToOneField(Workshop, models.DO_NOTHING, db_column='workshopID')  # Field name made lowercase.
