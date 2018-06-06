@@ -149,7 +149,7 @@ def createTasks(request):
             tasks = ProduceTask.createTasks(params["tasks"], order_id)
             return JsonResponse({"tasks": tasks})
         except Exception as e:
-            return JsonResponse({"error message": e.args[0]}, status=401)
+            return JsonResponse({"error message": e}, status=500)
     else:
         return JsonResponse({}, status=401)
 

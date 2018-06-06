@@ -23,7 +23,7 @@ urlpatterns = [
     # url(r'^cost/', include('app_cost.urls',namespace = "app_cost")),
     # url(r'^warehouse/',include('app_warehouse.urls',namespace = "app_warehouse")),
     # url(r'^order/',include('app_order.urls',namespace = "app_order")),
-    url(r'^product/',include('app_product.urls',namespace = "app_product")),
+    url(r'^product/',include('app_product.urls')),
     # url(r'^purchase/',include('app_purchase.urls',namespace = "app_purchase")),
     # url(r'^bom/',include('app_bom_permission.urls',namespace = "app_bom_permission")),
     # url(r'^permission/',include('app_bom_permission.urls',namespace = "app_bom_permission")),

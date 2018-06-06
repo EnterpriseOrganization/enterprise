@@ -41,8 +41,8 @@ def getProductsByOrderStatus(gte, lte): # 想精确搜索就让 gte == lte
         orders.append({
             "order_id": order_id,
             "status": product["order__status"],
-            "deadline": product["order__deliverydate"],
-            "create_time": product["order__date"],
+            #"deadline": product["order__deliverydate"],
+            #"create_time": product["order__date"],
             "product_id": product['product_id'],
             "product_name": product['product__name'],
             "amount": product["number"],
@@ -75,7 +75,7 @@ def getTasksByOrderID(order_id):
     return tasks_list
 
 
-def createTasks(tasks, order_id=-1):
+def createTasks(tasks, order_id=-1, from_outside=True):
     """
     为一次订单创建多个生产任务
     :param
@@ -104,11 +104,13 @@ def createTasks(tasks, order_id=-1):
 
     """
     if order_id != -1:
-        deleteTasksByOrderID(order_id)
+        if from_outside:
+            deleteTasksByOrderID(order_id)
         task_list = []
         if type(tasks) == type([]):
+            print(len(tasks))
             for task in tasks:
-                task_list.append(createTasks(task, order_id))
+                task_list.append(createTasks(task, order_id, False))
             return task_list
         elif type(tasks) == type({}):
             form = tasks
