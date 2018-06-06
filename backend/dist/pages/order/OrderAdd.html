@@ -11,13 +11,7 @@
     <link rel="stylesheet" href="../../static/css/weadmin.css">
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript">
-
     </script>
-    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-    <!--[if lt IE 9]>
-          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
 
 </head>
 
@@ -298,26 +292,61 @@
             var end_date = $("#enddate").val();
             var province = $("#province").val();
             var city = $("#city").val();
+            //区级地址编码
             var district = $("#district").val();
-            var address = $("#address").val();
-            var req_data = {
+            //address 详细地址
+            var address = $('#address').val();
+            var order_bill = $("#orderbill").val();
+            var payment = $("#payment").val();
+            var checker = $("#check").val();
+            var receiveraddress = district + address
+            
+
+            var order_data = {
                 "date": begin_date,
                 "indentor": comp_name,
-                "receiver": " "
+                "receiver": contacter,
+                "checker" : checker,
+                "recevieraddress": receiveraddress,
+                "indentorphonenumber": tele_num,
+                "totalprice": order_bill,
+                "status": 0,
+                "deliverydate": end_date,
+                "paymentway": payment,
             }
-            layer.alert(JSON.stringify(data.field));
+
+            var product = []
+            var product_type = []
+            var product_num = []
+            var pdata
+            for(var i = 1; i < num; i++) {
+                product[i - 1] = {}
+                product[i - 1]['product'] = $("#product" + (i)).val()
+                product[i - 1]['number'] = $("#number" + (i)).val()
+            }
+            
+            var order_info = {}
+            order_info['order_data'] = order_data
+            order_info['product'] = product
+            console.log(order_info)
+            //layer.alert(JSON.stringify(data.field));
+            //将数据传回后台
             $.ajax({
-                async: false,
+                type: "POST",
+                url: "http://127.0.0.1:8000/order/add-order",
                 cache: false,
-                type: 'POST',
-                url: '',
-                error: function () {
-                    console.log('请求失败');
+                async: false,
+                contentType: "application/json",
+                dataType : "json",
+                data: JSON.stringify(order_info),
+                success: function (data) {
+                    pdata = data;
                 },
-                success: function (req_data) {
-                    console.log(req_data)
+                error: function (err) {
+                    console.log(err);   
                 }
             })
+            layer.msg(pdata)
             return false;
         });
 
@@ -348,7 +377,7 @@
             $("#myTable").children().eq(elements - 1).after(tableHtml); //在表头之后添加空白行
             //动态向select添加option
             for (var i in pro_data) {
-                $('#product' + num).append('<option value="' + i + '">' + pro_data[i].name + '</option>');
+                $('#product' + num).append('<option value="' + (parseInt(i) + 3) + '">' + pro_data[i].name + '</option>');
             }
             form.render("select");
 
@@ -373,7 +402,7 @@
                 }
                 $('#total_num').text(total_num);
                 $('#total_price').text(total_all);
-                $('#orderbill').text(total_all);
+                $('#orderbill').val(total_all);
                 form.render();
             })
             num++;
@@ -383,7 +412,7 @@
         form.on('select(product)', function (data) {
             var id = $(data)[0].elem.id;
             var curr = id.substr(7, id.length);
-            var data_pos = $('#' + id).val();
+            var data_pos = $('#' + id).val();//product id
             var total_all = 0;
             if (data_pos < 0) {
                 $('#number' + curr).attr("readonly", "readonly");
@@ -397,7 +426,7 @@
             }
             else {
                 $('#number' + curr).removeAttr("readonly");
-                var price = pro_data[data_pos].price;
+                var price = pro_data[0].price;
                 $('#price' + curr).text(price);
                 if ($('#number' + curr).val() != "") {
                     var price = pro_data[data_pos].price;
@@ -411,7 +440,7 @@
                 total_all += parseFloat($('#total' + i).text());
             }
             $('#total_price').text(total_all);
-            $('#orderbill').text(total_all);
+            $('#orderbill').val(total_all);
             form.render();
         });
 
@@ -456,6 +485,8 @@
             console.log("remove clicked");
             $("#tr" + trNum).remove();
         };
+
+       
 
 
     });

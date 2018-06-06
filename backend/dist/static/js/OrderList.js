@@ -7,19 +7,17 @@ layui.use(['table', 'jquery','form', 'admin'], function() {
         $ = layui.jquery,
         form = layui.form,
         admin = layui.admin;
+        mdata = null;
 
     table.render({
         elem: '#orderList',
         cellMinWidth: 100,
+        id: 'id',
         cols: [
             [{
                 type: 'checkbox'
             }, {
                 field: 'id',title: '订单编号',sort: true,width:180
-            }, {
-                field: 'name',title: '货品名称',sort: true,width:150
-            }, {
-                field: 'number',title: '数量',sort:true,width:80
             },  {
                 field: 'price',title: '订单金额',sort:true
             }, {
@@ -32,26 +30,49 @@ layui.use(['table', 'jquery','form', 'admin'], function() {
                 field: 'operate',title: '操作',toolbar: '#operateTpl',unresize: true
             }]
         ],
-        data: [{
-            "id": "2017009171822298053",
-            "name": "EB23下电板EPL",
-            "number": "10000",
-            "date": "2017-08-17 18:22",
-            "price": "1234.34",
-            "person": "吴彦祖",
-            "status": "已完成"
-        }, {
-            "id": "2017009171822298053",
-            "name": "EB23下电板EPL",
-            "number": "10000",
-            "date": "2017-08-17 18:22",
-            "price": "1234.34",
-            "person": "吴彦祖",
-            "status": "未完成"
-        }],
+        data: mdata,
+        
         event: true,
         page: true
     });
+
+    var req = 'get-all-order'
+        var pdata
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/order/" + req,
+            cache: false,
+            async: false,
+            contenType: "application/json",
+            dataType: "json",
+            success: function(data) {
+                pdata = data;
+                pdata = JSON.parse(pdata)
+                console.log(pdata)
+                
+                //pdata 取出 id indentor price deliverydate
+                var kdata = [{
+                    'id':"111",
+                    'price':'111',
+                    'date': '2018-3-1',
+                    'person': 'wts'
+
+                },{
+                    'id':"222",
+                    'price':'222',
+                    'date': '2018-3-2',
+                    'person': 'wts'
+
+                }]
+                table.reload('id', {
+                        data : kdata
+                })
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    
     /*
      *数据表格中form表单元素是动态插入,所以需要更新渲染下
      * http://www.layui.com/doc/modules/form.html#render
@@ -59,7 +80,10 @@ layui.use(['table', 'jquery','form', 'admin'], function() {
     $(function(){
         form.render();
     });
-
+    function getListInfo() {
+        
+        return pdata;
+    }
     var active = {
         getCheckData: function() { //获取选中数据
             var checkStatus = table.checkStatus('orderList'),

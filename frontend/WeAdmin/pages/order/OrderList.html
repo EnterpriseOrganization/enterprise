@@ -48,6 +48,9 @@
             <div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="fas fa-trash"></i> 批量删除</button>
                 <button class="layui-btn layui-btn-warm" onclick=""><i class="fas fa-check"></i> 标记为完成</button>
+                <script>
+                    var id = "############"
+                </script>
                 <button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')"><i class="fas fa-plus"></i> 添加</button>
                 <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
@@ -59,7 +62,7 @@
                 <span class="layui-btn layui-btn-danger layui-btn-xs">未完成</span>
             </script>
             <script type="text/html" id="operateTpl">
-                <a title="编辑" onclick="WeAdminEdit('修改订单','./OrderModify.html')" href="javascript:;">
+                <a title="编辑" onclick="WeAdminEdit('修改订单','./OrderModify.html',id)" href="javascript:;">
                     <i class="fas fa-edit"></i>
                 </a>
                 <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">

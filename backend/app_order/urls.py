@@ -2,6 +2,7 @@ from django.conf.urls import url
 from . import views
 from . import address_select
 from . import product_select
+from . import page_open
 
 urlpatterns = [
 	# Order表
@@ -19,7 +20,11 @@ urlpatterns = [
     url(r'^update-order-product$', views.updateOrderProduct),  # # 后端修改一个订单所订购的产品数量
     
     # 前端额外所需
-    url(r'^province$', address_select.getCity),
-    url(r'^city$', address_select.getDistrict),
-    url(r'^product$', product_select.getProductInfo),
+    url(r'^province$', address_select.getCity),#获取二级下拉框-城市信息
+    url(r'^city$', address_select.getDistrict),#获取三级下拉框-地区信息
+    url(r'^product$', product_select.getProductInfo),#获取下拉框-产品信息
+    url(r'^add$',page_open.orderAdd),#弹出子页面iframe-orderadd页面
+    url(r'^list$',page_open.orderList),#弹出子页面iframe-ordermodify页面
 ]
+
+
