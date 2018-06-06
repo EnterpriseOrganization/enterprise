@@ -120,6 +120,7 @@ def createTasks(tasks, order_id=-1):
             task.order_id = order_id
             task.workshop_id = form.get("workshop_id")
             task.number = form.get("amount")
+            task.begindate = datetime.now().strftime("%Y-%m-%d %H:%I:%S")
             # task.deadline = parse_date(form.get("deadline"))
             task.status = form.get("status", 0)
             task.personincharge = form.get("person_in_charge", "")

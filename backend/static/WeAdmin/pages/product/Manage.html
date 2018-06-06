@@ -81,6 +81,7 @@
             const produceStatus = { 0: '已分配', 1: '已领料', 2: '已完成' };
 
             function resetData() {
+                // cancle resetting num
                 num = 0;
                 status = [];
                 value = [];
@@ -151,7 +152,6 @@
                     product_id = data.product_id;
                     product_name = data.product_name;
                     product_num = data.amount;
-                    // TODO: 加载数据
                     $.ajax({ // 从后台拿到订单分配数据
                         type: 'GET',
                         url: 'http://localhost:8000/product/tasks/byorder',
@@ -160,7 +160,6 @@
                         cache: false,
                         async: false,
                         success: function (data) {
-                            console.log("aaa", data);
                             allocate = data["tasks"];
                         }
                     });
@@ -192,6 +191,7 @@
 
                     resetData(); // 换表单的时候重置数据
 
+
                     for (var i = 0; i < allocate.length; i++) {
                         addRow();
                         setValue(i, allocate[i]['amount'], allocate[i]['workshop_name'], allocate[i]['status']);
@@ -201,10 +201,11 @@
                 }
             });
 
-            function setValue(i, amount, workshop_name, status) {
+            function setValue(i, amount, workshop_name, add_status) {
                 $('#workshopName' + i).val(workshop_name);
                 $('#goodsNum' + i).val(amount);
-                $('#button' + i).text(produceStatus[status]);
+                $('#button' + i).text(produceStatus[add_status]);
+                status[i] = add_status;
                 // TODO: 初始CSS
             };
 
@@ -290,20 +291,20 @@
                     if (status[i] != -1) { // 如果是null就是删除掉的行，提取不到数据
                         update_data[count] = {};
                         update_data[count]['workshop_id'] = workshop_map[$('#workshopName' + i).val()];
-                        update_data[count]['amount'] = workshop_map[$('#goodsNum' + i).val()];
+                        update_data[count]['amount'] = $('#goodsNum' + i).val();
                         update_data[count]['status'] = status[i];
+                        count++;
                     }
                 }
-                console.log(update_data);
-                // $.ajax({ // 从后台拿到可选的车间名称
-                //     type: 'POST',
-                //     url: 'http://localhost:8000/product/workshop/byproduct',
-                //     dataType: 'json',
-                //     data: { 'order_id': order_id, 'task': update_data },
-                //     cache: false,
-                //     async: false,
-                //     success: function () { }
-                // });
+                $.ajax({ // 从后台拿到可选的车间名称
+                    type: 'POST',
+                    url: 'http://localhost:8000/product/workshop/byproduct',
+                    dataType: 'json',
+                    data: { 'order_id': order_id, 'task': update_data },
+                    cache: false,
+                    async: false,
+                    success: function () { }
+                });
             };
 
             // 变换状态

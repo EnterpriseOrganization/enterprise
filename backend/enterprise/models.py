@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils import timezone
-
+from datetime import *
 
 class MaterialClass(models.Model):
     # id = models.AutoField(primary_key=True)
@@ -45,7 +45,7 @@ class Order(models.Model):
 @receiver(pre_save, sender=Order)
 def fillDeliveryDate(sender, instance, **kwargs):
     if instance.status == 2:
-        instance.deliverydate = timezone.now()
+        instance.deliverydate = datetime.now().strftime("%Y-%m-%d %H:%I:%S")
 
 class ProductClass(models.Model):
     # id = models.AutoField(primary_key=True)
@@ -106,9 +106,9 @@ class ProduceTaskBasic(models.Model):
 @receiver(pre_save, sender=ProduceTaskBasic)
 def fillDoneDate(sender, instance, **kwargs):
     if instance.status == 1: # 添加领料时间
-        instance.material_distributon_date = timezone.now()
+        instance.material_distributon_date = datetime.now().strftime("%Y-%m-%d %H:%I:%S")
     elif instance.status == 2:
-        instance.archivedate = timezone.now() # 添加完成时间
+        instance.archivedate = datetime.now().strftime("%Y-%m-%d %H:%I:%S") # 自动添加完成时间
         order = instance.order # 注册进度到订单里
         order.status = 2
         order.save()

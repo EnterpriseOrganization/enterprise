@@ -144,7 +144,6 @@ def createTasks(request):
     # order_id = request.body.get("order_id")
     body_unicode = request.body.decode('utf-8')
     params = json.loads(body_unicode)
-    print(params)
     order_id = params["order_id"]
     if order_id != -1:
         try:
