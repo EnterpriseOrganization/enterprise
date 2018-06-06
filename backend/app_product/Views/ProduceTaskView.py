@@ -7,6 +7,7 @@ import json
 @require_GET
 def getAllTasks(request):
     """
+        非真正意义的生产任务，还包括订单中未被分配的产品生产任务
         :arg: GET /product/tasks
         :return:
             {
@@ -114,8 +115,8 @@ def createTasks(request):
     """
     为指定订单创建生产任务
     :param request:  POST product/task/create
-    :param order_id: 为哪个订单创建的请求
     :param json body: {
+        "order_id": id
         "tasks": [{
             "workshop_id": id necessary,
             "amount": number necessary,
@@ -143,8 +144,8 @@ def createTasks(request):
     # order_id = request.body.get("order_id")
     body_unicode = request.body.decode('utf-8')
     params = json.loads(body_unicode)
+    print(params)
     order_id = params["order_id"]
-
     if order_id != -1:
         try:
             tasks = ProduceTask.createTasks(params["tasks"], order_id)

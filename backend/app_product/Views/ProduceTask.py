@@ -100,7 +100,7 @@ def createTasks(tasks, order_id=-1):
         "accurate_date": datetime string,
         "deadline": datetime string,
         "begin_date": datetime stringBasic
-    }]    print(order_id)
+    }]
 
     """
     if order_id != -1:
@@ -115,11 +115,13 @@ def createTasks(tasks, order_id=-1):
             task = ProduceTaskBasic()
             # columns client must send
             if form.get("workshop_id") == None or form.get("amount") == None:
-                raise Exception(util.ErrMsg[0].format("missing important field: workshop_id, order_id or amount"))
+                raise Exception(util.ErrMsg[0].format("missing important field: workshop_id or amount"))
+
             task.order_id = order_id
             task.workshop_id = form.get("workshop_id")
             task.number = form.get("amount")
-            task.deadline = parse_date(form.get("deadline"))
+            # task.deadline = parse_date(form.get("deadline"))
+            task.status = form.get("status", 0)
             task.personincharge = form.get("person_in_charge", "")
             task.topic = form.get("topic", "")
             task.save()

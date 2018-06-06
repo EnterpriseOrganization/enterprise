@@ -78,7 +78,7 @@
             var product_name;
             var product_num;
             let workshop_map = {};
-            const produceStatus = {0:'已分配',1:'已领料',2:'已完成'};
+            const produceStatus = { 0: '已分配', 1: '已领料', 2: '已完成' };
 
             function resetData() {
                 num = 0;
@@ -160,6 +160,7 @@
                         cache: false,
                         async: false,
                         success: function (data) {
+                            console.log("aaa", data);
                             allocate = data["tasks"];
                         }
                     });
@@ -173,7 +174,7 @@
                         async: false,
                         success: function (data) {
                             workshop_map = data["workshops"];
-                            for(var key in data["workshops"]){
+                            for (var key in data["workshops"]) {
                                 optionsData.push(key);
                             }
                         }
@@ -191,19 +192,19 @@
 
                     resetData(); // 换表单的时候重置数据
 
-                    for(var i=0;i<allocate.length;i++){
+                    for (var i = 0; i < allocate.length; i++) {
                         addRow();
-                        setValue(i,allocate[i]['amount'],allocate[i]['workshop_name'],allocate[i]['status']);
+                        setValue(i, allocate[i]['amount'], allocate[i]['workshop_name'], allocate[i]['status']);
                     }
                     form.render();
 
                 }
             });
 
-            function setValue(i,amount,workshop_name,status){
-                $('#workshopName'+i).val(workshop_name);
-                $('#goodsNum'+i).val(amount);
-                $('#button'+i).text(produceStatus[status]);
+            function setValue(i, amount, workshop_name, status) {
+                $('#workshopName' + i).val(workshop_name);
+                $('#goodsNum' + i).val(amount);
+                $('#button' + i).text(produceStatus[status]);
                 // TODO: 初始CSS
             };
 
@@ -270,38 +271,48 @@
 
             // TODO: 发送数据
             window.submit = function () {
-                let data = Array();
-                let count =0;
-
+                let update_data = Array();
+                let count = 0;
+                /*
+                :param order_id: 为哪个订单创建的请求
+                    :param json body: {
+                        "order_id": id,
+                        "tasks": [{
+                            "workshop_id": id necessary,
+                            "amount": number necessary,
+                            "person_in_charge": string,
+                            "topic": string
+                            "deadline": datetime string,
+                            "status": 
+                        }]
+                    }*/
                 for (var i = 0; i < num; i++) {
                     if (status[i] != -1) { // 如果是null就是删除掉的行，提取不到数据
-                        // var comp_name = $("#ordercomp").val();
-
-                        /*
-                        * :param json body: {
-                            "tasks": [{
-                                "workshop_id": id necessary,
-                                "amount": number necessary,
-                                "person_in_charge": string,
-                                "topic": string
-                                "deadline": datetime string
-                            }]
-                        }
-                        * */
-                        Array[count] = {};
-                        Array[count]['workshop_id'] = workshop_map[$('#workshopName' + i).val()];
-
+                        update_data[count] = {};
+                        update_data[count]['workshop_id'] = workshop_map[$('#workshopName' + i).val()];
+                        update_data[count]['amount'] = workshop_map[$('#goodsNum' + i).val()];
+                        update_data[count]['status'] = status[i];
                     }
                 }
+                console.log(update_data);
+                // $.ajax({ // 从后台拿到可选的车间名称
+                //     type: 'POST',
+                //     url: 'http://localhost:8000/product/workshop/byproduct',
+                //     dataType: 'json',
+                //     data: { 'order_id': order_id, 'task': update_data },
+                //     cache: false,
+                //     async: false,
+                //     success: function () { }
+                // });
             };
 
             // 变换状态
             window.changeStatus = function (num) {
                 const id = "#button" + num;
-                status[num] = status[num]+1; // 改变状态
+                status[num] = status[num] + 1; // 改变状态
                 if (status[num] === 0) {
                     $(id).text('已分配');
-                } else if(status[num]===1) {
+                } else if (status[num] === 1) {
                     $(id).text('已领料');
                     $(id).toggleClass("layui-btn-normal")
                 } else {
