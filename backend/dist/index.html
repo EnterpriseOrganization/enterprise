@@ -27,7 +27,7 @@
             </div>
             <ul class="layui-nav right" lay-filter="">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">Admin</a>
+                    <a href="javascript:;" id="admin">Admin</a>
                     <dl class="layui-nav-child">
                         <!-- 二级菜单 -->
                         <dd>
@@ -37,7 +37,7 @@
                             <a onclick="WeAdminShow('切换帐号','./login.html')">更改密码</a>
                         </dd>
                         <dd>
-                            <a class="loginout" href="login.html">退出</a>
+                            <a class="loginout" id="logout">退出</a>
                         </dd>
                     </dl>
                 </li>
@@ -289,22 +289,53 @@
               base: './static/js/'
               ,version: '101100'
             }).use('admin');
-            layui.use(['jquery','admin'], function(){
+            layui.use(['jquery','admin','form'], function(){
                 var $ = layui.jquery;
-                $(function(){
-                    var login = JSON.parse(localStorage.getItem("login"));
-                    if(login){
-                        if(login=0){
-                            window.location.href='./login.html';
-                            return false;
+
+                userInfo = {}
+
+                $.ajax({
+                    url:'http://127.0.0.1:8000/user/getUser',  
+                    type:'POST',  //POST提交数据  
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(arg){  //请求成功后的回调函数。  
+                        if(arg.status==200){
+                            userInfo = arg
+                            $('#admin').text(userInfo.username)
+
                         }else{
-                            return false;
+                            layer.msg('用户名已过期，请重新登录',{anim:0},function(){
+                                location.href='./login.html'
+                            })
                         }
-                    }else{
-                        window.location.href='./login.html';
-                        return false;
-                    }
+                    }, 
+                    error:function(){  //请求失败时调用此函数。  
+                        layer.msg('网络错误',{anim:5})
+                    }  
                 });
+
+                $(document).on('click','#logout',function(data){
+                    $.ajax({
+                        url:'http://127.0.0.1:8000/user/logout',
+                        type:'POST',  //POST提交数据  
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(arg){  //请求成功后的回调函数。  
+                            if(arg.status==200){
+                                layer.msg('退出登录',{anim:5},function(){
+                                    location.href='./login.html'
+                                })
+                            }
+                        }, 
+                        error:function(){  //请求失败时调用此函数。  
+                            layer.msg('网络错误',{anim:5})
+                        }  
+                    });
+                })
+
             });
 
         </script>
