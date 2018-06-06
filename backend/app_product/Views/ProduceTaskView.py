@@ -183,6 +183,7 @@ def updateTaskMaterialGet(request):
     if task_id != -1 and checkUpdateInfo(info):
         info["status"] = 1
         task = ProduceTask.updateTask(task_id, info)
+        print("final", task)
         return JsonResponse({"task": task})
     else:
         return JsonResponse({}, status=401)

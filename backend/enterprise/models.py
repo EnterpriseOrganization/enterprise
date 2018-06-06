@@ -97,7 +97,7 @@ class ProduceTaskBasic(models.Model):
     deadline = models.DateField(null=True)
     material_getter = models.CharField(max_length=100, default="")
     material_checker = models.CharField(max_length=100, default="")
-    material_distributon_date = models.DateTimeField(null=True)
+    material_distributon_date = models.DateField(null=True)
     class Meta:
         managed = True
         db_table = 'producetaskbasic'
@@ -106,9 +106,9 @@ class ProduceTaskBasic(models.Model):
 @receiver(pre_save, sender=ProduceTaskBasic)
 def fillDoneDate(sender, instance, **kwargs):
     if instance.status == 1: # 添加领料时间
-        instance.material_distributon_date = datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+        instance.material_distributon_date = datetime.now().strftime("%Y-%m-%d")
     elif instance.status == 2:
-        instance.archivedate = datetime.now().strftime("%Y-%m-%d %H:%I:%S") # 自动添加完成时间
+        instance.archivedate = datetime.now().strftime("%Y-%m-%d") # 自动添加完成时间
         order = instance.order # 注册进度到订单里
         order.status = 2
         order.save()
