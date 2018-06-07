@@ -5,6 +5,9 @@ from . import product_select
 from . import page_open
 
 urlpatterns = [
+    #Product表
+    url(r'^get-all-product$',views.getAllProduct),#获取所有的货品信息
+
 	# Order表
     url(r'^test$', views.testExample), # 测试用的url
     url(r'^get-all-order$', views.getAllOrder), # 获取到所有的订单信息，通过url访问，返回json文件
