@@ -246,7 +246,7 @@
                 }).css("ime-mode", "disabled"); // CSS设置输入法不可用
 
                 $("#goods-num" + num).blur(function () { // 输入框失去焦点的时候进行值判断
-                    const tr_id = $(this).context.id.slice(8); //在控制台找到的 别说这种方法不优雅
+                    const tr_id = $(this).context.id.slice(9); //在控制台找到的 别说这种方法不优雅
                     const workshop_name_id = '#workshop-name' + tr_id;
                     if ($(workshop_name_id).val() !== '-1') { // 如果选择了workshop
                         value[tr_id] = parseInt($(this).val()); // 更新数组内的值
