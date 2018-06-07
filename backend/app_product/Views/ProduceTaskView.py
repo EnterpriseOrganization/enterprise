@@ -41,6 +41,7 @@ def getOrderTasks(request):
         "tasks": [{ taskDTO }]
     }
     """
+
     order_id = request.GET.get("order_id")
     if order_id != -1:
         tasks = ProduceTask.getTasksByOrderID(order_id)
@@ -48,6 +49,22 @@ def getOrderTasks(request):
     else:
         return JsonResponse({}, status=401)
 
+@require_GET
+def getWorkshopTasks(request):
+    """
+    返回指定order的所有生产任务
+    :param request: GET /product/tasks/byorder/<order_id>
+    :param order_id:
+    :return: {
+        "tasks": [{ taskDTO }]
+    }
+    """
+    workshop_id = request.GET.get("workshop_id")
+    if workshop_id != -1:
+        tasks = ProduceTask.getTasksByWorkshopID(workshop_id)
+        return JsonResponse({"tasks": tasks})
+    else:
+        return JsonResponse({}, status=401)
 
 @require_GET
 def getHistoryTasks(request):
@@ -61,7 +78,6 @@ def getHistoryTasks(request):
     tasks = ProduceTask.getTasksByTaskStatus(2, 2)
     return JsonResponse({"tasks": tasks})
 
-
 @require_GET
 def getUndoneTasks(request):
     """
@@ -73,7 +89,6 @@ def getUndoneTasks(request):
     """
     tasks = ProduceTask.getTasksByTaskStatus(1, 1)
     return JsonResponse({"tasks": tasks})
-
 
 @require_GET
 def getWorkshops(request):
@@ -88,7 +103,7 @@ def getWorkshops(request):
         }
     }
     """
-    workshops = ProduceTask.getWorkshops()
+    workshops = ProduceTask.getWorkshops(-1, True)
     return JsonResponse({"workshops": workshops})
 
 
@@ -104,7 +119,7 @@ def getWorkshopByProduct(request):
         }
     }
     """
-    product_id = request.GET.get("product_id")
+    product_id = request.GET.get("product_id", -1)
     workshops = ProduceTask.getWorkshops(product_id)
     return JsonResponse({"workshops": workshops})
 

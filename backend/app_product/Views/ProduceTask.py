@@ -46,6 +46,13 @@ def getProductsByOrderStatus(gte, lte): # 想精确搜索就让 gte == lte
     return orders
 
 
+def queryTasks(params):
+    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(params)
+    tasks_list = []
+    for task in tasks:
+        tasks_list.append(util.wrapTaskDTO(task))
+    return tasks_list
+
 def getTasksByTaskStatus(gte, lte):
     tasks = ProduceTaskBasic.objects.filter(status__gte=gte, status__lte=lte)
     tasks_DTO = []
@@ -63,6 +70,20 @@ def getTasksByOrderID(order_id):
     }]
     """
     tasks = ProduceTaskBasic.objects.select_related('workshop').filter(order_id=order_id)
+    tasks_list = []
+    for task in tasks:
+        tasks_list.append(util.wrapTaskDTO(task))
+    return tasks_list
+
+def getTasksByWorkshopID(workshop_id):
+    """
+    获取某一车间的所有分配任务
+    :param order_id:
+    :return: [{
+        taskDTO
+    }]
+    """
+    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(workshop_id=workshop_id)
     tasks_list = []
     for task in tasks:
         tasks_list.append(util.wrapTaskDTO(task))
@@ -128,7 +149,7 @@ def createTasks(tasks, order_id=-1, from_outside=True):
         raise Exception(util.ErrMsg[0].format("need specify a order"))
 
 
-def getWorkshops(product_id=-1):
+def getWorkshops(product_id=-1, all=False):
     """
     返回所有车间 按能做的产品分组
     :param None
@@ -145,7 +166,7 @@ def getWorkshops(product_id=-1):
         for workshop in workshops:
             workshop_group[workshop.name] = workshop.id
         return workshop_group
-    else:
+    elif not all:
         product_group = {}
         workshops = Workshop.objects.all()
         for workshop in workshops:
@@ -153,6 +174,12 @@ def getWorkshops(product_id=-1):
             product_group[w_product.id] = product_group.get(w_product.id, {})
             product_group[w_product.id][workshop.name] = workshop.id
         return product_group
+    else:
+        workshop_group = {}
+        workshops = Workshop.objects.all()
+        for workshop in workshops:
+            workshop_group[workshop.name] = workshop.id
+        return workshop_group
 
 
 
