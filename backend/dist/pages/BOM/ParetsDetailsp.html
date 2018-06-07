@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>BOM编辑</title>
+        <title>修改物料信息</title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -16,12 +16,13 @@
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
         <script>
+
             layui.use(['form','table'], function(){
                 var $=layui.jquery;
                 var form=layui.form;
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/material/",
+                    url:"http://127.0.0.1:8000/bom/materialclass/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -29,10 +30,10 @@
                     async:false,
                     success:function(msg){
                         console.log(msg.data)
-                        var materialitoptions=msg.data;
-                        $("#mi").prepend("<option value='null'></option>")
-                        for (var i = 0; i < materialitoptions.length; i++) {
-                            $("#mi").append("<option value='"+materialitoptions[i].id+"'>"+materialitoptions[i].id+":"+materialitoptions[i].name+"</option>")
+                        var materialtypeoptions=msg.data;
+                        $("#mt").append("<option value='null'>物料类型</option>")
+                        for (var i = 0; i < materialtypeoptions.length; i++) {
+                            $("#mt").append("<option value='"+materialtypeoptions[i].class_id+"'>"+materialtypeoptions[i].class_field+"</option>")
                         }
                         form.render('select');
                     },
@@ -41,30 +42,24 @@
                     }        
                 });
 
-
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/productmaterial/"+parent.cureditm+"/",
+                    url:"http://127.0.0.1:8000/bom/material/"+parent.curedit+"/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
                     },
                     success:function(msg){
                         console.log(msg)
-                        $('#ri').val(String(parent.cureditm));
-                        $('#mp').val(String(msg.procedure));
-                        $('#mn').val(String(msg.number));
-                        $('#mno').val(msg.comments);
-                        $("#mi option[value='"+msg.material_id+"']").attr("selected","selected")
+                        $("#mi").val(String(msg.id))
+                        $("#mn").val(msg.name)
+                        $("#mt option[value='"+msg.class_id+"']").attr("selected","selected"); 
                         form.render('select')
                     },
                     error:function(error){
-                        console.log(error)                                
+                        console.log(error)
                     }
-
                 });
-
             });
-
         </script>
     </head>
 
@@ -72,67 +67,51 @@
         <div class="weadmin-body">
             <form class="layui-form">
                 <div class="layui-form-item">
-                    <label for="recordid" class="layui-form-label">
-                        <span class="we-red">*</span>记录编号
+                    <label for="materialid" class="layui-form-label">
+                        <span class="we-red">*</span>物料编号
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="ri" name="recordid" lay-verify="required|number" autocomplete="off" class="layui-input" readonly="readonly">
+                        <input type="text" id="mi" name="materialid" lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label for="materialit" class="layui-form-label">
-                        <span class="we-red">*</span>物料
+                    <label for="materialname" class="layui-form-label">
+                        <span class="we-red">*</span>物料名称
                     </label>
                     <div class="layui-input-inline">
-                        <select name="materialit" id="mi" lay-verify="required" lay-search>
+                        <input type="text" id="mn" name="materialname" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="materialtype" class="layui-form-label">
+                        <span class="we-red">*</span>物料类型
+                    </label>
+                    <div class="layui-input-inline">
+                        <select name="materialtype" id="mt" lay-verify="required" lay-search>
 
                         </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="materialprocedure" class="layui-form-label">
-                        <span class="we-red">*</span>物料工序
-                    </label>
-                    <div class="layui-input-block">
-                        <input type="text" name="materialprocedure" id="mp" class="layui-input" lay-verify="required|number" autocomplete="off">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="materialnumber" class="layui-form-label">
-                        <span class="we-red">*</span>物料数量
-                    </label>
-                    <div class="layui-input-block">
-                        <input type="text" name="materialnumber" id="mn" class="layui-input" lay-verify="required|number" autocomplete="off">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="materialnote" class="layui-form-label">
-                        投料说明
-                    </label>
-                    <div class="layui-input-block">
-                        <textarea name="materialnote" id="mno" class="layui-textarea"></textarea>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label for="L_repass" class="layui-form-label">
                   </label>
                     <button class="layui-btn" lay-filter="edit" lay-submit="">提交修改</button>
+                    <input type="hidden" name="dataId" id="dataId" value="" />
                 </div>
             </form>
         </div>
+
         <script>
             layui.use('form',function(){
                 var $=layui.jquery;
                 var form=layui.form;
 
                 form.on('submit(edit)',function(data){
-                    var recordid=data.field.recordid;
-                    var materialid=data.field.materialit;
-                    var materialprocedure=data.field.materialprocedure;
-                    var materialnumber=data.field.materialnumber;
-                    var materialnote=data.field.materialnote;
+                    var materialid=data.field.materialid;
+                    var materialname=data.field.materialname;
+                    var materialtype=data.field.materialtype;
 
-                    var urltogo="http://127.0.0.1:8000/bom/productmaterial/"+recordid+"/?material_id="+materialid+"&procedure="+materialprocedure+"&number="+materialnumber+"&comments="+materialnote;
+                    var urltogo="http://127.0.0.1:8000/bom/material/"+materialid+"/?name="+materialname+"&class_id="+materialtype;
 
                     $.ajax({
                         url:urltogo,
@@ -162,7 +141,6 @@
                 });
             });
         </script>
-
     </body>
 
 </html>
