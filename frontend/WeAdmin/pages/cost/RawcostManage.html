@@ -33,20 +33,11 @@
                 <form class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
                         <input type="text" name="title" required lay-verify="required"
-                             placeholder="请输入货品编号" autocomplete="off" class="layui-input">    
+                             placeholder="请输入物料编号" autocomplete="off" class="layui-input">    
                     </div>
                     <div class="layui-inline">
                         <select name="workshop" lay-verify="">
-                            <option value="">生产车间</option>
-                            <option value="010">1</option>
-                            <option value="021">2</option>
-                            <option value="021">3</option>
-                            <option value="021">4</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <select name="goods" lay-verify="">
-                            <option value="">生产货品</option>
+                            <option value="">存储仓库</option>
                             <option value="010">1</option>
                             <option value="021">2</option>
                             <option value="021">3</option>
@@ -159,29 +150,27 @@
                 // ,url: '' //数据接口
                 ,page: true //开启分页
                 ,cols: [[ //表头
-                    {field: 'id', title: '货品编号', width:200, sort: true, fixed: 'left'}
-                    ,{field: 'name', title: '名称', width:150, }
-                    ,{field: 'part1', title: '零件1/价格', width:150}
-                    ,{field: 'part2', title: '零件2/价格', width:100} 
-                    ,{field: 'part3', title: '零件3/价格', width: 100}
-                    ,{field: 'sum', title: '总成本', width: 300, sort: true}
+                    { checkbox: true}
+                    ,{field: 'id', title: '物料编号', width:200, sort: true}
+                    ,{field: 'name', title: '名称', width:150}
+                    ,{field: 'price', title: '单价', width:200}
+                    ,{field: 'store', title: '存储仓库', width:200} 
+                    ,{field: 'remain', title: '剩余库存', width: 200}
                 ]],
                 data:[
                 {
                         "id" : "10000",
                         "name" : "无线手套",
-                        "part1" : "心灵宝石/1",
-                        "part2" : "灵魂宝石/2",
-                        "part3" : "时间宝石/3",
-                        "sum" : "6"
+                        "price" : "心灵宝石/1",
+                        "store" : "灵魂宝石/2",
+                        "remain" : "时间宝石/3"
                 },
                 {
                         "id" : "10000",
                         "name" : "无线手套",
-                        "part1" : "心灵宝石/1",
-                        "part2" : "灵魂宝石/2",
-                        "part3" : "时间宝石/3",
-                        "sum" : "6"
+                        "price" : "心灵宝石/1",
+                        "store" : "灵魂宝石/2",
+                        "remain" : "时间宝石/3"
                 }
                 ]
             });

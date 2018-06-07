@@ -13,3 +13,4 @@ migrations/
 backend/dist/test.html
 backend/enterprise/test.html
 >>>>>>> bee66839c93cc991628f333e049c2ebb12125950
+*.pyc
