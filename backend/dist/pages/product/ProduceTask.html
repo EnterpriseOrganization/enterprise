@@ -30,7 +30,7 @@
         <div class="layui-row">
             搜索车间名：
             <div class="layui-inline">
-                <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                <select class="select-class" lay-filter="workshop-name" lay-search="" id="workshop-name"></select>
             </div>
             <button id="button" class="layui-btn" data-type="reload">搜索</button>
         </div>
@@ -95,18 +95,20 @@
 
             var $ = layui.$, active = {
                 reload: function () {
-                    var demoReload = $('#demoReload');
+                    var workshop_name_input = $('#workshop-name').val();
                     //执行重载
-                    table.reload('tableReload', {
-                        page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                        , where: {
-                            key: {
-                                id: demoReload.val()
+                    if (workshop_name_input !== '') {
+                        table.reload('tableReload', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
                             }
-                        }
-                    });
+                            , where: {
+                                key: {
+                                    workshop_name: workshop_name_input
+                                }
+                            }
+                        });
+                    }
                 }
             };
 
