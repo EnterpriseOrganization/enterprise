@@ -28,12 +28,14 @@
         <div class="layui-row">
             <form class="layui-form layui-col-md12 we-search">
                 筛选 <i class="fas fa-filter"></i>
-
                 <div class="layui-inline">
-                    <input type="text" name="username" placeholder="物料名称或编号" autocomplete="off" class="layui-input">
+                    <input type="text" name="order_id" placeholder="订单编号" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-inline">
-                    <input type="text" name="username" placeholder="供应商名称" autocomplete="off" class="layui-input">
+                    <input type="text" name="mate_name" placeholder="物料名称" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-inline">
+                    <input type="text" name="fact_name" placeholder="供应商名称" autocomplete="off" class="layui-input">
                 </div>
                 <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
             </form>
@@ -41,7 +43,7 @@
         <div class="weadmin-block">
             <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
             <button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>
-            <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加用户','./PriceAdd.html',450,400)"><i class="fas fa-plus"></i> 添加</button>
+            <button class="layui-btn layui-btn-sm" lay-filter="add_price" lay-submit=""><i class="fas fa-plus"></i> 添加</button>
             <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
             <span class="fr" style="line-height:40px">共有数据：88 条</span>
         </div>
@@ -139,5 +141,72 @@
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
     </script>
+
+
+
+
+
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script>
+        layui.extend({
+            admin: '{/}../../static/js/admin'
+        });
+        layui.use(['form', 'jquery', 'util', 'admin', 'layer'], function () {
+            var form = layui.form,
+                $ = layui.jquery,
+                util = layui.util,
+                admin = layui.admin,
+                layer = layui.layer;
+
+            //自定义验证规则
+            form.verify({
+                nikename: function (value) {
+                    if (value.length < 5) {
+                        return '昵称至少得5个字符啊';
+                    }
+                },
+                pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                repass: function (value) {
+                    if ($('#L_pass').val() != $('#L_repass').val()) {
+                        return '两次密码不一致';
+                    }
+                }
+            });
+            //失去焦点时判断值为空不验证，一旦填写必须验证
+            $('input[name="email"]').blur(function () {
+                //这里是失去焦点时的事件
+                if ($('input[name="email"]').val()) {
+                    $('input[name="email"]').attr('lay-verify', 'email');
+                } else {
+                    $('input[name="email"]').removeAttr('lay-verify');
+                }
+            });
+
+            //监听新增价格
+            form.on('submit(add_price)', function (data) {
+                console.log('add price');
+                layer.open({
+                         type: 2 //此处以iframe举例
+                         ,title: '添加用户'
+                         ,area: ['450px', '400px']
+                         ,content: 'PriceAdd.html'
+                         ,closeBtn: 1
+                         ,btn: function(){
+                             layer.closeAll();
+                    }
+                     });
+                return false;
+            });
+
+
+        });
+    </script>
+
+
+
+
+
+
+
 </body>
 </html>

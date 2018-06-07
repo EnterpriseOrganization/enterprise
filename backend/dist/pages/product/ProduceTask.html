@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>领料单-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+</head>
+
+<body>
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">生产管理</a>
+            <a>
+                <cite>生产任务</cite>
+            </a>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i>
+        </a>
+    </div>
+    <div class="weadmin-body">
+        <div class="layui-row">
+            搜索车间名：
+            <div class="layui-inline">
+                <select class="select-class" lay-filter="workshop-name" lay-search="" id="workshop-name"></select>
+            </div>
+            <button id="button" class="layui-btn" data-type="reload">搜索</button>
+        </div>
+        <table id="produce-tasks-table" lay-filter="produce-tasks-table-filter"></table>
+    </div>
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        layui.config({
+            base: '../../static/js/'
+            , version: '101100'
+        }).use('admin');
+        layui.use(['table', 'jquery'], function () {
+            var table = layui.table,
+                $ = layui.jquery;
+            var tasks; // 所有生产任务对象
+            var workshop_map; // name-id对应
+
+            $.ajax({ // 从后台拿到可选的车间名称
+                type: 'GET',
+                url: 'http://localhost:8000/product/workshop/byproduct',
+                dataType: 'json',
+                cache: false,
+                async: false,
+                success: function (data) {
+                    workshop_map = data["workshops"];
+                    // 添加options                    
+                    $('#workshop-name').append(new Option('', -1));
+                    for (var key in data["workshops"]) {
+                        $('#workshop-name').append(new Option(key, key)); // 第二个参数是选择器的值
+                    }
+                    form.render(); // 下拉菜单渲染 把内容加载进去                    
+                }
+            });
+
+            $.ajax({ // 从后台拿到所有分配任务
+                type: 'GET',
+                url: 'http://localhost:8000/product/tasks/byorder',
+                dataType: 'json',
+                cache: false,
+                async: false,
+                success: function (data) {
+                    tasks = data["tasks"];
+                }
+            });
+
+            table.render({ // 第一次渲染所有数据上去
+                elem: '#produce-tasks-table'
+                , height: 400
+                , id: 'tableReload'
+                , page: true
+                , data: tasks
+                , cols: [[
+                    { field: 'order_id', title: '订单ID', sort: true },
+                    { field: 'product_name', title: '货品名称', sort: true },
+                    { field: 'workshop_name', title: '车间名称', sort: true },
+                    { field: 'amount', title: '分配数量', sort: true },
+                    { field: 'status', title: '生产状态', templet: '#produce-status-tpl' },
+                ]]
+            });
+
+
+            var $ = layui.$, active = {
+                reload: function () {
+                    var workshop_name_input = $('#workshop-name').val();
+                    //执行重载
+                    if (workshop_name_input !== '') {
+                        table.reload('tableReload', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            , where: {
+                                key: {
+                                    workshop_name: workshop_name_input
+                                }
+                            }
+                        });
+                    }
+                }
+            };
+
+            $('#button').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+
+            // window.refreshTable = function () { // 重新渲染table
+            //     if ($('#workshop-name').val() === '') {
+            //         // TODO: 拿到所有task并且reload()table
+            //         $.ajax({ // 从后台拿到所有分配任务
+            //             type: 'GET',
+            //             url: '',
+            //             dataType: 'json',
+            //             cache: false,
+            //             async: false,
+            //             success: function (data) {
+            //                 tasks = data["tasks"];
+            //             }
+            //         });
+            //     } else {
+            //         const workshop_id = workshop_map[$('#workshop-name').val()];
+            //         // TODO: 通过workshop-id拿到所有task并且reload()table
+            //         $.ajax({ // 从后台拿到所有分配任务
+            //             type: 'GET',
+            //             url: '',
+            //             // data: { "workshop_id": workshop_id },
+            //             dataType: 'json',
+            //             cache: false,
+            //             async: false,
+            //             success: function (data) {
+            //                 tasks = data["tasks"];
+            //             }
+            //         });
+            //     }
+            // };
+        });
+    </script>
+    <script type="text/html" id="produce-status-tpl">
+            {{# if (d.status === 0) { }}
+            <span class="laynumui-btn layui-btn-xs">已分配</span>
+            {{# } else if (d.status === 1) { }}
+            <span class="layui-btn layui-btn-normal layui-btn-xs">已领料</span>
+            {{# } else  { }}
+            <span class="layui-btn layui-btn-warm layui-btn-xs">已完成</span>
+            {{# } }}
+        </script>
+</body>
+
+</html>

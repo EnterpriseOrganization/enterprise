@@ -212,6 +212,7 @@ def deleteTasksByOrderID(order_id):
     amount_tuple = tasks.delete()
     return amount_tuple[0]
 
+
 # 貌似没人用
 def deleteTasks(task_id_list):
     if(type(task_id_list)== type([])):
