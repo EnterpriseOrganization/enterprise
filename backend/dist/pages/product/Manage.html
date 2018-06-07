@@ -28,7 +28,8 @@
     </div>
 
     <div class="weadmin-body">
-        <table class="layui-table" id="assign-table">
+        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter"></table>
+        <table class="layui-table" id="assign-table"  style="margin-top: 50px;">
             <thead>
                 <tr>
                     <th>订单ID</th>
@@ -52,8 +53,6 @@
             <button class="layui-btn" onclick="addRow();">增加</button>
             <button class="layui-btn" onclick="submit();">提交</button>
         </div>
-
-        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter" style="margin-top: 50px;"></table>
     </div>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
