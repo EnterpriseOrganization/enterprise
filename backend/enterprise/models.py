@@ -87,11 +87,11 @@ class ProduceTaskBasic(models.Model):
     topic = models.CharField(max_length=45, blank=True, null=True)
     status = models.IntegerField(default=0, validators=[TaskStatusValidator]) # 0：已分配,待领料 1： 已领料,待生产 2: 生产完成
     # producestatus = models.IntegerField(db_column='produceStatus', blank=True, null=True, default=0)  # Field name made lowercase.
-    archivedate = models.DateTimeField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
+    archivedate = models.DateField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
     order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', blank=True, null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
-    begindate = models.DateTimeField(db_column='beginDate',auto_now_add=True)  # Field name made lowercase.
+    begindate = models.DateField(db_column='beginDate',auto_now_add=True)  # Field name made lowercase.
     done_checker = models.CharField(null=True, max_length=100, default="")
     # deadline = models.DateTimeField(null=True)
     deadline = models.DateField(null=True)
