@@ -45,13 +45,14 @@
         }).use('admin');
         layui.use(['table', 'jquery'], function () {
             var table = layui.table,
-                $ = layui.jquery;
+                $ = layui.jquery,
+                form = layui.form;
             var tasks; // 所有生产任务对象
             var workshop_map; // name-id对应
 
             $.ajax({ // 从后台拿到可选的车间名称
                 type: 'GET',
-                url: 'http://localhost:8000/product/workshop/byproduct',
+                url: 'http://localhost:8000/product/workshop',
                 dataType: 'json',
                 cache: false,
                 async: false,
@@ -68,7 +69,7 @@
 
             $.ajax({ // 从后台拿到所有分配任务
                 type: 'GET',
-                url: 'http://localhost:8000/product/tasks/byorder',
+                url: 'http://localhost:8000/product/tasks',
                 dataType: 'json',
                 cache: false,
                 async: false,
