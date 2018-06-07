@@ -16,6 +16,12 @@ def getAllOrder(request):
 	Response = serializers.serialize("json", Order.objects.all());
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
+# by ymk 
+# 获取到特定条件下的订单信息返回
+def getSpecificOrder(request):
+	info = "test"
+	return HttpResponse(info)	
+
 # by ymk
 # 获取到所有的产品信息
 # 返回样例"[{"model": "enterprise.product", "pk": 1, "fields": {"name": "testPro1", "class_obj": 1, "price": "20"}}, {"model": "enterprise.product", "pk": 2, "fields": {"name": "testPro2", "class_obj": 1, "price": "32"}}]"

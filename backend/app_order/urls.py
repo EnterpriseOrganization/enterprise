@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^add-order$',views.addOrder), # 添加一条订单的信息，通过post发送json，接收后将该订单信息插入到模型中，返回一条状态语句
     url(r'^delete-order$',views.deleteOrder), # 删除一条订单的信息，通过post发送json，解析id删除相应的order信息，返回一条状态语句
     url(r'^update-order$',views.updateOrder), # 更新一条订单的信息，通过post发送json，解析id删除相应的order信息，再添加相应信息，返回一条状态语句
-    
+    url(r'^get-specific-order$',views.getSpecificOrder), # 查询特定具体的订单信息，通过post发送json，获取到条件后查询到相应的订单信息返回
     # OrderProduct表，这个功能主要用来显示订单的明细
     url(r'^get-all-order-product$',views.getAllOrderProduct),# 获取所有的订单货品信息
     url(r'^add-order-product$',views.addOrderProduct), # 添加订单的货品信息，通过post发送json，接受订单的所有货品信息，返回一条状态语句
