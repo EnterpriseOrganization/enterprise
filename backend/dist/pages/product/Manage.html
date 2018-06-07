@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>生产分配-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+</head>
+
+<body>
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">生产管理</a>
+            <a>
+                <cite>任务划分</cite>
+            </a>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i>
+        </a>
+    </div>
+
+    <div class="weadmin-body">
+        <table class="layui-table" id="assign-table">
+            <thead>
+                <tr>
+                    <th>订单ID</th>
+                    <th>货品名称</th>
+                    <th>车间名称</th>
+                    <th>分配数量</th>
+                    <th>生产状态</th>
+                    <th>操作</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="layui-word-aux">
+            <label id="now"></label>
+            <label id="num"></label>
+            <label id="warning" style="color: red;display: none;">超出限制！</label>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <button class="layui-btn" onclick="addRow();">增加</button>
+            <button class="layui-btn" onclick="submit();">提交</button>
+        </div>
+
+        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter" style="margin-top: 50px;"></table>
+    </div>
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        layui.config({
+            base: '../../static/js/',
+            version: '101100'
+        }).use('admin');
+        layui.use(['table', 'jquery', 'form'], function () {
+            var table = layui.table,
+                form = layui.form,
+                $ = layui.jquery;
+
+            var order_list_data;
+            var num = 0; // 第几条记录 不一定是0 要根据读出的数据判断
+            var pre_num = 0;
+            var status = new Array(); // 记录分配的任务的状态 null则表示删除掉了这一条记录
+            var value = new Array(); // 记录值
+            var optionsData = new Array();
+            var allocate = new Array();
+            var order_id; // 用于记录当前的订单编号
+            var product_id; // 用于记录当前的货品编号，用来向后端发送
+            var product_name;
+            var product_num;
+            let workshop_map = {};
+            const produceStatus = { 0: '已分配', 1: '已领料', 2: '已完成' };
+
+            $.ajax({ // 从后台拿到数据
+                type: 'GET',
+                url: 'http://localhost:8000/product/tasks',
+                dataType: 'json',
+                cache: false,
+                async: false,
+                success: function (data) {
+                    order_list_data = data['tasks'];
+                }
+            });
+
+            table.render({
+                elem: '#order-list-table',
+                // height: 180,
+                page: true,
+                data: order_list_data,
+                cols: [
+                    [{
+                        field: 'order_id',
+                        title: '订单ID',
+                    },
+                    {
+                        field: 'product_id',
+                        title: '货品ID',
+                    },
+                    {
+                        field: 'product_name',
+                        title: '货品名称',
+                    },
+                    {
+                        field: 'amount',
+                        title: '货品数量',
+                    },
+                    {
+                        field: 'status',
+                        title: '分配状态',
+                        templet: '#assignStatusTpl'
+                    },
+                    {
+                        field: 'operation',
+                        title: '操作',
+                        toolbar: '#select-order-button-template'
+                    }
+                    ]
+                ]
+            });
+
+            table.on('tool(order-list-table-filter)', function (obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'detail') {
+                    order_id = data.order_id;
+                    product_id = data.product_id;
+                    product_name = data.product_name;
+                    product_num = data.amount;
+                    $.ajax({ // 从后台拿到订单分配数据
+                        type: 'GET',
+                        url: 'http://localhost:8000/product/tasks/byorder',
+                        dataType: 'json',
+                        data: { "order_id": order_id },
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            allocate = data["tasks"];
+                        }
+                    });
+
+                    optionsData = new Array();
+
+                    $.ajax({ // 从后台拿到可选的车间名称
+                        type: 'GET',
+                        url: 'http://localhost:8000/product/workshop/byproduct',
+                        dataType: 'json',
+                        data: { "product_id": product_id },
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            workshop_map = data["workshops"];
+                            for (var key in data["workshops"]) {
+                                optionsData.push(key);
+                            }
+                        }
+                    });
+
+                    $('#num').html('/' + product_num); // 展示订单分配情况
+                    $('#now').html(0);
+
+                    for (var i = pre_num; i < num; i++) { // 删除掉现在展示的table
+                        if (status[i] != -1) {
+                            removeTr(i);
+                        }
+                    }
+
+                    pre_num = num;
+
+                    var tmp_sum = 0;
+                    console.log(allocate.length);
+                    for (var i = 0; i < allocate.length; i++) {
+                        addRow();
+                        setValue(i, allocate[i]['amount'], allocate[i]['workshop_name'], allocate[i]['status']);
+                        tmp_sum += allocate[i]['amount'];
+                    }
+                    $('#now').html(tmp_sum);
+                    if (tmp_sum > product_num) {
+                        $('#warning').css('display', 'inline');
+                    } else {
+                        $('#warning').css('display', 'none');
+                    }
+                    form.render();
+
+                }
+            });
+
+            function setValue(i, amount, workshop_name, add_status) {
+                const tmp_count = i + pre_num;
+                $('#workshopName' + tmp_count).val(workshop_name);
+                $('#goodsNum' + tmp_count).val(amount);
+                $('#button' + tmp_count).text(produceStatus[add_status]);
+                status[tmp_count] = add_status;
+                value[tmp_count] = amount;
+                // TODO: 初始CSS
+                if (status[tmp_count] === 1) {
+                    $('#button' + tmp_count).toggleClass("layui-btn-normal");
+                } else if (status[tmp_count] === 2) {
+                    $('#button' + tmp_count).toggleClass("layui-btn-warm");
+                }
+            };
+
+            window.addRow = function () {
+                if (order_id === undefined) { // 如果还没选择哪个订单就不响应
+                    return;
+                }
+
+                // 添加一行元素
+                var tableHtml = '<tr id="tr' + num + '">' +
+                    '<td><div class="layui-input-inline"><a>' + order_id + '</a></div></td>' +
+                    '<td><div class="layui-input-inline"><a>' + product_name + '</a></div></td>' +
+                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-filter="workshopName" lay-search="" id="workshopName' +
+                    num + '"></select></div></td>' +
+                    '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" class="layui-input inputNum" id="goodsNum' +
+                    num + '"></input></div></td>' +
+                    '<td><label class="layui-btn layui-btn-sm" id="button' + num +
+                    '">已分配</label>' + '</td>' +
+                    '<td><button class="layui-btn layui-btn-sm" id="button' + num +
+                    '" onclick="changeStatus(' + num + ')">确认完成</button>' + '</td>' +
+                    '<td><button class="layui-btn layui-btn-sm" onclick="removeTr(' + num +
+                    ')"><i class="layui-icon">&#xe640;</i></button>' + '</td>' +
+                    '</tr>';
+                const elements = $("#assign-table").children().length; // 表示id为“mtTable”的标签下的子标签的个数
+                $("#assign-table").children().eq(elements - 1).after(tableHtml); // 在表头之后添加空白行
+
+                $('#workshopName' + num).append(new Option('', -1));
+                // 添加options
+                $.each(optionsData, function (index, item) { // 动态添加元素
+                    $('#workshopName' + num).append(new Option(item, item)); // 第二个参数是选择器的值
+                })
+                form.render(); // 下拉菜单渲染 把内容加载进去
+
+                // 设置只能输入数字
+                $("#goodsNum" + num).keyup(function () { // 设置数量那一栏只能输入数字
+                    $(this).val($(this).val().replace(/[^0-9]/g, ''));
+                    const tmp = '#goodsName' + num;
+                }).bind("paste", function () { // CTR+V事件处理
+                    $(this).val($(this).val().replace(/[^0-9]/g, ''));
+                }).css("ime-mode", "disabled"); // CSS设置输入法不可用
+
+                $("#goodsNum" + num).blur(function () { // 输入框失去焦点的时候进行值判断
+                    const trID = $(this).context.id.slice(8); //在控制台找到的 别说这种方法不优雅
+                    const workshopNameID = '#workshopName' + trID;
+                    if ($(workshopNameID).val() !== '-1') { // 如果选择了workshop
+                        value[trID] = parseInt($(this).val()); // 更新数组内的值
+
+                        var sum = 0; // 求值
+                        for (var i = pre_num; i < value.length; i++) {
+                            sum += value[i];
+                        }
+                        $('#now').html(sum);
+                        if (sum > product_num) {
+                            $('#warning').css('display', 'inline');
+                        } else {
+                            $('#warning').css('display', 'none');
+                        }
+                    }
+                })
+
+                status[num] = 0;
+                value[num] = 0;
+                num++;
+            };
+
+            window.submit = function () {
+                let update_data = Array();
+                let count = 0;
+
+                let now = parseInt($("#now").html());
+                let total = product_num;
+                if (now > total) {
+                    layer.open({
+                        title: '错误',
+                        content: '分配数额超限'
+                    });
+                } else {
+                    for (var i = pre_num; i < num; i++) {
+                        if (status[i] != -1) { // 如果是null就是删除掉的行，提取不到数据
+                            if ($('#workshopName' + i).val() === -1 || value[i] === 0) {
+                                layer.open({
+                                    title: '错误',
+                                    content: '请完善任务配分陪情况'
+                                });
+                                return;
+                            }
+                            update_data[count] = {};
+                            update_data[count]['workshop_id'] = workshop_map[$('#workshopName' + i).val()];
+                            update_data[count]['amount'] = value[i];
+                            update_data[count]['status'] = status[i];
+                            count++;
+                        }
+                    }
+                    if (count === 0) {
+                        layer.open({
+                            title: '错误',
+                            content: '请添加任务分配情况'
+                        });
+                        return;
+                    }
+                    console.log(update_data.length);
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://localhost:8000/product/task/create',
+                        dataType: 'json',
+                        data: JSON.stringify({ 'order_id': order_id, 'tasks': update_data }),
+                        cache: false,
+                        async: false,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        success: function () {
+                            layer.open({
+                                title: '成功',
+                                content: '任务分配提交成功！'
+                            });
+                        },
+                        error: (a) => {
+                            console.log("error: ", a);
+                        }
+                    });
+                }
+
+            };
+
+            // 变换状态
+            window.changeStatus = function (num) {
+                if (status[num] === 1) { // 只有是已经分配完成的任务才可以点击生产完成
+                    const id = "#button" + num;
+                    status[num] = 2; // 改变状态
+                    $(id).text('已完成'); // 改变文字描述
+                    $(id).toggleClass("layui-btn-normal"); // 改变CSS
+                    $(id).toggleClass("layui-btn-warm");
+                }
+            };
+
+            //删除行
+            window.removeTr = function (trNum) {
+                status[trNum] = -1;
+                value[trNum] = 0;
+                $("#tr" + trNum).remove();
+
+                var sum = 0; // 求值
+                for (var i = pre_num; i < value.length; i++) {
+                    sum += value[i];
+                }
+                $('#now').html(sum);
+            };
+
+            // 监听车间选择
+            form.on('select(workshopName)', function (data) {
+                const trID = data.elem.id.slice(12); //在控制台找到的 别说这种方法不优雅
+                const goodsNumID = '#goodsNum' + trID;
+                const number = $(goodsNumID).val();
+                if (number !== '') { // 如果有了输入值
+                    value[trID] = parseInt(number);
+
+                    var sum = 0; // 求值
+                    for (var i = pre_num; i < value.length; i++) {
+                        sum += value[i];
+                    }
+                    if (sum > product_num) {
+                        $('#warning').css('display', 'inline');
+                    } else {
+                        $('#warning').css('display', 'none');
+                    }
+                    $('#now').html(sum);
+                }
+            });
+        });
+    </script>
+    <script type="text/html" id="select-order-button-template">
+            <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
+        </script>
+    <script type="text/html" id="assignStatusTpl">
+            {{# if (d.status === 0) { }}
+            <span class="layui-btn layui-btn-xs">已分配</span>
+            {{# } else if (d.status === 1) { }}
+            <span class="layui-btn layui-btn-normal layui-btn-xs">已领料</span>
+            {{# } else  { }}
+            <span class="layui-btn layui-btn-warm layui-btn-xs">已完成</span>
+            {{# } }}
+        </script>
+</body>
+
+</html>
