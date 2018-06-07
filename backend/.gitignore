@@ -1,6 +1,6 @@
 #settings.py
 /mysite/settings.py
-/enterprise/migrations
+/enterprise/migrations/
 *.wpr
 *.wpu
 *.pyc

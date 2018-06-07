@@ -52,11 +52,11 @@ def generateProductTaskBasic():
     charger = "charger {}"
     topic = "topic {}"
 
-    for i in range(30):
+    for i in range(100):
         ptb = ProduceTaskBasic()
+        ptb.status = i%3
         ptb.personincharge = charger.format(i)
         ptb.topic = topic.format(i)
-        ptb.producestatus = i%2
         ptb.workshop = Workshop.objects.get(id=1+i%4)
         ptb.order = Order.objects.get(id=1+i%4)
         ptb.number = i*7

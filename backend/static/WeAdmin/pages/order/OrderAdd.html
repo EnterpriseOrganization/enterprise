@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>添加订单-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+       
+        <div class="weadmin-body">
+            <fieldset class="layui-elem-field order-form"> <!-- TODO: 居中、调整表格 -->
+                <legend><h1>新增订单</h1></legend>
+                <div class="layui-field-box">
+                    <h2>联系方式</h2>
+                    <hr class="layui-bg-green">
+                    <form class="layui-form">
+                        <div class="layui-form-item"> 
+                            <label for="contacter" class="layui-form-label">
+                                <span class="we-red">*</span>公司名称
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="order-contacter" name="contacter-info" placeholder="名称" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                            <label for="contacter" class="layui-form-label">
+                                <span class="we-red">*</span>联系人
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="order-contacter" name="contacter-info" placeholder="名称" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                            <label for="contacter" class="layui-form-label">
+                                <span class="we-red">*</span>手机号
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="contacter-info" name="contacter-info" placeholder="手机号码" lay-verify="required|phone" autocomplete="off" class="layui-input">
+                            </div>
+                            <label for="enddate" class="layui-form-label">
+                                <span class="we-red">*</span>交付时间
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="enddate" name="enddate" lay-verify="required|date" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="layui-form-item"> 
+                            <label for="receive-addr" class="layui-form-label">
+                                <span class="we-red">*</span>收货地址
+                            </label>
+                            <div class="layui-input-inline">
+                                <select name="province" id="">
+                                    <option value="">河北省</option>
+                                    <option value="">广东省</option>
+                                    <option value="">福建省</option>
+                                    <option value="">浙江省</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="province" id="">
+                                    <option value="">邯郸市</option>
+                                    <option value="">武安市</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="province" id="">
+                                    <option value="">从台区</option>
+                                    <option value="">朝阳区</option>
+                                </select>
+                            </div>
+                                <!--<input type="text" id="receive-addr" class="layui-input" name="receive-addr" lay-verify="required" autocomplete="off" style="width:500%">-->
+                            
+                        </div>
+                        <div class="layui-form-item"> 
+                            <label for="receive-addr" class="layui-form-label">
+                                <span class="we-red">*</span>详细地址
+                            </label>
+                            <div class="layui-input-inline">
+                                <textarea placeholder="详细地址" id="desc" name="desc" class="layui-textarea" style="width:400%"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item"> 
+                            <label for="fapiao" class="layui-form-label">
+                                发票抬头
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="fapiao" name="fapiao" class="layui-input">
+                            </div>
+                            <label for="fapiao" class="layui-form-label">
+                                物流
+                            </label>
+                            <div class="layui-input-inline">
+                                <select  name="" id="">
+                                    <option value="">申通</option>
+                                    <option value="">韵达</option>
+                                    <option value="">圆通</option>
+                                    <option value="">百世</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    
+                
+                    <h2>订单明细</h2>
+                    <hr class="layui-bg-green">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <table class="layui-table" id="myTable">
+                                <thead>
+                                    <tr>
+                                        <th>货品编号</th>
+                                        <th>商品名称</th>
+                                        <th>单价</th>
+                                        <th>数量</th>
+                                        <th>总价</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>haier海尔 BC-93TMPF 93升单门冰箱</td>
+                                        <td>0.01</td>
+                                        <td>984</td>
+                                        <td>9.84</td>
+                                        <td>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">删除</button>
+                                            <!--<a onclick="removeTr(1)"></a>-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>haier海尔 BC-93TMPF 93升单门冰箱</td>
+                                        <td>0.01</td>
+                                        <td>984</td>
+                                        <td>9.84</td>
+                                        <td>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">删除</button>
+                                            <!--<a onclick="removeTr(2)">删除</a>-->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>合计</td>
+                                        <td colspan>人民币</td>
+                                        <td></td>
+                                        <td>1968 个</td>
+                                        <td>19.68</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <a class="layui-btn layui-btn-sm" onclick="addTable();"><i class="fas fa-plus"></i>+</a>
+                        </div>
+                        <div class="layui-form-item">
+                            <textarea placeholder="备注：如有特殊需求，如 配送物流、加急订单等请在此注明" id="desc" name="desc" class="layui-textarea"></textarea>
+                        </div>
+                        <div class="layui-form-item">
+                            <button class="layui-btn layui-btn-normal layui-btn-lg" lay-filter="add" lay-submit="">确定</button>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+            
+        </div>
+        <script>
+            layui.extend({
+                admin: '{/}../../static/js/admin'
+            });
+            layui.use(['form', 'admin', 'jquery', 'table', 'layer','laydate'], function() {
+                var form = layui.form,
+                    admin = layui.admin,
+                    $ = layui.jquery,
+                    table = layui.table,
+                    laydate = layui.laydate
+                    layer = layui.layer;
+
+                laydate.render({
+                    elem: '#enddate'
+                });
+
+                //自定义验证规则
+                form.verify({
+                    nikename: function(value) {
+                        if(value.length < 5) {
+                            return '昵称至少得5个字符啊';
+                        }
+                    },
+                    pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                    repass: function(value) {
+                        if($('#L_pass').val() != $('#L_repass').val()) {
+                            return '两次密码不一致';
+                        }
+                    }
+                });
+
+                //监听提交
+                form.on('submit(add)', function(data) {
+                    console.log(data);
+                    //发异步，把数据提交给php
+                    layer.alert("增加成功", {
+                        icon: 6
+                    }, function() {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                    });
+                    return false;
+                });
+                
+                var num = 3;
+
+            window.addTable = function() {
+                var tableHtml = "";
+                tableHtml += '<tr id="tr' + num + '">' +
+                    '<td>'+num+'</td>' +
+                    '<td><div class="layui-input-inline"><input type="text" name="canshu1" class="layui-input"></div></td>' +
+                    '<td><div class="layui-input-inline"><input type="text" name="canshu2" class="layui-input"></div></td>' +
+                    '<td><div class="layui-input-inline"><input type="text" name="canshu3" class="layui-input"></div></td>' +
+                    '<td><div class="layui-input-inline"><input type="text" name="canshu4" class="layui-input"></div></td>' +
+                    '<td><a style="cursor: pointer; color: blue;" onclick="removeTr(' + num + ')">删除</a>' +
+                    '</td>' +
+                    '</tr>';
+//				tableHtml +='<tr>'+
+//								'<td>2</td>'+
+//								'<td>haier海尔 BC-93TMPF 93升单门冰箱</td>'+
+//								'<td>0.01</td>'+
+//								'<td>984</td>'+
+//								'<td>9.84</td>'+
+//								'<td><a style="cursor: pointer; color: blue;" onclick="removeTr(2)">删除</a></td>'+
+//							'</tr>';
+
+                var elements = $("#myTable").children().length; //表示id为“mtTable”的标签下的子标签的个数
+
+                $("#myTable").children().eq(elements - 1).after(tableHtml); //在表头之后添加空白行
+                num++;
+            }
+            //删除行
+            function removeTr(trNum) {
+                $("#tr" + trNum).remove();
+            }
+
+            });
+        </script>
+    </body>
+
+</html>
