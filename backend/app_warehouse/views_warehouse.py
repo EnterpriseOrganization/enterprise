@@ -1,9 +1,7 @@
 # from django.shortcuts import render
-import sys
 from django.http import JsonResponse
 import time
-from enterprise.models import *
-from enterprise.DataScript import generateInventorInformation
+from enterprise.models import InventorInformation
 from django.core import serializers
 # Create your views here.
 from collections import defaultdict

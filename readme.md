@@ -253,7 +253,39 @@ mysql -uroot -p [password] enterprise < db.sql
    ./manage.py runserver 0:8000
    ```
 
+## 跨域请求问题详解
+已经在master的setting.py中配置，需要大家安装中间件
+
+```
+pip install django-cors-headers
+```
+
+之后前端请求页面时需要在ajax请求中添加
+```
+xhrFields:{
+    withCredentials:true
+},
+```
+
+## 关于权限控制
+
+我们使用django自带的权限控制系统
+大家在需要验证权限的时候 可以通过
+```
+user.has_perm('enterprise.add_xxx')
+user.has_perm('enterprise.change_xxx')
+user.has_perm('enterprise.delete_xxx')
+```
+来验证，这些函数的返回值都是一布尔值,其中xxx为Model的名字，django对每个Model都会有**add**，**change**，**delete**三个权限，user是当前用户，可以通过```User.object.get```或```request.user```获取
+
+添加权限可以通过超级用户在后台进行添加，通过```localhost:8000/admin```登录超级用户即可在可视化的图形界面中进行添加权限，还是很方便的
+
+<text style="color:#f00; font-weight:bold;">但是我们推荐使用用户组的方式进行，大家每个组建立一个自己的用户组，将自己所需要更改的表的权限添加进用户组，将自己的用户添加入该用户组便可拥有该用户组的权限</text>
+
+同时需要注意的是，用户组和用户是**多对多**关系，一个用户可以添加入多个用户组
+
 **后端配置有问题，找严骅/唐鹏森/孟宇航咨询**
+**关于用户组，权限，跨域以及cookie问题可以找企业毁灭者小组成员咨询**
 
 ## 四、系统架构图
 
