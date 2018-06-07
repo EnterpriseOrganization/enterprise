@@ -243,7 +243,7 @@
             var req;
             
             if(type == 1) {
-                req = "product";
+                req = "get-all-product";
                 post_data = {
                     "req_type" : "product"
                 };
@@ -274,6 +274,7 @@
                 data: JSON.stringify(post_data),
                 success: function (data) {
                     pdata = data;
+                    console.log(pdata);
                 },
                 error: function (err) {
                     console.log(err);   
@@ -353,7 +354,7 @@
 
 
         var num = 1;
-        var price = 0;
+        var price = [];
         var total = 0;
         var pro_data = {};
         var number = [];
@@ -361,6 +362,7 @@
         //动态添加订单明细
         window.addTable = function () {
             pro_data = getData(1);
+            pro_data = JSON.parse(pro_data)
             var tableHtml = "";
 
             tableHtml += '<tr id="tr' + num + '">' +
@@ -370,15 +372,18 @@
                 '<td><div class="layui-input-inline"><input type="text" readonly="value" placeholder="请输入" id="number' + num + '"class="layui-input" class="productnum"></input></div></td>' +
                 '<td><div class="layui-input-inline"><a id="total' + num + '">' + total + '</div></td>' +
                 '<td><button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeTr(' + num + ')">删除</button>' +
-                '</td>' +
+                '</td>' +  
                 '</tr>';
 
             var elements = $("#myTable").children().length; //表示id为“mtTable”的标签下的子标签的个数    
             $("#myTable").children().eq(elements - 1).after(tableHtml); //在表头之后添加空白行
             //动态向select添加option
             for (var i in pro_data) {
-                $('#product' + num).append('<option value="' + (parseInt(i) + 3) + '">' + pro_data[i].name + '</option>');
+                $('#product' + num).append('<option value="' + pro_data[i].pk + '">' + pro_data[i].fields.name + '</option>');
+
+                price[pro_data[i].pk] = pro_data[i].fields.price
             }
+            $('#price' + num).text(0)
             form.render("select");
 
             //动态监听input输入内容
@@ -410,11 +415,11 @@
 
         //监听product select
         form.on('select(product)', function (data) {
-            var id = $(data)[0].elem.id;
-            var curr = id.substr(7, id.length);
-            var data_pos = $('#' + id).val();//product id
+            var id = $(data)[0].elem.id; //当前select的id
+            var curr = id.substr(7, id.length); //当前行
+            var data_pos = $('#' + id).val();//当前select的value==product id
             var total_all = 0;
-            if (data_pos < 0) {
+            if (data_pos == -1) {
                 $('#number' + curr).attr("readonly", "readonly");
                 $('#price' + curr).text('0');
                 $('#total' + curr).text('0');
@@ -426,11 +431,10 @@
             }
             else {
                 $('#number' + curr).removeAttr("readonly");
-                var price = pro_data[0].price;
-                $('#price' + curr).text(price);
+                var pro_price = price[data_pos];
+                $('#price' + curr).text(pro_price);
                 if ($('#number' + curr).val() != "") {
-                    var price = pro_data[data_pos].price;
-                    var total_price = price * $('#number' + curr).val();
+                    var total_price = pro_price * $('#number' + curr).val();
                     $('#total' + curr).text(total_price);
                 }
                 form.render();
