@@ -23,15 +23,23 @@
                     <label for="L_username" class="layui-form-label">
                         物料名称
                     </label>
-                    <label for="L_username" class="layui-form-label">
+                    <label for="L_username" class="layui-form-label" id="material_name">
                         H303电阻1k
+                    </label>
+                </div>
+                <div class="layui-form-item">
+                    <label for="L_username" class="layui-form-label">
+                        供应商id
+                    </label>
+                    <label for="L_username" class="layui-form-label" id="provide_factory_id">
+                        001
                     </label>
                 </div>
                 <div class="layui-form-item">
                     <label for="L_username" class="layui-form-label">
                         供应商
                     </label>
-                    <label for="L_username" class="layui-form-label" style="width:8em">
+                    <label for="L_username" class="layui-form-label" style="width:8em" id="provide_factory_name">
                         华南光电建材公司
                     </label>
                 </div>
@@ -40,7 +48,7 @@
                         更新价格(元)
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="L_username" name="username" lay-verify="required|number" autocomplete="off" class="layui-input">
+                        <input id="new_price" type="text" id="L_username" name="username" lay-verify="required|number" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -105,17 +113,30 @@
                     });
                 }
                 //监听提交
-                form.on('submit(add)', function(data) {
-                    console.log(data);
-                    //发异步，把数据提交给php
-                    layer.alert("增加成功", {
-                        icon: 6
-                    }, function() {
-                        // 获得frame索引
-                        var index = parent.layer.getFrameIndex(window.name);
-                        //关闭当前frame
-                        parent.layer.close(index);
-                    });
+                form.on('submit(add)', function(data) {//Author：FantLeo
+                    //var time = new Date();
+                    var f = data.field;
+                    var ma_name = document.getElementById("material_name").innerText.trim();
+                    var pro_fact_name = document.getElementById("provide_factory_name").innerText.trim();
+                    var pro_fact_id = document.getElementById("provide_factory_id").innerText.trim();
+                    var newprice = document.getElementById("new_price").value;
+                    //var name = document.getElementById()
+                    //console.log(time);
+                    console.log('data')
+                    console.log(data)
+                    console.log('data field')
+                    console.log(f)
+                    console.log('getelementById')
+                    console.log(ma_name)
+                    console.log(pro_fact_id)
+                    console.log(pro_fact_name)
+                    console.log(newprice)
+                    $.post("127.0.0.1:9000/purchase/update_quotation_price",{quotation_id:pro_fact_id, new_price:newprice}
+                    ,function(res){
+			            console.log('eeee');
+			            console.log(res);
+                    },'json');
+                    console.log('outside the ajax！')
                     return false;
                 });
 
