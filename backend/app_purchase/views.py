@@ -162,7 +162,7 @@ def update_quotation_price(request):
 @method_decorator(csrf_exempt)
 def add_supplier(request):
 	"""
-	更新物料报价信息, 传入报价编号和准备修改的名字
+	新增提供商
 	"""
 	if request.method == 'POST':
 		params = request.POST
