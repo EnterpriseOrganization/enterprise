@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from enterprise.models import UserTable
 from enterprise.models import Purchase
 from enterprise.models import PurchaseProduct
-from enterprise.models import InventorInformation
+from enterprise.models import InventoryInformation
 from enterprise.models import Material
 from enterprise.models import Supplier
 from enterprise.models import SupplierMaterial
@@ -186,7 +186,7 @@ def get_lack_list(request):
 	return list
 	"""
 	if request.method == 'POST':
-		inifs = InventorInformation.objects.select_related('material').filter(number__lt=F('threshold'))
+		inifs = InventoryInformation.objects.select_related('material').filter(number__lt=F('threshold'))
 		result = []
 		for inif in inifs:
 			res = {
