@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>历史生产记录-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+    </head>
+    <body>
+        <div class="weadmin-nav">
+            <span class="layui-breadcrumb">
+                <a href="">首页</a>
+                <a href="">生产管理</a>
+                <a><cite>历史生产记录</cite></a>
+            </span>
+            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+                <i class="layui-icon" style="line-height:30px">ဂ</i>
+            </a>
+        </div>
+        <table id="produce-table" lay-filter="produce-table-filter"></table>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            layui.config({
+                base: '../../static/js/'
+                ,version: '101100'
+            }).use('admin');
+            layui.use('table', function(){
+                var product_table = layui.table;
+                var produce_data;
+                // TODO: 从后端获取生产记录解析到produce_data中
+                // produce_data = [{'orderID': 0, 'groupID': 101, 'productID': '20A'}];
+                product_table.render({
+                    elem: '#produce-table'
+                    ,height: 200
+                    ,page: true
+                    ,data: produce_data
+                    ,cols: [[
+                        {field: 'orderID', title: '订单ID', width:170, fixed: 'left'},
+                        {field: 'groupID', title: '车间ID', width:170},
+                        {field: 'productID', title: '货品ID', width:170},
+                        {field: 'productName', title: '货品名称', width:170},
+                        {field: 'productNumber', title: '货品数量'},
+                        {field: 'deadline', title: '截止时间', width:170},
+                        {field: 'finishTime', title: '完成时间', width:170, fixed: 'right'},
+                    ]]
+                });
+            });
+        </script>
+    </body>
+</html>
