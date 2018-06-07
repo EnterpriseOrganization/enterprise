@@ -197,8 +197,8 @@ class MaterialRequistion(models.Model):
 
 
 class OrderProduct(models.Model):
-    order = models.OneToOneField(Order, models.DO_NOTHING, db_column='orderID', null=True)  # Field name made lowercase.
-    product = models.OneToOneField(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
+    order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', null=True)  # Field name made lowercase.
+    product = models.ForeignKey(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
     price = models.DecimalField(default=0, decimal_places=0, max_digits=3)
 

@@ -19,19 +19,14 @@ def getMaterialList(product_id, product_num):
             ]
         }
     '''
-
     material_list = ProductMaterial.objects.select_related('material') \
         .values('material_id', 'material__name', 'number') \
         .filter(product_id = product_id)
-    
     mlist = []
-
     for material in material_list:
-        # material["number"] = material["number"] * pro_num
         mlist.append({
             "material_id":material["material_id"],
             "material_name":material["material__name"],
             "material_num":material["number"] * int(product_num)
         })
-
     return {"material_requisition":mlist}
