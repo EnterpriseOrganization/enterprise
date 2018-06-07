@@ -1,9 +1,7 @@
 __pycache__/
-<<<<<<< HEAD
 __init__.py
 migrations/
 .idea
-=======
 *.pyc
 *.wpr
 *.wpu
@@ -12,4 +10,3 @@ migrations/
 *.pyc
 backend/dist/test.html
 backend/enterprise/test.html
->>>>>>> bee66839c93cc991628f333e049c2ebb12125950
