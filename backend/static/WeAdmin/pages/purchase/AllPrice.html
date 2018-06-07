@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>采购管理-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">	
+    </head>
+
+    <body>
+        <div class="weadmin-body">
+            <div class="layui-row layui-col-space30">
+                <div class="layui-col-md1 layui-form-item">
+                    <select class="layui-inline" name="city" lay-verify="required">
+                        <option value="-1">H303电阻 1K</option>
+                        <option value="0">H1Z1电阻 2K</option>
+                        <option value="1">双向电容器</option>
+                        <option value="2">光明之神奥德尔</option>
+                        <option value="3">卡萨布兰卡</option>
+                        <option value="4">烟熏玫瑰</option>
+                    </select>
+                </div>
+                <div id="price-charts" class="layui-col-md11" style="height:500px;">	</div>
+            </div>
+            <div class="layui-row">
+                <form class="layui-form layui-col-md12 we-search">
+                    筛选 <i class="fas fa-filter"></i>
+                    
+                    <div class="layui-inline">
+                        <input type="text" name="username" placeholder="物料名称或编号" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" name="username" placeholder="供应商名称" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                </form>
+            </div>
+            <div class="weadmin-block">
+                <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
+                <button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>
+                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加用户','./PriceAdd.html',450,400)"><i class="fas fa-plus"></i> 添加</button>
+                <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
+                <span class="fr" style="line-height:40px">共有数据：88 条</span>
+            </div>
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+                        </th>
+                        <th>物料编号</th>
+                        <th>物料名称</th>
+                        <th>价格（元）</th>
+                        <th>供应商</th>
+                        <th>修改时间</th>
+                        <th>操作</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+                        </td>
+                        <td>CDE012FGAB</td>
+                        <td>H303电阻1K</td>
+                        <td>0.7 元/个</td>
+                        <td>华南光电建材公司</td>
+                        <td>2018/4/3</td>
+                        <td class="td-manage">
+                            <a title="编辑" onclick="WeAdminShow('编辑','./PriceModify.html',400,400)" href="javascript:;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a title="图表统计" onclick="WeAdminShow('编辑','./edit.html')" href="javascript:;">
+                                <i class="fas fa-chart-line"></i>
+                            </a>
+                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="page">
+                <div>
+                    <a class="prev" href="">&lt;&lt;</a>
+                    <a class="num" href="">1</a>
+                    <span class="current">2</span>
+                    <a class="num" href="">3</a>
+                    <a class="num" href="">489</a>
+                    <a class="next" href="">&gt;&gt;</a>
+                </div>
+            </div>
+        </div>
+        <script src="../../static/js/echarts.js"></script>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('price-charts'));
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '物料历史报价统计'
+                },
+                tooltip: {
+                    trigger:'axis'
+                },
+                legend: {
+                    data:['供应商A','供应商B','供应商C','供应商D',]
+                },
+                xAxis: {
+                    data: ["2017/7","2017/8","2017/9","2017/10","2017/11","2017/12"]
+                },
+                yAxis: {type:'value'},
+                series: [{
+                    name: '供应商A',
+                    type: 'line',
+                    data: [5, 17,  10, 10, 20]
+                },{
+                    name: '供应商B',
+                    type: 'line',
+                    data: [3, 7, 16, 45, 9, 12]
+                },
+                {
+                    name: '供应商C',
+                    type: 'line',
+                    data: [12, 14, 16, 17, 9, 11]
+                },{
+                    name: '供应商D',
+                    type: 'line',
+                    data: [2, 4, 16, 7, 9, 11]
+                }]
+            };
+    
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        </script>
+    </body>
+
+</html>
