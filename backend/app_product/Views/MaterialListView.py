@@ -24,7 +24,6 @@ def getMaterialList(request):
         }
 
     """
-    print("getMaterialList")
     product_id, product_num = request.GET.get("product_id"), request.GET.get("product_num")
     if(product_id and product_num):
         material_list = MaterialList.getMaterialList(product_id, product_num)

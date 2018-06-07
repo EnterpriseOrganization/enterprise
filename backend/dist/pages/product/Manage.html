@@ -28,7 +28,8 @@
     </div>
 
     <div class="weadmin-body">
-        <table class="layui-table" id="assign-table">
+        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter"></table>
+        <table class="layui-table" id="assign-table"  style="margin-top: 50px;">
             <thead>
                 <tr>
                     <th>订单ID</th>
@@ -52,8 +53,6 @@
             <button class="layui-btn" onclick="addRow();">增加</button>
             <button class="layui-btn" onclick="submit();">提交</button>
         </div>
-
-        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter" style="margin-top: 50px;"></table>
     </div>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
@@ -72,14 +71,14 @@
             var pre_num = 0;
             var status = new Array(); // 记录分配的任务的状态 null则表示删除掉了这一条记录
             var value = new Array(); // 记录值
-            var optionsData = new Array();
+            var options_data = new Array();
             var allocate = new Array();
             var order_id; // 用于记录当前的订单编号
             var product_id; // 用于记录当前的货品编号，用来向后端发送
             var product_name;
             var product_num;
             let workshop_map = {};
-            const produceStatus = { 0: '已分配', 1: '已领料', 2: '已完成' };
+            const produce_status = { 0: '已分配', 1: '已领料', 2: '已完成' };
 
             $.ajax({ // 从后台拿到数据
                 type: 'GET',
@@ -94,7 +93,6 @@
 
             table.render({
                 elem: '#order-list-table',
-                // height: 180,
                 page: true,
                 data: order_list_data,
                 cols: [
@@ -117,7 +115,7 @@
                     {
                         field: 'status',
                         title: '分配状态',
-                        templet: '#assignStatusTpl'
+                        templet: '#assign-status-tpl'
                     },
                     {
                         field: 'operation',
@@ -130,8 +128,8 @@
 
             table.on('tool(order-list-table-filter)', function (obj) {
                 var data = obj.data;
-                var layEvent = obj.event;
-                if (layEvent === 'detail') {
+                var lay_event = obj.event;
+                if (lay_event === 'detail') {
                     order_id = data.order_id;
                     product_id = data.product_id;
                     product_name = data.product_name;
@@ -148,7 +146,7 @@
                         }
                     });
 
-                    optionsData = new Array();
+                    options_data = new Array();
 
                     $.ajax({ // 从后台拿到可选的车间名称
                         type: 'GET',
@@ -160,7 +158,7 @@
                         success: function (data) {
                             workshop_map = data["workshops"];
                             for (var key in data["workshops"]) {
-                                optionsData.push(key);
+                                options_data.push(key);
                             }
                         }
                     });
@@ -177,7 +175,6 @@
                     pre_num = num;
 
                     var tmp_sum = 0;
-                    console.log(allocate.length);
                     for (var i = 0; i < allocate.length; i++) {
                         addRow();
                         setValue(i, allocate[i]['amount'], allocate[i]['workshop_name'], allocate[i]['status']);
@@ -196,9 +193,9 @@
 
             function setValue(i, amount, workshop_name, add_status) {
                 const tmp_count = i + pre_num;
-                $('#workshopName' + tmp_count).val(workshop_name);
-                $('#goodsNum' + tmp_count).val(amount);
-                $('#button' + tmp_count).text(produceStatus[add_status]);
+                $('#workshop-name' + tmp_count).val(workshop_name);
+                $('#goods-num' + tmp_count).val(amount);
+                $('#button' + tmp_count).text(produce_status[add_status]);
                 status[tmp_count] = add_status;
                 value[tmp_count] = amount;
                 // TODO: 初始CSS
@@ -218,9 +215,9 @@
                 var tableHtml = '<tr id="tr' + num + '">' +
                     '<td><div class="layui-input-inline"><a>' + order_id + '</a></div></td>' +
                     '<td><div class="layui-input-inline"><a>' + product_name + '</a></div></td>' +
-                    '<td><div class="layui-form layui-input-inline"><select class="selectClass" lay-filter="workshopName" lay-search="" id="workshopName' +
+                    '<td><div class="layui-form layui-input-inline"><select class="select-class" lay-filter="workshop-name" lay-search="" id="workshop-name' +
                     num + '"></select></div></td>' +
-                    '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" class="layui-input inputNum" id="goodsNum' +
+                    '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" class="layui-input input-num" id="goods-num' +
                     num + '"></input></div></td>' +
                     '<td><label class="layui-btn layui-btn-sm" id="button' + num +
                     '">已分配</label>' + '</td>' +
@@ -232,33 +229,33 @@
                 const elements = $("#assign-table").children().length; // 表示id为“mtTable”的标签下的子标签的个数
                 $("#assign-table").children().eq(elements - 1).after(tableHtml); // 在表头之后添加空白行
 
-                $('#workshopName' + num).append(new Option('', -1));
+                $('#workshop-name' + num).append(new Option('', -1));
                 // 添加options
-                $.each(optionsData, function (index, item) { // 动态添加元素
-                    $('#workshopName' + num).append(new Option(item, item)); // 第二个参数是选择器的值
+                $.each(options_data, function (index, item) { // 动态添加元素
+                    $('#workshop-name' + num).append(new Option(item, item)); // 第二个参数是选择器的值
                 })
                 form.render(); // 下拉菜单渲染 把内容加载进去
 
                 // 设置只能输入数字
-                $("#goodsNum" + num).keyup(function () { // 设置数量那一栏只能输入数字
+                $("#goods-num" + num).keyup(function () { // 设置数量那一栏只能输入数字
                     $(this).val($(this).val().replace(/[^0-9]/g, ''));
-                    const tmp = '#goodsName' + num;
+                    const tmp = '#goods-name' + num;
                 }).bind("paste", function () { // CTR+V事件处理
                     $(this).val($(this).val().replace(/[^0-9]/g, ''));
                 }).css("ime-mode", "disabled"); // CSS设置输入法不可用
 
-                $("#goodsNum" + num).blur(function () { // 输入框失去焦点的时候进行值判断
-                    const trID = $(this).context.id.slice(8); //在控制台找到的 别说这种方法不优雅
-                    const workshopNameID = '#workshopName' + trID;
-                    if ($(workshopNameID).val() !== '-1') { // 如果选择了workshop
-                        value[trID] = parseInt($(this).val()); // 更新数组内的值
+                $("#goods-num" + num).blur(function () { // 输入框失去焦点的时候进行值判断
+                    const tr_id = $(this).context.id.slice(9); //在控制台找到的 别说这种方法不优雅
+                    const workshop_name_id = '#workshop-name' + tr_id;
+                    if ($(workshop_name_id).val() !== '-1') { // 如果选择了workshop
+                        value[tr_id] = parseInt($(this).val()); // 更新数组内的值
 
-                        var sum = 0; // 求值
+                        var tmp_sum = 0; // 求值
                         for (var i = pre_num; i < value.length; i++) {
-                            sum += value[i];
+                            tmp_sum += value[i];
                         }
-                        $('#now').html(sum);
-                        if (sum > product_num) {
+                        $('#now').html(tmp_sum);
+                        if (tmp_sum > product_num) {
                             $('#warning').css('display', 'inline');
                         } else {
                             $('#warning').css('display', 'none');
@@ -285,7 +282,7 @@
                 } else {
                     for (var i = pre_num; i < num; i++) {
                         if (status[i] != -1) { // 如果是null就是删除掉的行，提取不到数据
-                            if ($('#workshopName' + i).val() === -1 || value[i] === 0) {
+                            if ($('#workshop-name' + i).val() === -1 || value[i] === 0) {
                                 layer.open({
                                     title: '错误',
                                     content: '请完善任务配分陪情况'
@@ -293,7 +290,7 @@
                                 return;
                             }
                             update_data[count] = {};
-                            update_data[count]['workshop_id'] = workshop_map[$('#workshopName' + i).val()];
+                            update_data[count]['workshop_id'] = workshop_map[$('#workshop-name' + i).val()];
                             update_data[count]['amount'] = value[i];
                             update_data[count]['status'] = status[i];
                             count++;
@@ -348,31 +345,36 @@
                 value[trNum] = 0;
                 $("#tr" + trNum).remove();
 
-                var sum = 0; // 求值
+                var tmp_sum = 0; // 求值
                 for (var i = pre_num; i < value.length; i++) {
-                    sum += value[i];
+                    tmp_sum += value[i];
                 }
-                $('#now').html(sum);
+                $('#now').html(tmp_sum);
+                if (tmp_sum > product_num) {
+                    $('#warning').css('display', 'inline');
+                } else {
+                    $('#warning').css('display', 'none');
+                }
             };
 
             // 监听车间选择
-            form.on('select(workshopName)', function (data) {
-                const trID = data.elem.id.slice(12); //在控制台找到的 别说这种方法不优雅
-                const goodsNumID = '#goodsNum' + trID;
-                const number = $(goodsNumID).val();
+            form.on('select(workshop-name)', function (data) {
+                const tr_id = data.elem.id.slice(12); //在控制台找到的 别说这种方法不优雅
+                const goods_num_id = '#goods-num' + tr_id;
+                const number = $(goods_num_id).val();
                 if (number !== '') { // 如果有了输入值
-                    value[trID] = parseInt(number);
+                    value[tr_id] = parseInt(number);
 
-                    var sum = 0; // 求值
+                    var tmp_sum = 0; // 求值
                     for (var i = pre_num; i < value.length; i++) {
-                        sum += value[i];
+                        tmp_sum += value[i];
                     }
-                    if (sum > product_num) {
+                    if (tmp_sum > product_num) {
                         $('#warning').css('display', 'inline');
                     } else {
                         $('#warning').css('display', 'none');
                     }
-                    $('#now').html(sum);
+                    $('#now').html(tmp_sum);
                 }
             });
         });
@@ -380,9 +382,9 @@
     <script type="text/html" id="select-order-button-template">
             <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
         </script>
-    <script type="text/html" id="assignStatusTpl">
+    <script type="text/html" id="assign-status-tpl">
             {{# if (d.status === 0) { }}
-            <span class="layui-btn layui-btn-xs">已分配</span>
+            <span class="laynumui-btn layui-btn-xs">已分配</span>
             {{# } else if (d.status === 1) { }}
             <span class="layui-btn layui-btn-normal layui-btn-xs">已领料</span>
             {{# } else  { }}
