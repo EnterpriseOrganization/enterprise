@@ -27,14 +27,13 @@
                     xhrFields:{
                         withCredentials:true
                     },
+                    async:false,
                     success:function(msg){
                         console.log(msg.data)
                         var materialtypeoptions=msg.data;
-                        $("#mt").prepend("<option value='null'>物料类型</option>")
+                        $("#mt").append("<option value='null'>物料类型</option>")
                         for (var i = 0; i < materialtypeoptions.length; i++) {
                             $("#mt").append("<option value='"+materialtypeoptions[i].class_id+"'>"+materialtypeoptions[i].class_field+"</option>")
-                            //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
-                            //materialtypeoptions[i]
                         }
                         form.render('select');
                     },
@@ -53,6 +52,8 @@
                         console.log(msg)
                         $("#mi").val(String(msg.id))
                         $("#mn").val(msg.name)
+                        $("#mt option[value='"+msg.class_id+"']").attr("selected","selected"); 
+                        form.render('select')
                     },
                     error:function(error){
                         console.log(error)
@@ -67,7 +68,7 @@
             <form class="layui-form">
                 <div class="layui-form-item">
                     <label for="materialid" class="layui-form-label">
-                        物料编号
+                        <span class="we-red">*</span>物料编号
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="mi" name="materialid" lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly">
@@ -75,7 +76,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="materialname" class="layui-form-label">
-                        物料名称
+                        <span class="we-red">*</span>物料名称
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="mn" name="materialname" lay-verify="required" autocomplete="off" class="layui-input">

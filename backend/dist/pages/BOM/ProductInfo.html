@@ -23,7 +23,7 @@
                 max-width: 300px;
                 max-height: 700px;
                 min-height: 550px;
-                overflow-x: hidden;
+                overflow-x: scroll;
                 overflow-x: auto;
             }
         </style>
@@ -103,11 +103,11 @@
                     ,page: true //开启分页
                     ,cols: [[ //表头
                         {field:'',title:'kh',type:'checkbox'}
-                      ,{field: 'id', title: '货品编号', width:'15%', sort: true, event:"faketrclick"}
-                      ,{field: 'name', title: '货品名称', width:'20%', event:"faketrclick"}
-                      ,{field: 'class_field', title: '货品类别', width:'20%', sort: true, event:"faketrclick"}
-                      ,{field: 'price', title: '货品价格', width:'15%', sort: true, event:"faketrclick"}
-                      ,{title: '操作', width:'25%',templet:'#ped'} 
+                        ,{field: 'id', title: '货品编号', width:'15%', sort: true, event:"faketrclick"}
+                        ,{field: 'name', title: '货品名称', width:'20%', event:"faketrclick"}
+                        ,{field: 'class_field', title: '货品类别', width:'20%', sort: true, event:"faketrclick"}
+                        ,{field: 'price', title: '货品价格', width:'15%', sort: true, event:"faketrclick"}
+                        ,{title: '操作', width:'25%',templet:'#ped'} 
                     ]]
                 });   
                 table.on('tool(protab)',function(obj){

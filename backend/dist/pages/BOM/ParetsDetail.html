@@ -26,8 +26,9 @@
                     xhrFields:{
                         withCredentials:true
                     },
+                    async:false,
                     success:function(msg){
-                        //console.log(msg.data)
+                        console.log(msg.data)
                         var materialitoptions=msg.data;
                         $("#mi").prepend("<option value='null'></option>")
                         for (var i = 0; i < materialitoptions.length; i++) {
@@ -53,7 +54,8 @@
                         $('#mp').val(String(msg.procedure));
                         $('#mn').val(String(msg.number));
                         $('#mno').val(msg.comments);
-                             
+                        $("#mi option[value='"+msg.material_id+"']").attr("selected","selected")
+                        form.render('select')
                     },
                     error:function(error){
                         console.log(error)                                
@@ -71,7 +73,7 @@
             <form class="layui-form">
                 <div class="layui-form-item">
                     <label for="recordid" class="layui-form-label">
-                        记录编号
+                        <span class="we-red">*</span>记录编号
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="ri" name="recordid" lay-verify="required|number" autocomplete="off" class="layui-input" readonly="readonly">
@@ -79,7 +81,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="materialit" class="layui-form-label">
-                        物料
+                        <span class="we-red">*</span>物料
                     </label>
                     <div class="layui-input-inline">
                         <select name="materialit" id="mi" lay-verify="required" lay-search>
@@ -89,7 +91,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="materialprocedure" class="layui-form-label">
-                        物料工序
+                        <span class="we-red">*</span>物料工序
                     </label>
                     <div class="layui-input-block">
                         <input type="text" name="materialprocedure" id="mp" class="layui-input" lay-verify="required|number" autocomplete="off">
@@ -97,7 +99,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="materialnumber" class="layui-form-label">
-                        物料数量
+                        <span class="we-red">*</span>物料数量
                     </label>
                     <div class="layui-input-block">
                         <input type="text" name="materialnumber" id="mn" class="layui-input" lay-verify="required|number" autocomplete="off">

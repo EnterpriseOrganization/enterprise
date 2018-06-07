@@ -13,13 +13,38 @@
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
-            var mdata=[]
-            var mdatanum=0
-            var curedit=0
+            var mdata=[];
+            var mdatanum=0;
+            var curedit=0;
+            var tableIns;
         </script>
       
         <script>
             layui.use(['form','table'], function(){
+                var $=layui.jquery;
+                var table = layui.table;
+                var form=layui.form;
+
+
+                //第一个实例
+                tableIns=table.render({
+                    elem: '#materialtable'
+                    ,height: 315
+                    ,data:mdata //数据接口
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {field:'',title:'kh',type:'checkbox'}
+                        ,{field: 'id', title: '物料编号', width:'25%', sort: true}
+                        ,{field: 'name', title: '物料名称', width:'25%'}
+                        ,{field: 'class_field', title: '物料类别', width:'25%', sort: true}
+                        ,{title: '操作', width:'25%',templet:'#med'} 
+                    ]]
+                });
+            });
+        </script>
+        <script>
+            layui.use(['form','table'],function(){
+
                 var $=layui.jquery;
                 var table = layui.table;
                 var form=layui.form;
@@ -46,8 +71,6 @@
                     }        
                 });
 
-
-
                 $.ajax({
                     url:"http://127.0.0.1:8000/bom/material/?name=null&class_id=null&id=null",
                     type:"GET",
@@ -73,21 +96,43 @@
                     }
                 });
 
-                //第一个实例
-                var tableIns=table.render({
-                    elem: '#materialtable'
-                    ,height: 315
-                    ,data:mdata //数据接口
-                    ,page: true //开启分页
-                    ,cols: [[ //表头
-                        {field:'',title:'kh',type:'checkbox'}
-                        ,{field: 'id', title: '物料编号', width:'25%', sort: true}
-                        ,{field: 'name', title: '物料名称', width:'25%'}
-                        ,{field: 'class_field', title: '物料类别', width:'25%', sort: true}
-                        ,{title: '操作', width:'25%',templet:'#med'} 
-                    ]]
-                });
-        
+                form.on('submit(search)',function(data){
+                    var materialname=data.field.materialname
+                    var materialtype=data.field.materialtype
+                    if(materialname==""){
+                        materialname="null";
+                    }
+                    // alert(materialname)
+                    var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_id="+materialtype+"&id=null";
+                    // alert(urltogo)
+                    $.ajax({
+                        url:urltogo,
+                        type:"GET",
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(msg){
+                            console.log(msg.data)
+                            mdata=msg.data
+
+                            tableIns.reload({
+                                data:mdata,
+                                page:{
+                                    curr:1
+                                }
+                            });
+
+                            mdatanum=mdata.length
+                            $("#mdcount").text("共有数据："+mdata.length+"条")
+
+                        },
+                        error:function(error){
+                            console.log(error)
+                        }
+
+                    });
+                    return false;
+                });  
 
             });
         </script>
@@ -144,58 +189,6 @@
                 var $=layui.jquery;
                 var table = layui.table;
                 var form=layui.form;
-                //第一个实例
-                var tableIns=table.render({
-                    elem: '#materialtable'
-                    ,height: 315
-                    ,data:mdata //数据接口
-                    ,page: true //开启分页
-                    ,cols: [[ //表头
-                        {field:'',title:'kh',type:'checkbox'}
-                        ,{field: 'id', title: '物料编号', width:'25%', sort: true}
-                        ,{field: 'name', title: '物料名称', width:'25%'}
-                        ,{field: 'class_field', title: '物料类别', width:'25%', sort: true}
-                        ,{title: '操作', width:'25%',templet:'#med'} 
-                    ]]
-                });
-
-                form.on('submit(search)',function(data){
-                    var materialname=data.field.materialname
-                    var materialtype=data.field.materialtype
-                    if(materialname==""){
-                        materialname="null";
-                    }
-                    // alert(materialname)
-                    var urltogo="http://127.0.0.1:8000/bom/material/?name="+materialname+"&class_id="+materialtype+"&id=null";
-                    // alert(urltogo)
-                    $.ajax({
-                        url:urltogo,
-                        type:"GET",
-                        xhrFields:{
-                            withCredentials:true
-                        },
-                        success:function(msg){
-                            console.log(msg.data)
-                            mdata=msg.data
-
-                            tableIns.reload({
-                                data:mdata,
-                                page:{
-                                    curr:1
-                                }
-                            });
-
-                            mdatanum=mdata.length
-                            $("#mdcount").text("共有数据："+mdata.length+"条")
-
-                        },
-                        error:function(error){
-                            console.log(error)
-                        }
-
-                    });
-                    return false;
-                });          
 
                 window.member_del = function (obj, id) {
                     var urltogo="http://127.0.0.1:8000/bom/material/"+id+"/";
@@ -227,7 +220,6 @@
                             }
 
                         });
-
 
                         return false;
                     });

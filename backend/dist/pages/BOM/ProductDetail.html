@@ -28,14 +28,13 @@
                     xhrFields:{
                         withCredentials:true
                     },
+                    async:false,
                     success:function(msg){
                         console.log(msg.data)
                         var producttypeoptions=msg.data;
                         $("#pt").prepend("<option value='null'>货品类型</option>")
                         for (var i = 0; i < producttypeoptions.length; i++) {
                             $("#pt").append("<option value='"+producttypeoptions[i].class_id+"'>"+producttypeoptions[i].class_field+"</option>")
-                            //alert("<option value='"+materialtypeoptions[i]+"'>"+materialtypeoptions[i]+"</option>")
-                            //materialtypeoptions[i]
                         }
                         form.render('select');
                     },
@@ -55,6 +54,8 @@
                         $("#pi").val(String(msg.id))
                         $("#pn").val(msg.name)
                         $("#pp").val(String(msg.price))
+                        $("#pt option[value='"+msg.class_id+"']").attr("selected","selected")
+                        form.render('select')
                     },
                     error:function(error){
                         console.log(error)
@@ -69,7 +70,7 @@
             <form class="layui-form">
                 <div class="layui-form-item">
                     <label for="productid" class="layui-form-label">
-                        货品编号
+                        <span class="we-red">*</span>货品编号
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="pi" name="productid" lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly">
@@ -77,7 +78,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="productname" class="layui-form-label">
-                        货品名称
+                        <span class="we-red">*</span>货品名称
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="pn" name="productname" lay-verify="required" autocomplete="off" class="layui-input">
@@ -85,7 +86,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="producttype" class="layui-form-label">
-                        货品类型
+                        <span class="we-red">*</span>货品类型
                     </label>
                     <div class="layui-input-inline">
                         <select name="producttype" id="pt" lay-verify="required" lay-search>
@@ -95,7 +96,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="productprice" class="layui-form-label">
-                        货品价格
+                        <span class="we-red">*</span>货品价格
                     </label>
                     <div class="layui-input-inline">
                         <input type="text" id="pp" name="productprice" lay-verify="required|number" autocomplete="off" class="layui-input">
