@@ -94,7 +94,6 @@
 
             table.render({
                 elem: '#order-list-table',
-                // height: 180,
                 page: true,
                 data: order_list_data,
                 cols: [
@@ -252,12 +251,12 @@
                     if ($(workshop_name_id).val() !== '-1') { // 如果选择了workshop
                         value[tr_id] = parseInt($(this).val()); // 更新数组内的值
 
-                        var sum = 0; // 求值
+                        var tmp_sum = 0; // 求值
                         for (var i = pre_num; i < value.length; i++) {
-                            sum += value[i];
+                            tmp_sum += value[i];
                         }
-                        $('#now').html(sum);
-                        if (sum > product_num) {
+                        $('#now').html(tmp_sum);
+                        if (tmp_sum > product_num) {
                             $('#warning').css('display', 'inline');
                         } else {
                             $('#warning').css('display', 'none');
@@ -347,11 +346,16 @@
                 value[trNum] = 0;
                 $("#tr" + trNum).remove();
 
-                var sum = 0; // 求值
+                var tmp_sum = 0; // 求值
                 for (var i = pre_num; i < value.length; i++) {
-                    sum += value[i];
+                    tmp_sum += value[i];
                 }
-                $('#now').html(sum);
+                $('#now').html(tmp_sum);
+                if (tmp_sum > product_num) {
+                    $('#warning').css('display', 'inline');
+                } else {
+                    $('#warning').css('display', 'none');
+                }
             };
 
             // 监听车间选择
@@ -362,16 +366,16 @@
                 if (number !== '') { // 如果有了输入值
                     value[tr_id] = parseInt(number);
 
-                    var sum = 0; // 求值
+                    var tmp_sum = 0; // 求值
                     for (var i = pre_num; i < value.length; i++) {
-                        sum += value[i];
+                        tmp_sum += value[i];
                     }
-                    if (sum > product_num) {
+                    if (tmp_sum > product_num) {
                         $('#warning').css('display', 'inline');
                     } else {
                         $('#warning').css('display', 'none');
                     }
-                    $('#now').html(sum);
+                    $('#now').html(tmp_sum);
                 }
             });
         });
@@ -381,7 +385,7 @@
         </script>
     <script type="text/html" id="assign-status-tpl">
             {{# if (d.status === 0) { }}
-            <span class="layui-btn layui-btn-xs">已分配</span>
+            <span class="laynumui-btn layui-btn-xs">已分配</span>
             {{# } else if (d.status === 1) { }}
             <span class="layui-btn layui-btn-normal layui-btn-xs">已领料</span>
             {{# } else  { }}
