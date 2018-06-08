@@ -32,6 +32,11 @@ def getAllTasks(request):
 
 
 @require_GET
+def getRealAllTasks(request):
+    l = ProduceTask.queryTasks()
+    return JsonResponse({"tasks": l})
+
+@require_GET
 def getOrderTasks(request):
     """
     返回指定order的所有生产任务

@@ -36,9 +36,9 @@ class ProduceTaskModelTestCase(TestCase):
         op4.save()
         ptb = ProduceTaskBasic(order_id=self.o3.id, workshop_id=self.w1.id, number=1)
         ptb.save()
-        ptb = ProduceTaskBasic(order_id=self.o3.id, workshop_id=self.w1.id, number=1)
+        ptb = ProduceTaskBasic(order_id=self.o3.id, workshop_id=self.w1.id, number=2)
         ptb.save()
-        ptb = ProduceTaskBasic(order_id=self.o3.id, workshop_id=self.w1.id, number=1)
+        ptb = ProduceTaskBasic(order_id=self.o3.id, workshop_id=self.w1.id, number=3)
         ptb.save()
         ptb = ProduceTaskBasic(order_id=self.o4.id, workshop_id=self.w1.id, number=1)
         ptb.save()
@@ -47,44 +47,30 @@ class ProduceTaskModelTestCase(TestCase):
         its_orders = ProduceTask.getUnallocatedOrders()
         my_orders = Order.objects.filter(status=0).count()
 
-        first_order = Order.objects.filter(status=0)[0]
-        id = first_order.id
-
-        its_products_array = its_orders.get(id)["products"]
-        true_products_array = OrderProduct.objects.filter(order_id=id)
         self.assertEqual(len(its_orders), my_orders)
-        self.assertEqual(len(its_products_array), len(true_products_array))
 
     def test_getAllocatedOrders(self):
         its_orders = ProduceTask.getAllocatedOrders()
         my_orders = Order.objects.filter(status__gte=1)
 
-        id = my_orders[0].id
-        its_products_array = its_orders.get(id)["products"]
-        my_products_array = OrderProduct.objects.filter(order_id=id)
-
-
         self.assertEqual(len(its_orders), len(my_orders))
-        self.assertEqual(len(its_products_array), len(my_products_array))
 
 
     def test_createProduceTasks(self):
         old_amount = ProduceTaskBasic.objects.count()
         tl = [{
             "workshop_id": self.w1.id,
-            "order_id": self.o1.id,
             "amount": 100,
             "topic": "topic",
             "person_in_charge": "CQX1"
         },
         {
             "workshop_id": self.w2.id,
-            "order_id": self.o1.id,
             "amount": 120,
             "topic": "topic",
             "person_in_charge": "CQX2"
         }]
-        tasks = ProduceTask.createTasks(tl)
+        tasks = ProduceTask.createTasks(tl, self.o1.id)
         new_amount = ProduceTaskBasic.objects.count()
         self.assertEqual(old_amount+2, new_amount)
         self.assertEqual(len(tasks), 2)
@@ -93,22 +79,31 @@ class ProduceTaskModelTestCase(TestCase):
         old_amount = new_amount
         tl = {
             "workshop_id": self.w1.id,
-            "order_id": self.o1.id,
             "amount": 100,
             "topic": "topic",
             "person_in_charge": "CQX1"
         }
-        tasks = ProduceTask.createTasks(tl)
+        tasks = ProduceTask.createTasks(tl, self.o1.id)
         new_amount = ProduceTaskBasic.objects.count()
         self.assertEqual(old_amount+1, new_amount)
         self.assertEqual(type(tasks), type({}))
 
     def test_get_workshops(self):
-        workshops = ProduceTask.getWorkshopsByProduct()
+        workshops = ProduceTask.getWorkshops()
         self.assertEqual(type(workshops), type({}))
         self.assertEqual(type(workshops[self.p1.id]), type({}))
         self.assertEqual(len(workshops[self.p1.id]), 2)
         self.assertEqual(workshops[self.p2.id][self.w3.name], self.w3.id)
+
+        workshops = ProduceTask.getWorkshops(self.p1.id)
+        self.assertEqual(type(workshops), type({}))
+        self.assertEqual(type(workshops[self.w1.name]), str(self.w1.id))
+        self.assertEqual(len(workshops), 2)
+
+        workshops = ProduceTask.getWorkshops(-1, True)
+        self.assertEqual(type(workshops), type([]]))
+        self.assertEqual(len(workshops), 3)
+
 
     def test_update_task(self):
         t = ProduceTaskBasic(personincharge="A", workshop=self.w1, number=200, topic="topic", order_id=self.o3.id)
@@ -118,7 +113,7 @@ class ProduceTaskModelTestCase(TestCase):
             "workshop_id": self.w2.id,
             "amount": 100,
             "topic": "topic2",
-            "status": "done",
+            "status": 2,
         }
         task = ProduceTask.updateTask(t.id, new_info)
 
@@ -137,6 +132,21 @@ class ProduceTaskModelTestCase(TestCase):
         new_amount = ProduceTaskBasic.objects.count()
         self.assertEqual(1, amount)
         self.assertEqual(old_amount-1, new_amount)
+
+    def test_query_task(self):
+        my_amount = ProduceTaskBasic.objects.count()
+        it_amount = len(ProduceTask.queryTasks())
+        self.assertEqual(my_amount, it_amount)
+
+        my_amount = ProduceTaskBasic.objects.count({"number": 2})
+        it_amount = len(ProduceTask.queryTasks({"number": 2}))
+        self.assertEqual(my_amount, it_amount)
+
+        my_amount = ProduceTaskBasic.objects.count({"order_id": self.o3.id})
+        it_amount = len(ProduceTask.queryTasks({"order_id": self.o3.id}))
+        self.assertEqual(3, it_amount)
+
+
 
 
 class MaterialListModelTestCase(TestCase):

@@ -46,19 +46,20 @@ def getProductsByOrderStatus(gte, lte): # 想精确搜索就让 gte == lte
     return orders
 
 
-def queryTasks(params):
-    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(params)
+def queryTasks(params=None):
+    tasks = ProduceTaskBasic.objects.select_related('workshop').all()
     tasks_list = []
     for task in tasks:
         tasks_list.append(util.wrapTaskDTO(task))
     return tasks_list
 
 def getTasksByTaskStatus(gte, lte):
+    #tasks_list = queryTasks({"status__gte": gte, "status__lte": lte})
     tasks = ProduceTaskBasic.objects.filter(status__gte=gte, status__lte=lte)
     tasks_DTO = []
     for task in tasks:
         tasks_DTO.append(util.wrapTaskDTO(task))
-    return tasks_DTO
+    return tasks_list
 
 
 def getTasksByOrderID(order_id):
@@ -69,6 +70,7 @@ def getTasksByOrderID(order_id):
         taskDTO
     }]
     """
+    # tasks_list = queryTasks({"order_id": order_id})
     tasks = ProduceTaskBasic.objects.select_related('workshop').filter(order_id=order_id)
     tasks_list = []
     for task in tasks:
@@ -83,7 +85,8 @@ def getTasksByWorkshopID(workshop_id):
         taskDTO
     }]
     """
-    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(workshop_id=workshop_id)
+    #tasks_list = queryTasks({"workshop_id": workshop_id})
+    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(workshop_id=order_id)
     tasks_list = []
     for task in tasks:
         tasks_list.append(util.wrapTaskDTO(task))
