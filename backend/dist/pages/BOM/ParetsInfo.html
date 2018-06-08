@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="../../static/css/font.css">
         <link rel="stylesheet" href="../../static/css/weadmin.css">
         <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+        <script type="text/javascript" src="../../static/js/jquery-1.4.4.min.js"></script>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
@@ -202,19 +203,26 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                mdatanum-=1
+                                for(var i=0;i<mdata.length;i++){
+                                    if(mdata[i].id==id){
+                                        mdata.splice(i,1);
+                                        break;
+                                    }
+                                }
+
+                                mdatanum=mdata.length
 
                                 $(obj).parents("tr").remove();
                                 $("#mdcount").text("共有数据："+mdatanum+"条")
                                 layer.msg('已删除!', {
-                                    icon: 1,
+                                    icon: 6,
                                     time: 1000
                                 });                                
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败！', {
-                                    icon: 1,
+                                    icon: 5,
                                     time: 1000
                                 });                                 
                             }
@@ -244,19 +252,40 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                mdatanum-=checkStatus.data.length
+                                var idtodel=[]
+                                for(var i=0;i<checkStatus.data.length;i++){
+                                    idtodel.push(checkStatus.data[i].id);
+                                }
+
+                                var tempmdata=[]
+                                for(var i=0;i<mdata.length;i++){
+                                    if(idtodel.indexOf(mdata[i].id)>=0){
+                                        console.log("asdfsad")
+                                        console.log(idtodel)
+                                        continue;
+                                    }
+                                    else{
+                                        tempmdata.push(mdata[i]);
+                                    }
+                                }
+
+                                mdata=tempmdata;
+
+                                mdatanum=mdata.length;
 
                                 $("#mdcount").text("共有数据："+mdatanum+"条")
 
                                 $(".layui-form-checked").not('.header').parents('tr').remove();
                                 layer.msg('删除成功!', {
-                                    icon: 1
+                                    icon: 6,
+                                    time: 1000
                                 });
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败!', {
-                                    icon: 1
+                                    icon: 5,
+                                    time: 1000
                                 });
                             }
 

@@ -100,12 +100,22 @@
                             withCredentials:true
                         },
                         success:function(msg){
+                            console.log("fuckyou")
                             console.log(msg)
                             var zto=parent.zTreeObj;
                             var nod={id:"product_"+msg.id,pid:"class_"+producttype,name:productname,isParent:false}
                             console.log(nod)
                             zto.addNodes(zto.getNodesByParam("id","class_"+producttype,null)[0],nod);
                             zto.updateNode(zto.getNodesByParam("id","class_"+producttype,null)[0]);
+
+                            var pti=parent.ptableIns
+                            parent.pdata.push(msg)
+                            pti.reload({
+                                data:parent.pdata                              
+                            });
+
+                            parent.pdatanum=parent.pdata.length
+                            parent.$("#pdcount").text("共有数据："+parent.pdatanum+"条")
 
                             layer.alert("创建成功",{
                                 icon:6
@@ -117,7 +127,7 @@
                         error:function(error){
                             console.log(error)
                             layer.alert("创建失败",{
-                                icon:6
+                                icon:5
                             });
                         }
 

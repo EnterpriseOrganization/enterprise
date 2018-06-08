@@ -90,6 +90,16 @@
                         },
                         success:function(msg){
                             console.log(msg)
+
+                            var ti=parent.tableIns;
+                            parent.mdata.push(msg)
+                            ti.reload({
+                                data:parent.mdata
+                            });
+
+                            parent.mdatanum=parent.mdata.length
+                            parent.$("#mdcount").text("共有数据："+parent.mdatanum+"条");
+
                             layer.alert("创建成功",{
                                 icon:6
                             },function(){
@@ -100,7 +110,7 @@
                         error:function(error){
                             console.log(error)
                             layer.alert("创建失败",{
-                                icon:6
+                                icon:5
                             });
                         }
 

@@ -133,7 +133,7 @@
                             mdatanum=mdata.length
                             $("#mdcount").text("共有数据："+mdatanum+"条")
 
-                            $("#bomlegend").html(obj.data.name+":物料列表")
+                            $("#bomlegend").html(obj.data.name+":BOM列表")
 
                             curselectp=obj.data.id
                         },
@@ -352,7 +352,7 @@
                         </div>
                     </fieldset>
                     <fieldset class="layui-elem-field layui-row">
-                        <legend id="bomlegend"></legend>
+                        <legend id="bomlegend">BOM列表</legend>
                         <div class="layui-field-box">
                             <div class="weadmin-block">
                                     <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="bom_delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
@@ -388,7 +388,14 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                pdatanum-=1
+                                for(var i=0;i<pdata.length;i++){
+                                    if(pdata[i].id==id){
+                                        pdata.splice(i,1);
+                                        break;
+                                    }
+                                }
+
+                                pdatanum=pdata.length
                                 
                                 $("#pdcount").text("共有数据："+pdatanum+"条")
                                 $(obj).parents("tr").remove();
@@ -396,14 +403,14 @@
                                 zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+id,null)[0])
 
                                 layer.msg('已删除!', {
-                                    icon: 1,
+                                    icon: 6,
                                     time: 1000
                                 });                                
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败！', {
-                                    icon: 1,
+                                    icon: 5,
                                     time: 1000
                                 });                                 
                             }
@@ -433,7 +440,24 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                pdatanum-=checkStatus.data.length
+                                var idtodel=[];
+                                for(var i=0;i<checkStatus.data.length;i++){
+                                    idtodel.push(checkStatus.data[i].id);
+                                }
+
+                                var temppdata=[];
+                                for(var i=0;i<pdata.length;i++){
+                                    if(idtodel.indexOf(pdata[i].id)>=0){
+                                        continue;
+                                    }
+                                    else{
+                                        temppdata.push(pdata[i]);
+                                    }
+                                }
+
+                                pdata=temppdata;
+
+                                pdatanum=pdata.length
 
                                 $("#pdcount").text("共有数据："+pdatanum+"条")
 
@@ -444,13 +468,15 @@
                                 }
                                 //zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+id,null)[0])
                                 layer.msg('删除成功!', {
-                                    icon: 1
+                                    icon: 6,
+                                    time: 1000
                                 });
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败!', {
-                                    icon: 1
+                                    icon: 5,
+                                    time: 1000
                                 });
                             }
 
@@ -471,19 +497,26 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                mdatanum-=1
+                                for(var i=0;i<mdata.length;i++){
+                                    if(mdata[i].id==id){
+                                        mdata.splice(i,1);
+                                        break;
+                                    }
+                                }
+
+                                mdatanum=mdata.length;
 
                                 $(obj).parents("tr").remove();
                                 $("#mdcount").text("共有数据："+mdatanum+"条")
                                 layer.msg('已删除!', {
-                                    icon: 1,
+                                    icon: 6,
                                     time: 1000
                                 });                                
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败！', {
-                                    icon: 1,
+                                    icon: 5,
                                     time: 1000
                                 });                                 
                             }
@@ -512,19 +545,38 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                mdatanum-=checkStatus.data.length
+                                var idtodel=[];
+                                for (var i = 0; i < checkStatus.data.length; i++) {
+                                    idtodel.push(checkStatus.data[i].id);
+                                }
+
+                                var tempmdata=[];
+                                for (var i = 0; i < mdata.length; i++) {
+                                    if (idtodel.indexOf(mdata[i].id)>=0) {
+                                        continue;
+                                    } 
+                                    else {
+                                        tempmdata.push(mdata[i]);
+                                    }
+                                }
+
+                                mdata=tempmdata;
+
+                                mdatanum=mdata.length;
 
                                 $("#mdcount").text("共有数据："+mdatanum+"条")
 
                                 $(".layui-form-checked").not('.header').parents('tr').remove();
                                 layer.msg('删除成功!', {
-                                    icon: 1
+                                    icon: 6,
+                                    time: 1000
                                 });
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败!', {
-                                    icon: 1
+                                    icon: 5,
+                                    time: 1000
                                 });
                             }
 
