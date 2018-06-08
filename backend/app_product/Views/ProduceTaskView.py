@@ -4,6 +4,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
 @require_GET
 def getAllTasks(request):
     """
@@ -36,6 +37,7 @@ def getRealAllTasks(request):
     l = ProduceTask.queryTasks()
     return JsonResponse({"tasks": l})
 
+
 @require_GET
 def getOrderTasks(request):
     """
@@ -54,6 +56,7 @@ def getOrderTasks(request):
     else:
         return JsonResponse({}, status=401)
 
+
 @require_GET
 def getWorkshopTasks(request):
     """
@@ -71,6 +74,7 @@ def getWorkshopTasks(request):
     else:
         return JsonResponse({}, status=401)
 
+
 @require_GET
 def getHistoryTasks(request):
     """
@@ -83,6 +87,7 @@ def getHistoryTasks(request):
     tasks = ProduceTask.getTasksByTaskStatus(2, 2)
     return JsonResponse({"tasks": tasks})
 
+
 @require_GET
 def getUndoneTasks(request):
     """
@@ -94,6 +99,7 @@ def getUndoneTasks(request):
     """
     tasks = ProduceTask.getTasksByTaskStatus(1, 1)
     return JsonResponse({"tasks": tasks})
+
 
 @require_GET
 def getWorkshops(request):
@@ -176,7 +182,7 @@ def createTasks(request):
 
 def checkUpdateInfo(form):
     #if form["material_checker"] == None or form["material_getter"] == None :
-        #return False
+    #return False
     return True
 
 
@@ -224,9 +230,7 @@ def updateTaskDone(request):
     params = json.loads(body_unicode)
     task_id = params["task_id"]
     if task_id:
-        params = {
-            "status": 2
-        }
+        params = {"status": 2}
         task = ProduceTask.updateTask(task_id, params)
         return JsonResponse({"task": task})
     else:
