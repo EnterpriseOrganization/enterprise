@@ -28,8 +28,15 @@
     </div>
 
     <div class="weadmin-body">
+        <div class="layui-row">
+            搜索订单ID：
+            <div class="layui-form layui-input-inline">
+                <select class="select-class" lay-search="" id="order-id"></select>
+            </div>
+            <button id="button" class="layui-btn" data-type="reload">搜索</button>
+        </div>
         <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter"></table>
-        <table class="layui-table" id="assign-table"  style="margin-top: 50px;">
+        <table class="layui-table" id="assign-table" style="margin-top: 50px;">
             <thead>
                 <tr>
                     <th>订单ID</th>
@@ -80,6 +87,24 @@
             let workshop_map = {};
             const produce_status = { 0: '已分配', 1: '已领料', 2: '已完成' };
 
+            // // waiting for url and reload table
+            // $.ajax({ // 从后台拿到所有订单id
+            //     type: 'GET',
+            //     url: '',
+            //     dataType: 'json',
+            //     cache: false,
+            //     async: false,
+            //     success: function (data) {
+            //         workshop_map = data["workshops"];
+            //         // 添加options                    
+            //         $('#order-id').append(new Option('all', -1));
+            //         for (var key in data["workshops"]) {
+            //             $('#order-id').append(new Option(key, key)); // 第二个参数是选择器的值
+            //         }
+            //         form.render(); // 下拉菜单渲染 把内容加载进去                    
+            //     }
+            // });
+
             $.ajax({ // 从后台拿到数据
                 type: 'GET',
                 url: 'http://localhost:8000/product/tasks',
@@ -95,13 +120,16 @@
                 elem: '#order-list-table',
                 page: true,
                 data: order_list_data,
+                id: 'tableReload',
                 cols: [
                     [{
                         field: 'order_id',
+                        sort: true,
                         title: '订单ID',
                     },
                     {
                         field: 'product_id',
+                        sort: true,
                         title: '货品ID',
                     },
                     {
@@ -124,6 +152,49 @@
                     }
                     ]
                 ]
+            });
+
+            var $ = layui.$, active = {
+                // reload: function () {
+                //     const order_id_input = $('#order-id').val();
+                //     //执行重载
+                //     if (order_id_input !== '-1') {
+                //         console.log(order_id_input);
+                //         $.ajax({ // 从后台拿到所有分配任务
+                //             type: 'GET',
+                //             url: '',
+                //             dataType: 'json',
+                //             data: { "workshop_id": order_id_input },
+                //             cache: false,
+                //             async: false,
+                //             success: function (data) {
+                //                 //TODO: getting url and reload table
+                //                 table.reload('tableReload', {
+                //                     data: 
+                //                 });
+                //             },
+                //         });
+                //     } else {
+                //         $.ajax({ // 从后台拿到所有分配任务
+                //             type: 'GET',
+                //             url: '',
+                //             dataType: 'json',
+                //             cache: false,
+                //             async: false,
+                //             success: function (data) {
+                //                 //TODO: getting url and reload table
+                //                 table.reload('tableReload', {
+                //                     data: 
+                //                 });
+                //             }
+                //         });
+                //     }
+                // }
+            };
+
+            $('#button').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
             });
 
             table.on('tool(order-list-table-filter)', function (obj) {
