@@ -86,7 +86,7 @@ def getTasksByWorkshopID(workshop_id):
     }]
     """
     #tasks_list = queryTasks({"workshop_id": workshop_id})
-    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(workshop_id=order_id)
+    tasks = ProduceTaskBasic.objects.select_related('workshop').filter(workshop_id=workshop_id)
     tasks_list = []
     for task in tasks:
         tasks_list.append(util.wrapTaskDTO(task))
