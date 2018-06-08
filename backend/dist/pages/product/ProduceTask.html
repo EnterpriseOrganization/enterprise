@@ -59,7 +59,7 @@
                 success: function (data) {
                     workshop_map = data["workshops"];
                     // 添加options                    
-                    $('#workshop-name').append(new Option('', -1));
+                    $('#workshop-name').append(new Option('all', -1));
                     for (var key in data["workshops"]) {
                         $('#workshop-name').append(new Option(key, key)); // 第二个参数是选择器的值
                     }
@@ -98,7 +98,7 @@
                 reload: function () {
                     const workshop_name_input = $('#workshop-name').val();
                     //执行重载
-                    if (workshop_name_input !== '') {
+                    if (workshop_name_input !== '-1') {
                         $.ajax({ // 从后台拿到所有分配任务
                             type: 'GET',
                             url: 'http://localhost:8000/product/tasks/byworkshop',
@@ -108,10 +108,20 @@
                             async: false,
                             success: function (data) {
                                 tasks = data["tasks"];
-                                console.log('ssss', tasks);
                             },
-                            error: function (e) {
-                                console.log(e);
+                        });
+                        table.reload('tableReload', {
+                            data: tasks
+                        });
+                    } else {
+                        $.ajax({ // 从后台拿到所有分配任务
+                            type: 'GET',
+                            url: 'http://localhost:8000/product/tasks/real',
+                            dataType: 'json',
+                            cache: false,
+                            async: false,
+                            success: function (data) {
+                                tasks = data["tasks"];
                             }
                         });
                         table.reload('tableReload', {
