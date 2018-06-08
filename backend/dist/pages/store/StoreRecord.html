@@ -132,10 +132,13 @@
     <script src="./interaction-warehouse.js"></script>
     
     <script>
-        function test() {
+        async function test() {
             const data = {}
-            const result = getInventory(data)
-            alert(result)
+            const result = await addInventory(data).then(function (res){
+                return res;
+            })
+            console.log(result)
+            console.log(result.res)
         }
 
         layui.use('table', function(){
