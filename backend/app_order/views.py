@@ -17,10 +17,29 @@ def getAllOrder(request):
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk 
-# 获取到特定条件下的订单信息返回
+# 获取到特定条件下的订单信息返回，发送的信息应该包括 订单状态 "status": 1,开始时间："date": "2018-05-30T00:00:00Z",截止时间"deliverydate": "2018-06-20T00:00:00Z"，订货商"indentor": "jack"
+# 0: 待生产 1: 生产中 2:配送中（生产完成） 3: 采购中
 def getSpecificOrder(request):
-	info = "test"
-	return HttpResponse(info)	
+	req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+	#req_str = '[{"status": "","date":"","deliverydate":"2018-06-20T00:00:00Z", "indentor": ""}]' #测试用数据
+	diction = json.loads(req_str) #返回的是一个字典list长度为1 {'deliverydate': '2018-06-20T00:00:00Z', 'date': '2018-05-30T00:00:00Z', 'indentor': 'jack', 'status': 1}
+	o = Order.objects.all() #先获取所有的信息
+	#print(diction)
+	for key in diction[0]:# 依次遍历查询
+		temp = o
+		diction[0][key] = diction[0][key].strip()#去掉所有的空格
+		if(diction[0][key]!=""):
+			if(key == 'status'):
+				temp = o.filter(status=diction[0][key])
+			elif(key == 'date'):
+				temp = o.filter(date=diction[0][key])
+			elif(key == 'deliverydate'):
+				temp = o.filter(deliverydate=diction[0][key])
+			elif(key == 'indentor'):
+				temp = o.filter(indentor=diction[0][key])
+		o = temp
+	Response=serializers.serialize("json", o);#序列化对象
+	return HttpResponse(json.dumps(Response))	
 
 # by ymk
 # 获取到所有的产品信息
