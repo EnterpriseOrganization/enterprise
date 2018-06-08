@@ -87,24 +87,6 @@
             let workshop_map = {};
             const produce_status = { 0: '已分配', 1: '已领料', 2: '已完成' };
 
-            // // waiting for url and reload table
-            // $.ajax({ // 从后台拿到所有订单id
-            //     type: 'GET',
-            //     url: '',
-            //     dataType: 'json',
-            //     cache: false,
-            //     async: false,
-            //     success: function (data) {
-            //         workshop_map = data["workshops"];
-            //         // 添加options                    
-            //         $('#order-id').append(new Option('all', -1));
-            //         for (var key in data["workshops"]) {
-            //             $('#order-id').append(new Option(key, key)); // 第二个参数是选择器的值
-            //         }
-            //         form.render(); // 下拉菜单渲染 把内容加载进去                    
-            //     }
-            // });
-
             $.ajax({ // 从后台拿到数据
                 type: 'GET',
                 url: 'http://localhost:8000/product/tasks',
@@ -113,6 +95,18 @@
                 async: false,
                 success: function (data) {
                     order_list_data = data['tasks'];
+
+                    let tmp_list = Array();
+                    for (var i = 0; i < order_list_data.length; i++) {
+                        tmp_list.push(order_list_data[i]['order_id']);
+                    }
+                    let tmp_set = new Set(tmp_list);
+
+                    $('#order-id').append(new Option('all', -1));
+                    for (var ele of tmp_set) {
+                        $('#order-id').append(new Option(ele, ele));
+                    }
+                    form.render();
                 }
             });
 
@@ -155,41 +149,25 @@
             });
 
             var $ = layui.$, active = {
-                // reload: function () {
-                //     const order_id_input = $('#order-id').val();
-                //     //执行重载
-                //     if (order_id_input !== '-1') {
-                //         console.log(order_id_input);
-                //         $.ajax({ // 从后台拿到所有分配任务
-                //             type: 'GET',
-                //             url: '',
-                //             dataType: 'json',
-                //             data: { "workshop_id": order_id_input },
-                //             cache: false,
-                //             async: false,
-                //             success: function (data) {
-                //                 //TODO: getting url and reload table
-                //                 table.reload('tableReload', {
-                //                     data: 
-                //                 });
-                //             },
-                //         });
-                //     } else {
-                //         $.ajax({ // 从后台拿到所有分配任务
-                //             type: 'GET',
-                //             url: '',
-                //             dataType: 'json',
-                //             cache: false,
-                //             async: false,
-                //             success: function (data) {
-                //                 //TODO: getting url and reload table
-                //                 table.reload('tableReload', {
-                //                     data: 
-                //                 });
-                //             }
-                //         });
-                //     }
-                // }
+                reload: function () {
+                    const order_id_input = $('#order-id').val();
+                    //执行重载
+                    if (order_id_input !== '-1') {
+                        let tmp_list = new Array();
+                        for (var i = 0; i < order_list_data.length; i++) {
+                            if (order_list_data[i]['order_id'] == order_id_input) {
+                                tmp_list.push(order_list_data[i]);
+                            }
+                        }
+                        table.reload('tableReload', {
+                            data: tmp_list
+                        });
+                    } else {
+                        table.reload('tableReload', {
+                            data: order_list_data
+                        });
+                    }
+                }
             };
 
             $('#button').on('click', function () {
