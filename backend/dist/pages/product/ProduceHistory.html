@@ -21,7 +21,20 @@
                 <i class="layui-icon" style="line-height:30px">ဂ</i>
             </a>
         </div>
-        <table id="produce-table" lay-filter="produce-table-filter"></table>
+        <div class="weadmin-body">
+            <div class="layui-row">
+                <form class="layui-form layui-col-md12 we-search">
+                    <div class="layui-inline">
+                        <input type="text" name="username" placeholder="订单ID" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" name="username" placeholder="车间ID" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <table id="produce-table" lay-filter="produce-table-filter"></table>
+        </div>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
@@ -45,7 +58,7 @@
                 });
                 product_table.render({
                     elem: '#produce-table'
-                    ,height: 400
+                    ,height: 315
                     ,page: true
                     ,data: produce_data
                     ,cols: [[
