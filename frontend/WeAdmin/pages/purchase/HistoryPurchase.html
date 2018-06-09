@@ -41,10 +41,12 @@
                 <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="fas fa-search"></i></button>
             </form>
         </div>
-        <!--<div class="weadmin-block">
-            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <div class="weadmin-block">
+            <!--<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
+            <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="delAll()"><i class="fas fa-check"></i> 批量完成</button>
             <span class="fr" style="line-height:40px">共有数据：88 条</span>
-        </div>-->
+        </div>
+
         <table class="layui-table">
             <thead>
                 <tr>
@@ -56,7 +58,9 @@
                     <th>采购时间</th>
                     <th>采购价格(总价)</th>
                     <th>采购人</th>
-                    <th>操作</th>
+                    <th>完成状态</th>
+                    <th>详细信息</th>
+                    <th>采购完成</th>
                 <!-- 详情还应包括： 供应商、采购人、备注
                 <th>物料名称</th>-->
                 </tr>
@@ -71,9 +75,15 @@
                     <td>2017/3/1</td>
                     <td>5000</td>
                     <td>盖尔加朵</td>
+                    <td>未完成</td>
                     <td class="td-manage">
-                        <a title="详情"  onclick="WeAdminShow('编辑','./HistoryPurchaseInfo.html')" href="javascript:;">
+                        <a title="详情"  onclick="WeAdminShow('采购单详细信息','./HistoryPurchaseInfo.html')" href="javascript:;">
                             <i class="fas fa-info"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a title="完成" onclick="member_finish(this,'要完成的id')" href="javascript:;">
+                            <i class="fas fa-check"></i>
                         </a>
                     </td>
                 </tr>

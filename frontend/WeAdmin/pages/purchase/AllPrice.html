@@ -29,7 +29,7 @@
             <form class="layui-form layui-col-md12 we-search">
                 筛选 <i class="fas fa-filter"></i>
                 <div class="layui-inline">
-                    <input type="text" name="order_id" placeholder="订单编号" autocomplete="off" class="layui-input">
+                    <input type="text" name="order_id" placeholder="物料编号" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-inline">
                     <input type="text" name="mate_name" placeholder="物料名称" autocomplete="off" class="layui-input">
@@ -42,7 +42,7 @@
         </div>
         <div class="weadmin-block">
             <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
-            <button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>
+            <!--<button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>-->
             <button class="layui-btn layui-btn-sm" lay-filter="add_price" lay-submit=""><i class="fas fa-plus"></i> 添加</button>
             <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
             <span class="fr" style="line-height:40px">共有数据：88 条</span>
@@ -53,11 +53,12 @@
                     <th>
                         <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
                     </th>
-                    <th>订单编号</th>
-                    <th>采购人</th>
-                    <th>总价格</th>
-                    <th>采购时间</th>
+                    <th>物料编号</th>
+                    <th>物料名称</th>
+                    <th>供应商名称</th>
+                    <th>价格（元）</th>
                     <th>详细信息</th>
+                    <th>编辑</th>
                     <th>删除</th>
             </thead>
             <tbody>
@@ -67,16 +68,17 @@
                     </td>
                     <td>CDE012FGAB</td>
                     <td>12111</td>
-                    <td>1960元</td>
-                    <td>2018/4/3</td>
+                    <td>沉沉集团</td>
+                    <td>1200</td>
                     <td class="td-manage">
-                        <a title="编辑" onclick="WeAdminShow('编辑','./PriceModify.html',400,400)" href="javascript:;">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a title="图表统计" onclick="WeAdminShow('编辑','./edit.html')" href="javascript:;">
+                        <a title="详细信息" onclick="WeAdminShow('物料报价详细信息','./PriceInfo.html')" href="javascript:;">
                             <i class="fas fa-chart-line"></i>
                         </a>
-
+                    </td>
+                    <td class="td-manage">
+                        <a title="编辑" onclick="WeAdminShow('编辑物料报价','./PriceModify.html',400,400)" href="javascript:;">
+                            <i class="fas fa-info"></i>
+                        </a>
                     </td>
                     <td>
                         <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
@@ -187,7 +189,7 @@
                 console.log('add price');
                 layer.open({
                          type: 2 //此处以iframe举例
-                         ,title: '添加用户'
+                         ,title: '添加物料报价'
                          ,area: ['450px', '400px']
                          ,content: 'PriceAdd.html'
                          ,closeBtn: 1

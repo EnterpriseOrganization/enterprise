@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
     <head>
@@ -27,34 +27,34 @@
             <div class="layui-row">
                 <form class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
-                        <input type="text" name="username" placeholder="订单编号" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" placeholder="物料编号" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
-                        <input type="text" name="username" placeholder="物料编号" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" placeholder="物料名称" autocomplete="off" class="layui-input">
                     </div>
                     <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
              <div class="weadmin-block"> <!--缺料项是自动生成的自动消失的（当达到数量后） 应该不用手动添加-->   
-                <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="delAll()"><i class="fas fa-check"></i> 批量完成</button>
-                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加成品','./AddPurchase.html',600,400)"><i class="fas fa-plus"></i> 填写采购单</button>
+                <!--<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="delAll()"><i class="fas fa-check"></i> 批量完成</button>-->
+                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('填写采购单','./AddPurchase.html',600,400)"><i class="fas fa-plus"></i> 填写采购单</button>
                  <span class="fr" style="line-height:40px">共有数据：3 条</span>
             </div> 
             <table class="layui-table">
                 <thead>
                     <tr>
-                        <th>
+                        <!--<th>
                             <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                        </th>
+                        </th>-->
                         <th>物料编号</th>
                         <th>物料名称</th>
                         <th>当前数量</th>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
+                        <!--<td>
                             <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
+                        </td>-->
                         <td>ASD41324</td>
                         <td>电阻</td>
                         <td>
@@ -66,9 +66,9 @@
 
                     </tr>
                     <tr>
-                        <td>
+                        <!--<td>
                             <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
+                        </td>-->
                         <td>QE9250CDJ</td>
                         <td>散热片</td>
                         <td>
@@ -79,9 +79,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <!--<td>
                             <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>
+                        </td>-->
                         <td>QE9adc0CDJ</td>
                         <td>磁针</td>
                         <td>
