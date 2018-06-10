@@ -43,177 +43,171 @@
                         <div class="layui-input-inline">
                             <input type="text" id="ordercontacter" name="order-contacter" placeholder="名称" lay-verify="required" autocomplete="off" class="layui-input">
                         </div>
-                        <label for="contacter" class="layui-form-label">
-                            <span class="we-red">*</span>手机号
-                        </label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="ordertel" name="order-tel" placeholder="手机号码" lay-verify="required|phone" autocomplete="off" class="layui-input">
-                        </div>
+
                     </div>
-                    <div class="layui-form-item">
-                        <label for="receiver" class="layui-form-label">
-                            <span class="we-red">*</span>接单人
-                        </label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="receiver" name="receiver" placeholder="名称" lay-verify="required|name" autocomplete="off" class="layui-input">
-                        </div>
+                    <label for="contacter" class="layui-form-label">
+                        <span class="we-red">*</span>手机号
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="ordertel" name="order-tel" placeholder="手机号码" lay-verify="required|phone" autocomplete="off" class="layui-input">
+                    </div>
 
-                        <label for="checker" class="layui-form-label">
-                            <span class="we-red">*</span>审核人
-                        </label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="check" name="check" placeholder="名称" lay-verify="required|name" autocomplete="off" class="layui-input">
-                        </div>
-
-
+                    <label for="checker" class="layui-form-label">
+                        <span class="we-red">*</span>审核人
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="check" name="check" placeholder="名称" lay-verify="required|name" autocomplete="off" class="layui-input">
                     </div>
 
 
-                    <div class="layui-form-item">
-                        <label for="begindate" class="layui-form-label">
-                            <span class="we-red">*</span>下单日期
-                        </label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="begindate" name="begindate" lay-verify="required|date" autocomplete="off" class="layui-input">
-                        </div>
-                        <label for="enddate" class="layui-form-label">
-                            <span class="we-red">*</span>交付日期
-                        </label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="enddate" name="enddate" lay-verify="required|date" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-
-
-
-
-                    <div class="layui-form-item">
-                        <label for="receive-addr" class="layui-form-label">
-                            <span class="we-red">*</span>收货地址
-                        </label>
-                        <div class="layui-input-inline">
-                            <select name="province" id="province" lay-filter="province">
-                                <option value="-1">请选择</option>
-                                <option value="110000">北京市</option>
-                                <option value="120000">天津市</option>
-                                <option value="130000">河北省</option>
-                                <option value="140000">山西省</option>
-                                <option value="150000">内蒙古自治区</option>
-                                <option value="210000">辽宁省</option>
-                                <option value="220000">吉林省</option>
-                                <option value="230000">黑龙江</option>
-                                <option value="310000">上海市</option>
-                                <option value="320000">江苏省</option>
-                                <option value="330000">浙江省</option>
-                                <option value="340000">安徽省</option>
-                                <option value="350000">福建省</option>
-                                <option value="360000">江西省</option>
-                                <option value="370000">山东省</option>
-                                <option value="410000">河南省</option>
-                                <option value="420000">湖北省</option>
-                                <option value="430000">湖南省</option>
-                                <option value="440000">广东省</option>
-                                <option value="450000">广西壮族自治区</option>
-                                <option value="460000">海南省</option>
-                                <option value="500000">重庆市</option>
-                                <option value="510000">四川省</option>
-                                <option value="520000">贵州省</option>
-                                <option value="530000">云南省</option>
-                                <option value="540000">西藏自治区</option>
-                                <option value="610000">陕西省</option>
-                                <option value="620000">甘肃省</option>
-                                <option value="630000">青海省</option>
-                                <option value="640000">宁夏回族自治区</option>
-                                <option value="650000">新疆维吾尔自治区</option>
-                                <option value="710000">台湾省</option>
-                            </select>
-                        </div>
-                        <div class="layui-input-inline">
-                            <select name="city" id="city" lay-filter="city">
-                                <option></option>
-                            </select>
-                        </div>
-                        <div class="layui-input-inline">
-                            <select name="district" id="district" lay-filter="district">
-                                <option></option>
-                            </select>
-                        </div>
-                        <!--<input type="text" id="receive-addr" class="layui-input" name="receive-addr" lay-verify="required" autocomplete="off" style="width:500%">-->
-
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="receive-addr" class="layui-form-label">
-                            <span class="we-red">*</span>详细地址
-                        </label>
-                        <div class="layui-input-inline">
-                            <textarea placeholder="详细地址" id="address" name="desc" class="layui-textarea" style="width:400%"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="fapiao" class="layui-form-label">
-                            订单总额
-                        </label>
-                        <div class="layui-input-inline">
-                            <input readonly="value" type="text" id="orderbill" name="orderbill" class="layui-input">
-                        </div>
-                        <label for="payment" class="layui-form-label">
-                            支付方式
-                        </label>
-                        <div class="layui-input-inline">
-                            <select name="payment" id="payment">
-                                <option value="1">现金</option>
-                                <option value="2">银行转账</option>
-                                <option value="3">支票</option>
-                                <option value="4">微信</option>
-                                <option value="5">支付宝</option>
-                            </select>
-                        </div>
-                    </div>
-
-
-
-                    <h2>订单明细</h2>
-                    <hr class="layui-bg-green">
-
-                    <div class="layui-form-item">
-                        <table class="layui-table" id="myTable">
-                            <thead>
-                                <tr>
-                                    <th>货品编号</th>
-                                    <th>商品名称</th>
-                                    <th>单价</th>
-                                    <th>数量</th>
-                                    <th>总价</th>
-                                    <th>操作</th>
-                                </tr>
-
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>合计</td>
-                                    <td colspan>人民币</td>
-                                    <td></td>
-                                    <td id="total_num"></td>
-                                    <td id="total_price"></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                        <a class="layui-btn layui-btn-sm" onclick="addTable();">
-                            <i class="fas fa-plus"></i>+</a>
-                    </div>
-                    <div class="layui-form-item">
-                        <textarea placeholder="备注：如有特殊需求，如 配送物流、加急订单等请在此注明" id="desc" name="desc" class="layui-textarea"></textarea>
-                    </div>
-                    <div class="layui-form-item">
-                        <button class="layui-btn" lay-submit lay-filter="add">确定</button>
-                    </div>
-                </form>
             </div>
-        </fieldset>
+
+
+            <div class="layui-form-item">
+                <label for="begindate" class="layui-form-label">
+                    <span class="we-red">*</span>下单日期
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="begindate" name="begindate" lay-verify="required|date" autocomplete="off" class="layui-input">
+                </div>
+                <label for="enddate" class="layui-form-label">
+                    <span class="we-red">*</span>交付日期
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="enddate" name="enddate" lay-verify="required|date" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+
+
+
+            <div class="layui-form-item">
+                <label for="receive-addr" class="layui-form-label">
+                    <span class="we-red">*</span>收货地址
+                </label>
+                <div class="layui-input-inline">
+                    <select name="province" id="province" lay-filter="province">
+                        <option value="-1">请选择</option>
+                        <option value="110000">北京市</option>
+                        <option value="120000">天津市</option>
+                        <option value="130000">河北省</option>
+                        <option value="140000">山西省</option>
+                        <option value="150000">内蒙古自治区</option>
+                        <option value="210000">辽宁省</option>
+                        <option value="220000">吉林省</option>
+                        <option value="230000">黑龙江</option>
+                        <option value="310000">上海市</option>
+                        <option value="320000">江苏省</option>
+                        <option value="330000">浙江省</option>
+                        <option value="340000">安徽省</option>
+                        <option value="350000">福建省</option>
+                        <option value="360000">江西省</option>
+                        <option value="370000">山东省</option>
+                        <option value="410000">河南省</option>
+                        <option value="420000">湖北省</option>
+                        <option value="430000">湖南省</option>
+                        <option value="440000">广东省</option>
+                        <option value="450000">广西壮族自治区</option>
+                        <option value="460000">海南省</option>
+                        <option value="500000">重庆市</option>
+                        <option value="510000">四川省</option>
+                        <option value="520000">贵州省</option>
+                        <option value="530000">云南省</option>
+                        <option value="540000">西藏自治区</option>
+                        <option value="610000">陕西省</option>
+                        <option value="620000">甘肃省</option>
+                        <option value="630000">青海省</option>
+                        <option value="640000">宁夏回族自治区</option>
+                        <option value="650000">新疆维吾尔自治区</option>
+                        <option value="710000">台湾省</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" id="city" lay-filter="city">
+                        <option></option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="district" id="district" lay-filter="district">
+                        <option></option>
+                    </select>
+                </div>
+                <!--<input type="text" id="receive-addr" class="layui-input" name="receive-addr" lay-verify="required" autocomplete="off" style="width:500%">-->
+
+            </div>
+            <div class="layui-form-item">
+                <label for="receive-addr" class="layui-form-label">
+                    <span class="we-red">*</span>详细地址
+                </label>
+                <div class="layui-input-inline">
+                    <textarea placeholder="详细地址" id="address" name="desc" class="layui-textarea" style="width:400%"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="fapiao" class="layui-form-label">
+                    订单总额
+                </label>
+                <div class="layui-input-inline">
+                    <input readonly="value" type="text" id="orderbill" name="orderbill" class="layui-input">
+                </div>
+                <label for="payment" class="layui-form-label">
+                    支付方式
+                </label>
+                <div class="layui-input-inline">
+                    <select name="payment" id="payment">
+                        <option value="1">现金</option>
+                        <option value="2">银行转账</option>
+                        <option value="3">支票</option>
+                        <option value="4">微信</option>
+                        <option value="5">支付宝</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+            <h2>订单明细</h2>
+            <hr class="layui-bg-green">
+
+            <div class="layui-form-item">
+                <table class="layui-table" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>货品编号</th>
+                            <th>商品名称</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>总价</th>
+                            <th>操作</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>合计</td>
+                            <td colspan>人民币</td>
+                            <td></td>
+                            <td id="total_num"></td>
+                            <td id="total_price"></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <a class="layui-btn layui-btn-sm" onclick="addTable();">
+                    <i class="fas fa-plus"></i>+</a>
+            </div>
+            <div class="layui-form-item">
+                <textarea placeholder="备注：如有特殊需求，如 配送物流、加急订单等请在此注明" id="desc" name="desc" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" lay-submit lay-filter="add">确定</button>
+            </div>
+            </form>
+    </div>
+    </fieldset>
 
     </div>
 </body>
@@ -300,13 +294,13 @@
             var order_bill = $("#orderbill").val();
             var payment = $("#payment").val();
             var checker = $("#check").val();
-            
+
 
             var order_data = {
                 "date": begin_date,
                 "indentor": comp_name,
                 "receiver": contacter,
-                "checker" : checker,
+                "checker": checker,
                 "area": district,
                 "address": address,
                 "indentorphonenumber": tele_num,
@@ -320,12 +314,12 @@
             var product_type = []
             var product_num = []
             var pdata
-            for(var i = 1; i < num; i++) {
+            for (var i = 1; i < num; i++) {
                 product[i - 1] = {}
                 product[i - 1]['product'] = $("#product" + (i)).val()
                 product[i - 1]['number'] = $("#number" + (i)).val()
             }
-            
+
             var order_info = {}
             order_info['oder_data'] = order_data
             order_info['product'] = product
@@ -338,13 +332,13 @@
                 cache: false,
                 async: false,
                 contentType: "application/json",
-                dataType : "json",
+                dataType: "json",
                 data: JSON.stringify(order_info),
                 success: function (data) {
                     pdata = data;
                 },
                 error: function (err) {
-                    console.log(err);   
+                    console.log(err);
                 }
             })
             layer.msg(pdata)
@@ -507,7 +501,7 @@
                 var cur_num = $('#number' + num).text()
                 var cur_price = $('#price' + num).text()
                 $('#total' + num).text(cur_num * cur_price)
-     
+
 
                 //动态监听input输入内容
                 var $inputContainer = $('#myTable');
@@ -553,10 +547,6 @@
             console.log("remove clicked");
             $("#tr" + trNum).remove();
         };
-        function showSth(){
-            console.log("11111");
-        }
-
 
     });
 </script>

@@ -177,8 +177,9 @@
                         break;
                     case "delete":
                         layer.msg(sendPost(order_id, 'delete-order'))
+                        
                         break;
-                    case "complete"://////////////////////////////////////////////////后端未实现
+                    case "complete":
                         layer.msg(sendPost(order_id, 'complete-order'))
                         break;
                 }

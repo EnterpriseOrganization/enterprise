@@ -16,6 +16,39 @@ def getAllOrder(request):
 	Response = serializers.serialize("json", Order.objects.all());
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
+# by ymk
+# 获取单条订单的信息
+def getOrderDetail(request):
+    # req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+	req_str = '[{"id": 1000000000}]'
+	id_diction = json.loads(req_str)
+	order_id=id_diction[0]['id']
+	# 获取order的id
+	o_res = Order.objects.filter(id=order_id) # 获取订单
+	# o_res = serializers.serialize("json", o);
+	product_list =Orderproduct.objects.filter(order=order_id).values('product','number')
+	# 获取到订单下的产品id
+	res=[] #创建列表
+	
+	# 遍历产品id
+	for pro in range(len(product_list)):
+		productID=product_list[pro]['product']
+		product_item=Product.objects.filter(id=productID).values('name','price')
+		# 获取到产品的列表和单价
+		# price = str(product_item[0]['price'].quantize(Decimal('0.0')))
+		# product_item[0]['price'] = price
+		temp={} #合并字典
+		temp.update(product_list[pro])
+		temp.update(product_item[0])
+		res.append(temp) #将字典添加入列表
+		for item in res:
+			item['price'] = float(item['price'])
+			#将decimal转换为float
+	
+	Response = serializers.serialize("json", o_res);
+	res_dict={"product":res,"order":Response}
+	return HttpResponse(json.dumps(res_dict))
+    	
 # by ymk 
 # 获取到特定条件下的订单信息返回，发送的信息应该包括 订单状态 "status": 1,开始时间："date": "2018-05-30T00:00:00Z",截止时间"deliverydate": "2018-06-20T00:00:00Z"，订货商"indentor": "jack"
 # 0: 待生产 1: 生产中 2:配送中（生产完成） 3: 采购中

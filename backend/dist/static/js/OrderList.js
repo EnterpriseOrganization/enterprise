@@ -21,11 +21,13 @@ layui.use(['table', 'jquery','form', 'admin'], function() {
             },  {
                 field: 'price',title: '订单金额',sort:true
             }, {
-                field: 'date',title: '交付时间',sort: true,width:150
+                field: 'start_date',title: '下单',sort: true,width:150
             },{
-                field: 'person',title: '订货人'
+                field: 'end_date',title: '交付日期',sort: true,width:150
+            },{
+                field: 'indentor',title: '订货商'
             }, {
-                field: 'status',title: '订单状态',toolbar: '#statusTpl'
+                field: 'status',title: '订单状态',sort: true
             }, {
                 field: 'operate',title: '操作',toolbar: '#operateTpl',unresize: true
             }]
@@ -38,6 +40,7 @@ layui.use(['table', 'jquery','form', 'admin'], function() {
 
     var req = 'get-all-order'
         var pdata
+        var kdata = []
         $.ajax({
             type: "POST",
             url: "http://127.0.0.1:8000/order/" + req,
@@ -49,21 +52,21 @@ layui.use(['table', 'jquery','form', 'admin'], function() {
                 pdata = data;
                 pdata = JSON.parse(pdata)
                 console.log(pdata)
+
+                for(var i in pdata) {
+                    var status
+                    if(pdata[i].fields.status) status = "已完成"
+                    else status = "未完成"
+                    kdata[i] = {
+                        "id": pdata[i].pk,
+                        "price": pdata[i].fields.totalprice,
+                        "start_date": pdata[i].fields.date.substr(0, 9),
+                        "end_date": pdata[i].fields.deliverydate.substr(0, 9),
+                        "indentor": pdata[i].fields.indentor,
+                        "status": status
+                    }
+                }
                 
-                //pdata 取出 id indentor price deliverydate
-                var kdata = [{
-                    'id':"111",
-                    'price':'111',
-                    'date': '2018-3-1',
-                    'person': 'wts'
-
-                },{
-                    'id':"222",
-                    'price':'222',
-                    'date': '2018-3-2',
-                    'person': 'wts'
-
-                }]
                 table.reload('id', {
                         data : kdata
                 })

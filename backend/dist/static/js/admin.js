@@ -352,15 +352,16 @@ layui.define(['jquery', 'form', 'layer', 'element'], function (exports) {
                 //向子页面中填充信息
                 var body = layer.getChildFrame('body', index)
                 var iframeWin = window[layero.find('iframe')[0]['name']];
-                console.log(iframeWin)
-                iframeWin.showSth()
                 body.find("#orderId").val(id)
                 var order_data = getOrderDetail(id, 0)
+                var order_data = JSON.parse(order_data.order)[0].fields
+
+                console.log(order_data.receiver)
                 body.find("#ordercomp").val(order_data.indentor)
                 body.find("#ordercontacter").val(order_data.receiver)
                 body.find("#ordertel").val(order_data.indentorphonenumber)
-                body.find("#begindate").val(order_data.date)
-                body.find("#enddate").val(order_data.deliverydate)
+                body.find("#begindate").val(order_data.date.substr(0, 9))
+                body.find("#enddate").val(order_data.deliverydate.substr(0, 9))
                 body.find("#orderbill").val(order_data.totalprice)
                 body.find('#payment').val(order_data.paymentway)
                 body.find('#check').val(order_data.checker)
@@ -397,7 +398,7 @@ layui.define(['jquery', 'form', 'layer', 'element'], function (exports) {
             var post_json = { 
                 "order": myData 
             }
-            var req = "getdetail"
+            var req = "get-order-detail"
         }
         //根据省份信息获取市级信息
         else if (type == 1) {
@@ -419,12 +420,13 @@ layui.define(['jquery', 'form', 'layer', 'element'], function (exports) {
             type: "POST",
             url: "http://127.0.0.1:8000/order/" + req,
             cache: false,
-            asynv: false,
+            async: false,
             contentType: "application/json",
             dataTye: "json",
             data: JSON.stringify(post_json),
             success: function (data) {
-                response_data = data
+                response_data = JSON.parse(data)
+                console.log(response_data)
             },
             error: function (err) {
                 console.log(err)
