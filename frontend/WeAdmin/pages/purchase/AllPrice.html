@@ -11,6 +11,19 @@
     <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
 </head>
 <body>
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">采购管理</a>
+            <a>
+                <cite>物料报价</cite>
+            </a>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i>
+        </a>
+    </div>
+
     <div class="weadmin-body">
         <div class="layui-row layui-col-space30">
             <div class="layui-col-md1 layui-form-item">
@@ -23,7 +36,7 @@
                     <option value="4">烟熏玫瑰</option>
                 </select>
             </div>
-            <div id="price-charts" class="layui-col-md11" style="height:500px;">	</div>
+            <div id="price-charts" class="layui-col-md11" style="height:300px;">	</div>
         </div>
         <div class="layui-row">
             <form class="layui-form layui-col-md12 we-search">
@@ -37,7 +50,8 @@
                 <div class="layui-inline">
                     <input type="text" name="fact_name" placeholder="供应商名称" autocomplete="off" class="layui-input">
                 </div>
-                <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+                <!--<button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
             </form>
         </div>
         <div class="weadmin-block">
@@ -45,9 +59,9 @@
             <!--<button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>-->
             <button class="layui-btn layui-btn-sm" lay-filter="add_price" lay-submit=""><i class="fas fa-plus"></i> 添加</button>
             <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
-            <span class="fr" style="line-height:40px">共有数据：88 条</span>
+            <!--<span class="fr" style="line-height:40px">共有数据：88 条</span>-->
         </div>
-        <table class="layui-table">
+        <table class="layui-table" height="315">
             <thead>
                 <tr>
                     <th>
@@ -98,7 +112,13 @@
                 <a class="next" href="">&gt;&gt;</a>
             </div>
         </div>
+        <p></p>
+        <p></p>
+        <p></p>
+       
     </div>
+
+
     <script src="../../static/js/echarts.js"></script>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
@@ -108,7 +128,7 @@
         // 指定图表的配置项和数据
         var option = {
             title: {
-                text: '物料历史报价统计'
+                text: '           物料历史报价统计'
             },
             tooltip: {
                 trigger: 'axis'

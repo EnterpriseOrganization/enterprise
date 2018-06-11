@@ -44,10 +44,10 @@
         <div class="weadmin-block">
             <!--<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
             <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="delAll()"><i class="fas fa-check"></i> 批量完成</button>
-            <span class="fr" style="line-height:40px">共有数据：88 条</span>
+            <!--<span class="fr" style="line-height:40px">共有数据：88 条</span>-->
         </div>
 
-        <table class="layui-table">
+        <table class="layui-table" height="315">
             <thead>
                 <tr>
                     <th>
@@ -61,7 +61,7 @@
                     <th>完成状态</th>
                     <th>详细信息</th>
                     <th>采购完成</th>
-                <!-- 详情还应包括： 供应商、采购人、备注
+                    <!-- 详情还应包括： 供应商、采购人、备注
                 <th>物料名称</th>-->
                 </tr>
             </thead>
@@ -77,7 +77,7 @@
                     <td>盖尔加朵</td>
                     <td>未完成</td>
                     <td class="td-manage">
-                        <a title="详情"  onclick="WeAdminShow('采购单详细信息','./HistoryPurchaseInfo.html')" href="javascript:;">
+                        <a title="详情" onclick="WeAdminShow('采购单详细信息','./HistoryPurchaseInfo.html')" href="javascript:;">
                             <i class="fas fa-info"></i>
                         </a>
                     </td>
