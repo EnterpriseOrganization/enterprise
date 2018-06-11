@@ -314,8 +314,8 @@ def add_purchase(request):
 def delete_purchases(request):
 	"""
 	批量删除采购记录
-	:param request:
-	:return:
+	:param request:(id1,id2,id3)以逗号分割的字符串
+	:return: 200 or error message
 	"""
 	if request.method == 'POST':
 		ids = request.POST.get('ids')
@@ -336,6 +336,8 @@ def delete_purchases(request):
 def get_purchase_list(request):
 	"""
 	获取采购单列表
+	:param request:
+	:return: list[{},{}]
 	"""
 	if request.method == 'POST':
 		purchases = Purchase.objects.select_related('supplier').all()
@@ -360,7 +362,8 @@ def get_purchase_list(request):
 def get_purchase_detail(request):
 	"""
 	获取采购单详细信息
-	传入参数：purchase_id:
+	:param request: purchase_id
+	:return:
 	"""
 	if request.method == 'POST':
 		purchase_id = request.POST.get('purchase_id')
@@ -394,7 +397,9 @@ def get_purchase_detail(request):
 @method_decorator(csrf_exempt)
 def purchase_query(request):
 	"""
-	条件查询采购单（订单编号,日期,采购人(字符串)）
+	条件查询采购单
+	:param request:（订单编号,日期,采购人(字符串)）
+	:return: list[{}{}]
 	"""
 	if request.method == 'POST':
 		params = request.POST
