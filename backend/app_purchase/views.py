@@ -3,6 +3,7 @@ from django.utils.decorators import method_decorator
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
 from enterprise.models import UserTable
+from django.db.models import Max
 from enterprise.models import Purchase
 from enterprise.models import PurchaseProduct
 from enterprise.models import InventoryInformation
@@ -237,43 +238,49 @@ def lack_list_query(request):
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
 
+def get_min_price(material_id):
+	try:
+		mt = Material.objects.get(id=material_id)
+	except Material.DoesNotExist:
+		return 'this Material does not exist'
+	price = SupplierMaterial.objects.filter(material=mt).aggregate(Max('price'))
+	return price
+
+
 @method_decorator(csrf_exempt)
 def add_purchase(request):
 	"""
 	新增购买记录(填写采购单)
-	传入参数：采购人,审核人,采购商品列表字典items(matreial_id,num,price,supplier_id)
+	传入参数：采购人,审核人,采购商品列表字典items(matreial_id,num,supplier_id)
 	"""
 	if request.method == 'POST':
 		params = request.POST
 		purchaser = params.get('purchaser')
-		checker_id = params.get('checker')
+		checker = params.get('checker')
 		supplier_id = params.get('supplier')
 		items = params.get('items')
-		return JsonResponse({'msg': 'sorry'})
-		if purchas and checker_id and items:
+		if purchaser and checker and items and supplier_id:
 			# 计算总价
 			total_price = 0
-			items_dict = json.loads(items)
-			price = int(items_dict['price'])
-			total_price += price
-			try:
-				checker = UserTable.objects.get(id=checker_id)
-				supplier = Purchase.objects.get(id=supplier_id)
-			except UserTable.DoesNotExist:
-				return JsonResponse({'msg': 'this checker does not exist'})
-			except Supplier.DoesNotExist:
-				return JsonResponse({'msg': 'this supplier does not exist'})
-			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier, totalprice=total_price)
+			# 先转成列表，再判断字典
+			items = list(items)
+			for item in items:
+				item_dict = dict(item)
+				material_id = int(item_dict['material_id'])
+				price = get_min_price(material_id)
+				total_price += price
+			# insert into db
+			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier_id, totalprice=total_price)
 			try:
 				purchase.save()
 			except IntegrityError:
 				return JsonResponse({'msg': ' primary key error'})
 
-			# 这里有问题，应该先转成列表，再判断字典
-			for item in items_dict:
-				matreial_id = items_dict[item]
-				num = items_dict[item]
-				price = item.price
+			for item in items:
+				item_dict = dict(item)
+				matreial_id = item_dict['material_id']
+				num = item_dict['num']
+				price = get_min_price(material_id)
 
 				if supplier_id and matreial_id and num and price:
 					try:
@@ -299,6 +306,7 @@ def add_purchase(request):
 @method_decorator(csrf_exempt)
 def delete_purchases(request):
 	"""
+	批量删除采购记录
 	"""
 	if request.method == 'POST':
 		ids = request.POST.get('ids')
