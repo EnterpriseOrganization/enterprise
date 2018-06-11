@@ -25,7 +25,7 @@
     </div>
 
     <div class="weadmin-body">
-        <div class="layui-row layui-col-space30">
+        <!--<div class="layui-row layui-col-space30">
             <div class="layui-col-md1 layui-form-item">
                 <select class="layui-inline" name="city" lay-verify="required">
                     <option value="-1">H303电阻 1K</option>
@@ -37,7 +37,36 @@
                 </select>
             </div>
             <div id="price-charts" class="layui-col-md11" style="height:300px;">	</div>
+        </div>-->
+
+        <!--<div class="layui-row">
+            <form class="layui-form layui-col-md12 we-search">
+                <div class="layui-inline">
+                    <select name="city" lay-search>
+                        <option value="-1">类别</option>
+                        <option value="0">供电类</option>
+                        <option value="0">电阻类</option>
+                        <option value="0">机械类</option>
+                        <option value="0">中间件类</option>
+                    </select>
+                </div>
+            </form>
+        </div>-->
+        <div class="layui-row">
+            <form class="layui-form layui-col-md12 we-search">
+                <div class="layui-inline">
+                    <select class="layui-inline" name="city" lay-verify="required">
+                        <option value="-1">H303电阻 1K</option>
+                        <option value="0">H1Z1电阻 2K</option>
+                        <option value="1">双向电容器</option>
+                        <option value="2">光明之神奥德尔</option>
+                        <option value="3">卡萨布兰卡</option>
+                        <option value="4">烟熏玫瑰</option>
+                    </select>
+                </div>
+                <div id="price-charts" class="layui-col-md11" style="height:300px;">	</div>
         </div>
+
         <div class="layui-row">
             <form class="layui-form layui-col-md12 we-search">
                 筛选 <i class="fas fa-filter"></i>
@@ -84,14 +113,21 @@
                     <td>12111</td>
                     <td>沉沉集团</td>
                     <td>1200</td>
-                    <td class="td-manage">
+                    <!--<td class="td-manage">
                         <a title="详细信息" onclick="WeAdminShow('物料报价详细信息','./PriceInfo.html')" href="javascript:;">
                             <i class="fas fa-chart-line"></i>
                         </a>
+                    </td>-->
+                    <td class="td-manage">
+                        <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail" onclick="WeAdminShow('物料报价详细信息','./PriceInfo.html')" href="javascript:;">查看详情</button>
                     </td>
+                    <!--<script type="text/html" id="select-order-button-template">
+                        <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
+                    </script>-->
+
                     <td class="td-manage">
                         <a title="编辑" onclick="WeAdminShow('编辑物料报价','./PriceModify.html',400,400)" href="javascript:;">
-                            <i class="fas fa-info"></i>
+                            <i class="fas fa-edit"></i>
                         </a>
                     </td>
                     <td>
