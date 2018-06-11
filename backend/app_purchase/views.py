@@ -239,6 +239,11 @@ def lack_list_query(request):
 
 
 def get_min_price(material_id):
+	"""
+	从供应商报价中找到最小的
+	:param material_id:
+	:return:min price
+	"""
 	try:
 		mt = Material.objects.get(id=material_id)
 	except Material.DoesNotExist:
@@ -251,8 +256,10 @@ def get_min_price(material_id):
 def add_purchase(request):
 	"""
 	新增购买记录(填写采购单)
-	传入参数：采购人,审核人,采购商品列表字典items(matreial_id,num,supplier_id)
+	:param: 采购人,审核人,采购商品列表字典items(matreial_id,num,supplier_id)
+	:return: 200 or error message
 	"""
+
 	if request.method == 'POST':
 		params = request.POST
 		purchaser = params.get('purchaser')
@@ -307,6 +314,8 @@ def add_purchase(request):
 def delete_purchases(request):
 	"""
 	批量删除采购记录
+	:param request:
+	:return:
 	"""
 	if request.method == 'POST':
 		ids = request.POST.get('ids')
