@@ -183,7 +183,8 @@ def add_supplier(request):
 def get_lack_list(request):
 	"""
 	获取所有缺料记录
-	return list
+	:param request:
+	:return: list[{}{}{}]
 	"""
 	if request.method == 'POST':
 		inifs = InventoryInformation.objects.select_related('material').filter(number__lt=F('threshold'))
@@ -206,7 +207,9 @@ def get_lack_list(request):
 @method_decorator(csrf_exempt)
 def lack_list_query(request):
 	"""
-	条件查询缺料列表（订单编号,物料编号,日期,采购人(字符串)）
+	条件查询缺料列表
+	:param request: （订单编号,物料编号,日期,采购人(字符串)）
+	:return: list[{}{}{}]
 	"""
 	if request.method == 'POST':
 		params = request.POST
