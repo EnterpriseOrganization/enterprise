@@ -17,10 +17,68 @@ def getAllOrder(request):
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
+# 
+def updateOrderDetail(request):
+	info = ""
+	req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+	diction = json.loads(req_str)
+	print(diction)
+	# 获取相关的key值
+	order_id = diction['order_data']['id']
+	date = diction['order_data']['date']
+	indentor = diction['order_data']['indentor']
+	receiver = diction['order_data']['receiver']
+	checker = diction['order_data']['checker']
+	recevieraddress = diction['order_data']['recevieraddress']
+	indentorphonenumber = diction['order_data']['indentorphonenumber']
+	totalprice = diction['order_data']['totalprice']
+	status = diction['order_data']['status']
+	deliverydate = diction['order_data']['deliverydate']
+	paymentway = diction['order_data']['paymentway']
+	o = Order.objects.filter(id=order_id)
+	#获取到 order对象
+	o.date = date
+	o.indentor = indentor
+	o.receiver = receiver
+	o.checker = checker
+	o.recevieraddress = recevieraddress
+	o.indentorphonenumber = indentorphonenumber
+	o.totalprice = totalprice
+	o.status = status
+	o.deliverydate = deliverydate
+	o.paymentway = paymentway
+	# 提高修改效率
+	o.save()
+	for dict_temp in range(len(diction['product'])):
+		id = diction['product'][dict_temp]['product']#获取product的id
+		product = Product.objects.get(id = id) #获取product对象
+		number = diction['product'][dict_temp]['number']#获取数量
+		price = product.price#获取单价
+
+		op_temp = orderproduct.objects.filter(order=o)
+		op_temp =op_temp.filter()
+		if(op_temp):
+			op.number=number
+			price=price
+			info="update an order successfully"
+		else: 
+			# 查询是否存在相应的order_product
+			op = Orderproduct(
+				order = o,
+				product = product,
+				number = number,
+				price = price
+				)
+			op.save()
+			info="add an order successfully"
+
+	return HttpResponse(info)
+
+# by ymk
 # 获取单条订单的信息
 def getOrderDetail(request):
-    # req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
-	req_str = request.body.decode('utf-8')
+    req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+	# req_str = '[{"id": 1000000000}]' 测试用
 	id_diction = json.loads(req_str)
 	order_id = id_diction['order']
 	# 获取order的id
