@@ -19,7 +19,8 @@ import json
 def get_quotation_list(request):
 	"""
 	获取所有报价记录
-	return list
+	:param request:
+	:return: list[{}{}..]
 	"""
 	if request.method == 'POST':
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').all()
@@ -43,6 +44,8 @@ def get_quotation_list(request):
 def add_quotation(request):
 	"""
 	增加供应商报价信息
+	:param request:(material_id, supplier_id, price)
+	:return: 200 or error message
 	"""
 	if request.method == 'POST':
 		params = request.POST
@@ -78,6 +81,8 @@ def add_quotation(request):
 def delete_quotation(request):
 	"""
 	删除某一条供应商报价
+	:param request: quotation_id
+	:return: 200 or error message
 	"""
 	if request.method == 'POST':
 		params = request.POST
@@ -103,6 +108,8 @@ def delete_quotation(request):
 def quotation_query(request):
 	"""
 	条件查询物料报价
+	:param request:
+	:return:
 	"""
 	if request.method == 'POST':
 		params = request.POST
