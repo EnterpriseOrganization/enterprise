@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="../../static/css/weadmin.css">
     <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-
 </head>
 
 <body>
@@ -32,20 +31,20 @@
         <div class="layui-row">
             <form class="layui-form layui-col-md12 we-search">
                 <div class="layui-inline">
-                    <select name="city" lay-verify="">
-                        <option value="">订单状态</option>
-                        <option value="010">已完成</option>
-                        <option value="021">未完成</option>
+                    <select id="order_static" name="order_static" lay-verify="">
+                        <option value="-1">订单状态</option>
+                        <option value="1">已完成</option>
+                        <option value="0">未完成</option>
                     </select>
                 </div>
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="开始时间" name="start" id="start">
+                    <input class="layui-input" placeholder="开始时间" name="start" id="begin_time">
                 </div>
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="截止时间" name="end" id="end">
+                    <input class="layui-input" placeholder="截止时间" name="end" id="end_time">
                 </div>
                 <div class="layui-inline">
-                    <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input">
+                    <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input" id="indentor_name">
                 </div>
                 <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search">
                     <i class="fas fa-search"></i>
@@ -88,10 +87,10 @@
                     <i class="fas fa-check" activated></i>
                 </a>
             </script>
-            <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-            <script src="../../static/js/OrderList.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/OrderList.js" type="text/javascript" charset="utf-8"></script>
 
-            
+
 
 
 
@@ -166,25 +165,63 @@
                 });
             }
 
-            table.on('tool(orderInfo)', function (obj) { 
+            table.on('tool(orderInfo)', function (obj) {
                 var data = obj.data //获得当前行数据
                 var layEvent = obj.event
-                var order_id= data.id
-                
+                var order_id = data.id
+
                 switch (layEvent) {
                     case "edit":
                         WeAdminEdit('修改订单', './OrderModify.html', order_id)
                         break;
                     case "delete":
                         layer.msg(sendPost(order_id, 'delete-order'))
-                        
+                        getTableInfo()
                         break;
                     case "complete":
                         layer.msg(sendPost(order_id, 'complete-order'))
+                        getTableInfo()
                         break;
                 }
 
             });
+            function getTableInfo() {
+                var req = 'get-all-order'
+                var pdata
+                var kdata = []
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/order/" + req,
+                    cache: false,
+                    async: false,
+                    contenType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        pdata = data;
+                        pdata = JSON.parse(pdata)
+                        for (var i in pdata) {
+                            var status
+                            if (pdata[i].fields.status) status = "已完成"
+                            else status = "未完成"
+                            kdata[i] = {
+                                "id": pdata[i].pk,
+                                "price": pdata[i].fields.totalprice,
+                                "start_date": pdata[i].fields.date.substr(0, 10),
+                                "end_date": pdata[i].fields.deliverydate.substr(0, 10),
+                                "indentor": pdata[i].fields.indentor,
+                                "status": status
+                            }
+                        }
+
+                        table.reload('id', {
+                            data: kdata
+                        })
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            }
 
             function sendPost(order_id, str) {
                 var pdata
@@ -201,7 +238,7 @@
                     contenType: "application/json",
                     dataType: "json",
                     data: JSON.stringify(post_data),
-                    success: function(data) {
+                    success: function (data) {
                         pdata = data;
                     },
                     error: function (err) {
@@ -210,14 +247,53 @@
                 })
                 return pdata
             }
-            form.on('submit(search)', function() {
-                console.log("111111111111111")
-                table.reload("id", {
-                    where:{
-                        'id': '1111'
+            form.on('submit(search)', function () {
+                var status = $("#order_status").val()
+                if (status != 0 || status != 1) status = ""
+                console.log(status)
+                var begin_time = $("#begin_time").val()
+                var end_time = $("#end_time").val()
+                var indentor_name = $("#indentor_name").val()
+                var post_json = {
+                    "indentor": indentor_name,
+                    "date": begin_time,
+                    "deliverydate": end_time,
+                    "status": status
+                }
+                var pdata
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/order/get-specific-order",
+                    cache: false,
+                    async: false,
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(post_json),
+                    success: function (data) {
+                        pdata = JSON.parse(data);
+                        tableIns.reload({
+                            data: pdata
+                        })
+                        table.reload("id", {
+                            data: pdata
+                        })
+                    },
+                    error: function (err) {
+                        console.log(err);
                     }
                 })
-            })
+
+                console.log(tableIns)
+
+            }),
+
+                //删除行
+                function removeTr(trNum) {
+                    console.log("remove clicked");
+                    $("#tr" + trNum).remove();
+                }
+
+
 
         });
 

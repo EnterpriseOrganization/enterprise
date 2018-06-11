@@ -20,20 +20,20 @@ def getAllOrder(request):
 # 获取单条订单的信息
 def getOrderDetail(request):
     # req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
-	req_str = '[{"id": 1000000000}]'
+	req_str = request.body.decode('utf-8')
 	id_diction = json.loads(req_str)
-	order_id=id_diction[0]['id']
+	order_id = id_diction['order']
 	# 获取order的id
 	o_res = Order.objects.filter(id=order_id) # 获取订单
 	# o_res = serializers.serialize("json", o);
-	product_list =Orderproduct.objects.filter(order=order_id).values('product','number')
+	product_list = Orderproduct.objects.filter(order=order_id).values('product','number')
 	# 获取到订单下的产品id
 	res=[] #创建列表
 	
 	# 遍历产品id
 	for pro in range(len(product_list)):
 		productID=product_list[pro]['product']
-		product_item=Product.objects.filter(id=productID).values('name','price')
+		product_item=Product.objects.filter(id=productID).values('id','name','price')
 		# 获取到产品的列表和单价
 		# price = str(product_item[0]['price'].quantize(Decimal('0.0')))
 		# product_item[0]['price'] = price
@@ -58,18 +58,20 @@ def getSpecificOrder(request):
 	diction = json.loads(req_str) #返回的是一个字典list长度为1 {'deliverydate': '2018-06-20T00:00:00Z', 'date': '2018-05-30T00:00:00Z', 'indentor': 'jack', 'status': 1}
 	o = Order.objects.all() #先获取所有的信息
 	#print(diction)
-	for key in diction[0]:# 依次遍历查询
+	# print(diction['indentor'])
+
+	for key in diction:# 依次遍历查询
 		temp = o
-		diction[0][key] = diction[0][key].strip()#去掉所有的空格
-		if(diction[0][key]!=""):
+		diction[key] = diction[key].strip()#去掉所有的空格
+		if(diction[key]!=""):
 			if(key == 'status'):
-				temp = o.filter(status=diction[0][key])
+				temp = o.filter(status=diction[key])
 			elif(key == 'date'):
-				temp = o.filter(date=diction[0][key])
+				temp = o.filter(date=diction[key])
 			elif(key == 'deliverydate'):
-				temp = o.filter(deliverydate=diction[0][key])
+				temp = o.filter(deliverydate=diction[key])
 			elif(key == 'indentor'):
-				temp = o.filter(indentor=diction[0][key])
+				temp = o.filter(indentor=diction[key])
 		o = temp
 	Response=serializers.serialize("json", o);#序列化对象
 	return HttpResponse(json.dumps(Response))	

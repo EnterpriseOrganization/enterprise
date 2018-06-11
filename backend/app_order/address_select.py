@@ -8,6 +8,7 @@ def getCity(req):
     current_path = os.getcwd()
     req_str = req.body.decode('utf-8')
     req_json = json.loads(req_str)
+    print(req_json)
     province_id = req_json['province_id']
     path = current_path + "\\app_order\\area.json"
     with open(path, 'rb')as f:

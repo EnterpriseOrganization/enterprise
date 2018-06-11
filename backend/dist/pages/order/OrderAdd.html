@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="../../static/css/font.css">
     <link rel="stylesheet" href="../../static/css/weadmin.css">
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript">
+    <script type="text/javascript"> 
+        
     </script>
 
 </head>
@@ -199,7 +200,7 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <a class="layui-btn layui-btn-sm" onclick="addTable();">
+                        <a class="layui-btn layui-btn-sm" onclick="addTable();" id="addTable">
                             <i class="fas fa-plus"></i>+</a>
                     </div>
                     <div class="layui-form-item">
@@ -224,8 +225,8 @@
             $ = layui.jquery,
             table = layui.table,
             laydate = layui.laydate
-        layer = layui.layer;
-
+            layer = layui.layer;
+        that_form = form
         laydate.render({
             elem: '#enddate'
         });
@@ -348,9 +349,47 @@
                 }
             })
             layer.msg(pdata)
+            getTableInfo()
+            window.location.reload()
             return false;
         });
+        function getTableInfo() {
+            var req = 'get-all-order'
+            var pdata
+            var kdata = []
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/order/" + req,
+                cache: false,
+                async: false,
+                contenType: "application/json",
+                dataType: "json",
+                success: function (data) {
+                    pdata = data;
+                    pdata = JSON.parse(pdata)
+                    for (var i in pdata) {
+                        var status
+                        if (pdata[i].fields.status) status = "已完成"
+                        else status = "未完成"
+                        kdata[i] = {
+                            "id": pdata[i].pk,
+                            "price": pdata[i].fields.totalprice,
+                            "start_date": pdata[i].fields.date.substr(0, 10),
+                            "end_date": pdata[i].fields.deliverydate.substr(0, 10),
+                            "indentor": pdata[i].fields.indentor,
+                            "status": status
+                        }
+                    }
 
+                    table.reload('id', {
+                        data: kdata
+                    })
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
 
 
         var num = 1;
@@ -361,6 +400,7 @@
 
         //动态添加订单明细
         window.addTable = function () {
+            console.log("1111")
             pro_data = getData(1);
             pro_data = JSON.parse(pro_data)
             var tableHtml = "";
@@ -368,9 +408,9 @@
             tableHtml += '<tr id="tr' + num + '">' +
                 '<td>' + num + '</td>' +
                 '<td><div class="layui-input-inline"><select lay-filter="product" id="product' + num + '" class="product"><option value="-1">请选择</option></select></div></td>' +
-                '<td><div class="layui-input-inline"><a id="price' + num + '">' + price + '</a></div></td>' +
+                '<td><div class="layui-input-inline"><a id="price' + num + '"></a></div></td>' +
                 '<td><div class="layui-input-inline"><input type="text" readonly="value" placeholder="请输入" id="number' + num + '"class="layui-input" class="productnum"></input></div></td>' +
-                '<td><div class="layui-input-inline"><a id="total' + num + '">' + total + '</div></td>' +
+                '<td><div class="layui-input-inline"><a id="total' + num + '"></div></td>' +
                 '<td><button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeTr(' + num + ')">删除</button>' +
                 '</td>' +  
                 '</tr>';
@@ -384,6 +424,7 @@
                 price[pro_data[i].pk] = pro_data[i].fields.price
             }
             $('#price' + num).text(0)
+            $('#number' + num).val(0)
             form.render("select");
 
             //动态监听input输入内容
@@ -425,7 +466,7 @@
                 $('#total' + curr).text('0');
                 var curr_num = parseInt($('#number' + curr).val());
                 var curr_total_num = parseInt($('#total_num').text());
-                $('#number' + curr).val('');
+                $('#number' + curr).val(0);
                 $('#total_num').text(curr_total_num - curr_num);
                 form.render();
             }
@@ -494,6 +535,9 @@
 
 
     });
+    function getForm(){
+        console.log(that_form)
+    }
 </script>
 
 
