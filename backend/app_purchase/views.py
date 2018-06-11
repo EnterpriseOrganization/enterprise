@@ -107,18 +107,18 @@ def quotation_query(request):
 	if request.method == 'POST':
 		params = request.POST
 		# 得到所有参数
-		quotation_id = params.get('quotation_id')
+		material_id = params.get('material_id')
 		material_name = params.get('material_name')
 		supplier_name = params.get('supplier_name')
 		where_args = {}
 		# 都有什么条件
-		if quotation_id:
-			where_args['id'] = quotation_id
+		if material_id:
+			where_args['material__id'] = material_id
 		if supplier_name:
 			where_args['supplier__name'] = supplier_name
 		if material_name:
 			where_args['material__name'] = material_name
-
+		print(where_args)
 		sms = SupplierMaterial.objects.select_related('supplier', 'material').filter(**where_args)
 		result = []
 		for sm in sms:
