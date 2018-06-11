@@ -9,6 +9,7 @@ urlpatterns = [
 	url(r'^quotation_query', views.quotation_query),
 	url(r'^add_suppler', views.add_supplier),
 	url(r'^get_lack_list', views.get_lack_list),
+	url(r'^lack_list_query', views.lack_list_query),
 	url(r'^add_purchase', views.add_purchase),
 	url(r'^delete_purchases', views.delete_purchases),
 	url(r'^get_purchase_list', views.get_purchase_list),

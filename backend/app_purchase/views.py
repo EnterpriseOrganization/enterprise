@@ -101,7 +101,7 @@ def delete_quotation(request):
 @method_decorator(csrf_exempt)
 def quotation_query(request):
 	"""
-	条件查询
+	条件查询物料报价
 	"""
 	if request.method == 'POST':
 		params = request.POST
@@ -179,7 +179,6 @@ def add_supplier(request):
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
 
-@method_decorator(csrf_exempt)
 def get_lack_list(request):
 	"""
 	获取所有缺料记录
@@ -191,10 +190,45 @@ def get_lack_list(request):
 		for inif in inifs:
 			res = {
 				'id': inif.id,
-				'material_id':inif.material.id,
+				'material_id': inif.material.id,
 				'material_name': inif.material.name,
 				'number': inif.number,
-				'threshold':inif.threshold
+				'threshold': inif.threshold
+			}
+			result.append(res)
+
+		return JsonResponse({'msg': 200, 'result': result})
+	else:
+		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+
+
+@method_decorator(csrf_exempt)
+def lack_list_query(request):
+	"""
+	条件查询缺料列表（订单编号,物料编号,日期,采购人(字符串)）
+	"""
+	if request.method == 'POST':
+		params = request.POST
+		# 得到所有参数
+		material_id = params.get('material_id')
+		material_name = params.get('material_name')
+		# 都有什么条件
+		q1 = Q()
+		q1.connector = 'AND'
+		if material_id:
+			q1.children.append(('material_id', material_id))
+		if material_name:
+			q1.children.append(('material__name', material_name))
+		lacks = InventoryInformation.objects.select_related('material').filter(Q(number__lt=F('threshold')), q1)
+		lacks.filter()
+		result = []
+		for lack in lacks:
+			res = {
+				'id': lack.id,
+				'material_id': lack.material.id,
+				'material_name': lack.material.name,
+				'number': lack.number,
+				'threshold': lack.threshold
 			}
 			result.append(res)
 
