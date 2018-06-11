@@ -385,26 +385,23 @@ def get_purchase_detail(request):
 @method_decorator(csrf_exempt)
 def purchase_query(request):
 	"""
-	条件查询采购单（订单编号,物料编号,日期,采购人(字符串)）
+	条件查询采购单（订单编号,日期,采购人(字符串)）
 	"""
 	if request.method == 'POST':
 		params = request.POST
 		# 得到所有参数
-		purchaser = params.get('purchaser')
-		material_id = params.get('material_id')
 		purchase_id = params.get('purchase_id')
+		purchaser = params.get('purchaser')
 		date = params.get('date')
 		where_args = {}
 		# 都有什么条件
+		if purchase_id:
+			where_args['id'] = purchase_id
 		if purchaser:
 			where_args['purchaser'] = purchaser
-		if material_id:
-			where_args['material_id'] = material_id
-		if purchase_id:
-			where_args['purchase_id'] = purchase_id
 		if date:
 			where_args['date'] = date
-
+		print(where_args)
 		purchases = Purchase.objects.select_related('supplier').filter(**where_args)
 		result = []
 		for purchase in purchases:
