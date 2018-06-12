@@ -86,10 +86,10 @@
         </div>
 
         <div class="weadmin-block">
-            <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
+            <!--button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()" ><i class="fas fa-trash-alt"></i> 批量删除</button-->
             <!--<button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>-->
             <button class="layui-btn layui-btn-sm" lay-filter="add_price" lay-submit=""><i class="fas fa-plus"></i> 添加</button>
-            <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
+            <!--button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt" ></i> 全部导出</button-->
             <!--<span class="fr" style="line-height:40px">共有数据：88 条</span>-->
         </div>
         <table id="AllPrice_table" lay-filter="AllPrice_filter" class="layui-table"></table>
@@ -216,24 +216,34 @@
                             withCredentials:true
                     },
                     success: function(data){
-                        console.log('balabalalelvofmvimid!');
                         if(data.msg == 200){
-                            console.log('200!!');
+                            console.log('Search 200!!');
+                            //console.log(data.result);
+                            table1.render({
+                                elem: '#AllPrice_table'
+                                ,height: 315
+                                ,page: true
+                                ,data: data.result
+                                ,cols: [[
+                                    {field: 'id', title: '订单编号', width:170, fixed: '#left'},
+                                    {field: 'material_id', title: '物料编号', width:170, fixed: '#left'},
+                                    {field: 'material_name', title: '物料名称', width:250},
+                                    {field: 'supplier_name', title: '供应商名称', width:200},
+                                    {field: 'price', title: '价格', width:170},
+                                    {field: 'operate2', title: '详细信息', width:170,toolbar: '#detail'},
+                                    {field: 'operate3', title: '编辑', width:170,toolbar: '#edit'},
+                                    {field: 'operate4', title: '删除', width:170,toolbar: '#delete-item'},
+                                ]]
+                            });
                         }else if(data.msg == 500){
-                            console.log('500!!');
+                            console.log('Search 500!!');
+                        }else{
+                            console.log('Search other!!');
                         }
                     }
                 });
                 console.log('outside the ajax！');
                 return false;
-            });
-
-            form.on('submit(price_delete)', function(data){
-                
-            });
-
-            form.on('submit(price_edit)', function (data) {
-
             });
             
             function dynamicRanderTable(){
@@ -312,7 +322,18 @@
                 };
 
                 if(layEvent=='edit') {
-
+                    layer.open({
+                        type: 2,//此处以iframe举例
+                        title: '修改价格',
+                        area: ['750px', '500px'],
+                        content: 'PriceModify.html',
+                        closeBtn: 1,
+                        success: function (layero, index) {
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传参
+                            iframe.child(data.id);
+                        },
+                    });
                 };
 
             });
