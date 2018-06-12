@@ -73,60 +73,54 @@
         layui.use(['form','layer','admin'], function(){
           var form = layui.form,
               admin = layui.admin,
-              layer = layui.layer;
+              layer = layui.layer,
+              material_id,
+              supplier_id;
           getMaterial();
 
           //监听提交
           form.on('submit(add)', function(data){
               console.log('add price!!');
-              //var supl_name = document.getElementById("supl_name").text().trim();
-              //var mate_name = document.getElementById("mate_name").text().trim();
               var price = document.getElementById("price").value.trim();
-              //console.log(supl_name);
-              //console.log(mate_name);
               console.log(price);
-            $.ajax({
+              //首先获得下拉框的节点对象；
+              var select = document.getElementById("supl_name");
+              var options = select.options;
+              var index = select.selectedIndex;
+              var selectedText = options[index].value;
+
+              //首先获得下拉框的节点对象；
+              var select1 = document.getElementById("mate_name");
+              var options1 = select1.options;
+              var index1 = select1.selectedIndex;
+              var selectedText1 = options1[index1].value;
+              var data = {
+                        material_id: selectedText1,
+                        supplier_id: selectedText,
+                        price: price
+                    };
+              console.log('mydata');
+              console.log(data);
+              $.ajax({
                     url: 'http://localhost:8000/purchase/add_quotation',
                     type: 'post',
                     dataType:'json',
-                    data: {
-                        material_id: 1,
-                        supplier_id: 3,
-                        price: price
-                    },
+                    data: data,
                     xhrFields:{
                             withCredentials:true
                     },
                     success: function(data){
                         console.log('balabalalelvofmvimid!');
+                        console.log(data.msg);
                         if(data.msg == 200){
                             console.log('add price 200!!');
-                            $.ajax ({
-                            type: 'POST',
-                            url: 'http://localhost:8000/purchase/get_purchase_list',
-                            dataType: 'json',
-                            cache: false,
-                            async: false,
-                            success: function (data) {
-                                console.log(data);
-                                historypurchasedata = data['result'];
-                            }
-                            });
-                            historypurchase_table.render({
-                            elem: '#historypurchase_table'
-                            ,height: 400
-                            ,page: true
-                            ,data: historypurchasedata
-                            ,cols: [[
-                                {field: 'id', title: '订单ID', width:170, fixed: 'left'},
-                                {field: 'date', title: '采购时间', width:250},
-                                {field: 'supplier_name', title: '供应商', width:200},
-                                {field: 'totalprice', title: '采购价格（总价）', width:170},
-                                {field: 'purchaser', title: '采购人', width:170},
-                            ]]
-                        });
+                            window.parent.location.reload(); //刷新父页面
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);  // 关闭layer
                         }else if(data.msg == 500){
                             console.log('500!!');
+                        }else{
+                            console.log('other!');
                         }
                     }
                 });
@@ -137,7 +131,7 @@
           //监听下拉框
           form.on('select(add_factory)', function(data){
               console.log('select');
-              console.log(data);
+              //console.log(data);
               if(data.value == -1){
                   console.log('添加供应商');
                   layer.open({
@@ -158,9 +152,9 @@
                       withCredentials:true
                   },
                   success: function(data){
-                      console.log('balabalalelvofmvimid!');
+                      //console.log('balabalalelvofmvimid!');
                       if(data.msg == 200){
-                          console.log('getmaterial 200!!');
+                          //console.log('getmaterial 200!!');
                           //console.log(data.result);
                           genSuplierName(data.result);
                       }else if(data.msg == 500){
@@ -191,23 +185,23 @@
 
           function genMateName(data){
               console.log('inside getMateName!');
+              console.log(data);
               for(var i = 0;i<data.length;i++){
-                  $('#mate_name').append('<option value="' + i + '">' + data[i].name + '</option>');
-                  console.log('mengyuhang!');
-
+                  $('#mate_name').append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
               };
+              //console.log('mengyuhang!');
               form.render("select");
           }
 
           function genSuplierName(data){
               console.log('inside getSuplierName!');
+              console.log(data);
               for(var i = 0;i<data.length;i++){
-                  $('#supl_name').append('<option value="' + i + '">' + data[i].name + '</option>');
-                  console.log('mengyuhang!');
-
+                  $('#supl_name').append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
               };
+              //console.log('mengyuhang!');
               form.render("select");
-          }
+          };
 
         });
     </script>
