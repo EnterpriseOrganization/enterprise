@@ -114,7 +114,9 @@
                         console.log(data.msg);
                         if(data.msg == 200){
                             console.log('add price 200!!');
-                            layer.close();
+                            window.parent.location.reload(); //刷新父页面
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);  // 关闭layer
                         }else if(data.msg == 500){
                             console.log('500!!');
                         }else{
@@ -200,12 +202,6 @@
               //console.log('mengyuhang!');
               form.render("select");
           };
-
-          /*$("#supl_name").change(function(){
-                  supl_id=$("#fruit option:selected").val();
-                  text=$("#fruit option:selected").text();
-                  $("p").text("你选中的是"+text+"值为"+supl_id);
-           })*/
 
         });
     </script>

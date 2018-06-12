@@ -92,54 +92,7 @@
             <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
             <!--<span class="fr" style="line-height:40px">共有数据：88 条</span>-->
         </div>
-        <table class="layui-table" height="315" id="table1">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                    </th>
-                    <th>物料编号</th>
-                    <th>物料名称</th>
-                    <th>供应商名称</th>
-                    <th>价格（元）</th>
-                    <th>详细信息</th>
-                    <th>编辑</th>
-                    <th>删除</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                    </td>
-                    <td>CDE012FGAB</td>
-                    <td>12111</td>
-                    <td>沉沉集团</td>
-                    <td>1200</td>
-                    <!--<td class="td-manage">
-                        <a title="详细信息" onclick="WeAdminShow('物料报价详细信息','./PriceInfo.html')" href="javascript:;">
-                            <i class="fas fa-chart-line"></i>
-                        </a>
-                    </td>-->
-                    <td class="td-manage">
-                        <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail" onclick="WeAdminShow('物料报价详细信息','./PriceInfo.html')" href="javascript:;">查看详情</button>
-                    </td>
-                    <!--<script type="text/html" id="select-order-button-template">
-                        <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
-                    </script>-->
-
-                    <td class="td-manage">
-                        <a title="编辑" onclick="WeAdminShow('编辑物料报价','./PriceModify.html',400,400)" href="javascript:;">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <table id="AllPrice_table" lay-filter="AllPrice_filter" class="layui-table"></table>
         <div class="page">
             <div>
                 <a class="prev" href="">&lt;&lt;</a>
@@ -160,6 +113,17 @@
     <script src="../../static/js/echarts.js"></script>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/html" id="detail">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">详细信息</a>
+    </script>
+    <script type="text/html" id="edit">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    </script>
+    <script type="text/html" id="delete-item">
+    <a class="layui-btn layui-btn-xs" lay-event="delete-item">删除</a>
+    </script>
+
     <script type="text/javascript">
         layui.extend({
             admin: '{/}../../static/js/admin'
@@ -264,9 +228,17 @@
                 return false;
             });
 
+            form.on('submit(price_delete)', function(data){
+                
+            });
+
+            form.on('submit(price_edit)', function (data) {
+
+            });
+            
             function dynamicRanderTable(){
-              var pricedata;
-              $.ajax ({
+                var pricedata;
+                $.ajax ({
                     type: 'POST',
                     url: 'http://localhost:8000/purchase/get_quotation_list',
                     dataType: 'json',
@@ -278,20 +250,72 @@
                         pricedata = data['result'];
                     }
                     });
-
                 table1.render({
-                    elem: '#table1'
-                    ,height: 400
+                    elem: '#AllPrice_table'
+                    ,height: 315
                     ,page: true
                     ,data: pricedata
                     ,cols: [[
-                        {field: 'material_id', title: '物料编号', width:170, fixed: 'left'},
-                        {field: 'material_name', title: '物料编号', width:250},
+                        {field: 'id', title: '订单编号', width:170, fixed: '#left'},
+                        {field: 'material_id', title: '物料编号', width:170, fixed: '#left'},
+                        {field: 'material_name', title: '物料名称', width:250},
                         {field: 'supplier_name', title: '供应商名称', width:200},
                         {field: 'price', title: '价格', width:170},
+                        {field: 'operate2', title: '详细信息', width:170,toolbar: '#detail'},
+                        {field: 'operate3', title: '编辑', width:170,toolbar: '#edit'},
+                        {field: 'operate4', title: '删除', width:170,toolbar: '#delete-item'},
                     ]]
                 });
-          }
+            };
+
+            table1.on('tool(AllPrice_filter)', function(obj){
+                var data=obj.data;
+                var layEvent = obj.event;
+                console.log(data);
+                console.log(layEvent);
+                if(layEvent=='delete-item') {
+                    $.ajax({
+                    url: 'http://localhost:8000/purchase/delete_quotation',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        quotation_id: data.id
+                    },
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (data) {
+
+                        var code=data['msg'];
+                        if(code=='200') {
+//                            var searchresult = data['result'];
+//                            layer.open({
+//                                type: 2 //此处以iframe举例
+//                                ,title: '查看采购单详情'
+//                                ,area: ['750px', '500px']
+//                                ,content: 'HistoryPurchaseInfo.html'
+//                                ,closeBtn: 1
+//                                ,btn: function(){
+//                                    layer.closeAll();
+//                                }
+//                            });
+                            console.log(data);
+                            console.log('okokokokokokoko!!');
+                            location.reload();
+                        }
+                    }
+                    });
+                }
+
+                if(layEvent=='detail') {
+
+                };
+
+                if(layEvent=='edit') {
+
+                };
+
+            });
 
 
         });
