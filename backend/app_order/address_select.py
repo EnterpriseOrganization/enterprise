@@ -2,16 +2,15 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import codecs
 import json
-
+import os
 # Create your views here.
-
-
 def getCity(req):
+    current_path = os.getcwd()
     req_str = req.body.decode('utf-8')
-    print(req_str)
     req_json = json.loads(req_str)
+    print(req_json)
     province_id = req_json['province_id']
-    path = "F:/Enterprise/teamworkSpace/enterprise/enterprise/backend/app_order/area.json"
+    path = current_path + "\\app_order\\area.json"
     with open(path, 'rb')as f:
         temp = json.loads(f.read().decode('utf-8'))
     for province in temp:
@@ -20,11 +19,12 @@ def getCity(req):
             return JsonResponse(citys, safe=False)
 
 def getDistrict(req):
+    current_path = os.getcwd()
     req_str = req.body.decode('utf-8')
     req_json = json.loads(req_str)
     province_id = req_json['province_id']
     city_id = req_json['city_id']
-    path = "F:/Enterprise/teamworkSpace/enterprise/enterprise/backend/app_order/area.json"
+    path = current_path + "\\app_order\\area.json"
     with open(path, 'rb')as f:
         temp = json.loads(f.read().decode('utf-8'))
     for province in temp:

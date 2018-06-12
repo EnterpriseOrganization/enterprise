@@ -2,11 +2,7 @@
 import sys
 from django.http import JsonResponse
 import time
-
-from enterprise.models import *
-from enterprise.DataScript import generateProduct
-from django.http import JsonResponse, HttpResponse
-
+from enterprise.models import InventorInformation
 from django.core import serializers
 # Create your views here.
 from collections import defaultdict

@@ -33,13 +33,25 @@
                 <form class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
                         <input type="text" name="title" required lay-verify="required"
-                             placeholder="请输入订单编号" autocomplete="off" class="layui-input">    
+                             placeholder="请输入货品编号" autocomplete="off" class="layui-input">    
                     </div>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="订单开始时间" name="start" id="start">
+                        <select name="workshop" lay-verify="">
+                            <option value="">生产车间</option>
+                            <option value="010">1</option>
+                            <option value="021">2</option>
+                            <option value="021">3</option>
+                            <option value="021">4</option>
+                        </select>
                     </div>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="订单截止时间" name="end" id="end">
+                        <select name="goods" lay-verify="">
+                            <option value="">生产货品</option>
+                            <option value="010">1</option>
+                            <option value="021">2</option>
+                            <option value="021">3</option>
+                            <option value="021">4</option>
+                        </select>
                     </div>
                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                 </form>
@@ -147,29 +159,29 @@
                 // ,url: '' //数据接口
                 ,page: true //开启分页
                 ,cols: [[ //表头
-                    {field: 'id', title: '订单编号', width:200, sort: true, fixed: 'left'}
-                    ,{field: 'start_time', title: '开始时间', width:150, sort: true}
-                    ,{field: 'end_time', title: '完成时间', width:150, sort: true}
-                    ,{field: 'cost', title: '成本总和', width:100, sort: true} 
-                    ,{field: 'profit', title: '总利润', width: 100, sort: true}
-                    ,{field: 'detail', title: '订单细节', width: 300}
+                    {field: 'id', title: '货品编号', width:200, sort: true, fixed: 'left'}
+                    ,{field: 'name', title: '名称', width:150, }
+                    ,{field: 'part1', title: '零件1/价格', width:150}
+                    ,{field: 'part2', title: '零件2/价格', width:100} 
+                    ,{field: 'part3', title: '零件3/价格', width: 100}
+                    ,{field: 'sum', title: '总成本', width: 300, sort: true}
                 ]],
                 data:[
                 {
                         "id" : "10000",
-                        "start_time" : "2016-11-1",
-                        "end_time" : "2222-11-1",
-                        "cost" : "10000",
-                        "profit" : "1",
-                        "detail" : "none"
+                        "name" : "无线手套",
+                        "part1" : "心灵宝石/1",
+                        "part2" : "灵魂宝石/2",
+                        "part3" : "时间宝石/3",
+                        "sum" : "6"
                 },
                 {
                         "id" : "10000",
-                        "start_time" : "2015-11-1",
-                        "end_time" : "2221-11-1",
-                        "cost" : "10000",
-                        "profit" : "1",
-                        "detail" : "none"
+                        "name" : "无线手套",
+                        "part1" : "心灵宝石/1",
+                        "part2" : "灵魂宝石/2",
+                        "part3" : "时间宝石/3",
+                        "sum" : "6"
                 }
                 ]
             });

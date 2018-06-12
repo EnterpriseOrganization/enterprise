@@ -19,7 +19,7 @@ from app_product.Views import ProduceTaskView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^cost/', include('app_cost.urls',namespace = "app_cost")),
+    #url(r'^cost/', include('app_cost.urls',namespace = "app_cost")),
     url(r'^warehouse/',include('app_warehouse.urls',namespace = "app_warehouse")),
     url(r'^order/',include('app_order.urls',namespace = "app_order")),
     url(r'^product/',include('app_product.urls',namespace = "app_product")),

@@ -10,15 +10,6 @@
     <link rel="stylesheet" href="../../static/css/font.css">
     <link rel="stylesheet" href="../../static/css/weadmin.css">
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript">
-
-    </script>
-    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-    <!--[if lt IE 9]>
-          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
 </head>
 
 <body>
@@ -30,16 +21,14 @@
                 <h1>修改订单</h1>
             </legend>
             <div class="layui-field-box">
+                <h2>订单编号</h2>
+                <input type="text" id="orderId" class="layui-input" placeholder="订单编号" autocomplete="off" value="11" readonly="value">
+            </div>
+            <div class="layui-field-box">
                 <h2>联系方式</h2>
                 <hr class="layui-bg-green">
                 <form class="layui-form">
                     <div class="layui-form-item">
-                        <label for="contacter" class="layui-form-label">
-                            <span class="we-red">*</span>公司名称
-                        </label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="ordercomp" name="order-comp" placeholder="名称" lay-verify="required" autocomplete="off" class="layui-input">
-                        </div>
                         <label for="contacter" class="layui-form-label">
                             <span class="we-red">*</span>联系人
                         </label>
@@ -54,21 +43,18 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label for="receiver" class="layui-form-label">
-                            <span class="we-red">*</span>接单人
+                        <label for="contacter" class="layui-form-label">
+                            <span class="we-red">*</span>公司名称
                         </label>
                         <div class="layui-input-inline">
-                            <input type="text" id="receiver" name="receiver" placeholder="名称" lay-verify="required|name" autocomplete="off" class="layui-input">
+                            <input type="text" id="ordercomp" name="order-comp" placeholder="名称" lay-verify="required" autocomplete="off" class="layui-input">
                         </div>
-
                         <label for="checker" class="layui-form-label">
                             <span class="we-red">*</span>审核人
                         </label>
                         <div class="layui-input-inline">
                             <input type="text" id="check" name="check" placeholder="名称" lay-verify="required|name" autocomplete="off" class="layui-input">
                         </div>
-
-
                     </div>
 
 
@@ -95,7 +81,7 @@
                             <span class="we-red">*</span>收货地址
                         </label>
                         <div class="layui-input-inline">
-                            <select name="province" id="province" lay-filter="province">
+                            <select name="province" id="province" lay-filter="province" lay-verify="required">
                                 <option value="-1">请选择</option>
                                 <option value="110000">北京市</option>
                                 <option value="120000">天津市</option>
@@ -132,17 +118,15 @@
                             </select>
                         </div>
                         <div class="layui-input-inline">
-                            <select name="city" id="city" lay-filter="city">
+                            <select name="city" id="city" lay-filter="city" lay-verify="required">
                                 <option></option>
                             </select>
                         </div>
                         <div class="layui-input-inline">
-                            <select name="district" id="district" lay-filter="district">
+                            <select name="district" id="district" lay-filter="district" lay-verify="required">
                                 <option></option>
                             </select>
                         </div>
-                        <!--<input type="text" id="receive-addr" class="layui-input" name="receive-addr" lay-verify="required" autocomplete="off" style="width:500%">-->
-
                     </div>
                     <div class="layui-form-item">
                         <label for="receive-addr" class="layui-form-label">
@@ -221,17 +205,13 @@
     </div>
 </body>
 <script>
-    layui.extend({
-        admin: '{/}../../static/js/admin'
-    });
-    layui.use(['form', 'admin', 'jquery', 'table', 'layer', 'laydate'], function () {
+    layui.use(['form', 'jquery', 'table', 'layer', 'laydate'], function () {
         var form = layui.form,
-            admin = layui.admin,
             $ = layui.jquery,
             table = layui.table,
             laydate = layui.laydate
         layer = layui.layer;
-
+        that_form = form
         laydate.render({
             elem: '#enddate'
         });
@@ -240,6 +220,8 @@
             elem: '#begindate'
         });
 
+
+
         //获取数据
         function getData(type) {
             var post_data;
@@ -247,27 +229,27 @@
             var province_id;
             var city_id;
             var req;
-            
-            if(type == 1) {
-                req = "product";
+
+            if (type == 1) {
+                req = "get-all-product";
                 post_data = {
-                    "req_type" : "product"
+                    "req_type": "product"
                 };
             }
-            else if(type == 2) {
+            else if (type == 2) {
                 req = "province"
                 province_id = $('#province').val();
                 post_data = {
-                    "province_id" : province_id
+                    "province_id": province_id
                 };
             }
             else {
                 req = "city"
                 province_id = $('#province').val();
                 city_id = $("#city").val();
-                post_data = { 
-                    "province_id" : province_id,
-                    "city_id" : city_id
+                post_data = {
+                    "province_id": province_id,
+                    "city_id": city_id
                 };
             }
             $.ajax({
@@ -276,13 +258,27 @@
                 cache: false,
                 async: false,
                 contentType: "application/json",
-                dataType : "json",
+                dataType: "json",
+                xhrFields: {
+                    withCredentials: true
+                },
                 data: JSON.stringify(post_data),
                 success: function (data) {
                     pdata = data;
                 },
                 error: function (err) {
-                    console.log(err);   
+                    console.log(err);
+                    var msg
+                    if (type == 1) {
+                        msg = "获取产品信息失败，请刷新后重试"
+                    } else if (type == 2) {
+                        msg = "获取市级信息失败，请刷新后重试"
+                    } else {
+                        msg = "获取区级信息失败，请刷新后重试"
+                    }
+                    layer.msg(msg, {
+                        icon: 5
+                    })
                 }
             })
             return pdata;
@@ -298,24 +294,90 @@
             var end_date = $("#enddate").val();
             var province = $("#province").val();
             var city = $("#city").val();
+            //区级地址编码
             var district = $("#district").val();
-            var address = $("#address").val();
-            var req_data = {
+            //address 详细地址
+            var address = $('#address').val();
+            var order_bill = $("#orderbill").val();
+            var payment = $("#payment").val();
+            var checker = $("#check").val();
+            var receiveraddress = district + address
+
+            var order_data = {
+                "id": $("#orderId").val(),
                 "date": begin_date,
                 "indentor": comp_name,
-                "receiver": " "
+                "receiver": contacter,
+                "checker": checker,
+                "recevieraddress": receiveraddress,
+                "indentorphonenumber": tele_num,
+                "totalprice": order_bill,
+                "status": 0,
+                "deliverydate": end_date,
+                "paymentway": payment,
             }
-            layer.alert(JSON.stringify(data.field));
+
+            var product = []
+            for (var i = 1; i < num; i++) {
+                product[i - 1] = {}
+                product[i - 1]['product'] = $("#product" + (i)).val()
+                product[i - 1]['number'] = $("#number" + (i)).val()
+            }
+
+            var order_info = {}
+            order_info['order_data'] = order_data
+            order_info['product'] = product
+            //将数据传回后台
             $.ajax({
-                async: false,
+                type: "POST",
+                url: "http://127.0.0.1:8000/order/update-order-detail",
                 cache: false,
-                type: 'POST',
-                url: '',
-                error: function () {
-                    console.log('请求失败');
+                async: false,
+                contentType: "application/json",
+                dataType: "json",
+                xhrFields: {
+                    withCredentials: true
                 },
-                success: function (req_data) {
-                    console.log(req_data)
+                data: JSON.stringify(order_info),
+                success: function (data) {
+                    var msg, icon_num
+                    layer.msg("添加中，请稍等", {
+                        icon: 6
+                    })
+                    if (data.result == 1) {
+                        for (var i in parent.mdata) {
+                            if (parent.mdata[i].id == data.id) {
+                                parent.mdata[i] = {
+                                    "id": data.id,
+                                    "start_date": begin_date,
+                                    "indentor": comp_name,
+                                    "price": order_bill,
+                                    "status": "未完成",
+                                    "end_date": end_date,
+                                }
+                            }
+                        }
+                        msg = "订单添加成功"
+                        icon_num = 6
+                    } else if (data.result == 2) {
+                        msg = "无用户权限"
+                        icon_num = 5
+                    } else {
+                        msg = "无法添加数据，请求方式错误, 请刷新页面后重试"
+                        icon_num = 5
+                    }
+                    layer.confirm(msg,
+                        { icon: icon_num },
+                        function () {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index)
+                        })
+                },
+                error: function (err) {
+                    console.log(err);
+                    layer.confirm("添加订单失败，请刷新页面后重试", {
+                        icon: 5
+                    })
                 }
             })
             return false;
@@ -324,22 +386,22 @@
 
 
         var num = 1;
-        var price = 0;
+        var price = [];
         var total = 0;
         var pro_data = {};
         var number = [];
 
         //动态添加订单明细
         window.addTable = function () {
-            pro_data = getData(1);
+            pro_data = JSON.parse(getData(1));
             var tableHtml = "";
-
+            num = $("#myTable").children().length - 2
             tableHtml += '<tr id="tr' + num + '">' +
                 '<td>' + num + '</td>' +
                 '<td><div class="layui-input-inline"><select lay-filter="product" id="product' + num + '" class="product"><option value="-1">请选择</option></select></div></td>' +
-                '<td><div class="layui-input-inline"><a id="price' + num + '">' + price + '</a></div></td>' +
+                '<td><div class="layui-input-inline"><a id="price' + num + '"></a></div></td>' +
                 '<td><div class="layui-input-inline"><input type="text" readonly="value" placeholder="请输入" id="number' + num + '"class="layui-input" class="productnum"></input></div></td>' +
-                '<td><div class="layui-input-inline"><a id="total' + num + '">' + total + '</div></td>' +
+                '<td><div class="layui-input-inline"><a id="total' + num + '"></div></td>' +
                 '<td><button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeTr(' + num + ')">删除</button>' +
                 '</td>' +
                 '</tr>';
@@ -348,8 +410,12 @@
             $("#myTable").children().eq(elements - 1).after(tableHtml); //在表头之后添加空白行
             //动态向select添加option
             for (var i in pro_data) {
-                $('#product' + num).append('<option value="' + i + '">' + pro_data[i].name + '</option>');
+                $('#product' + num).append('<option value="' + pro_data[i].pk + '">' + pro_data[i].fields.name + '</option>');
+
+                price[pro_data[i].pk] = pro_data[i].fields.price
             }
+            $('#price' + num).text(0)
+            $('#number' + num).val(0)
             form.render("select");
 
             //动态监听input输入内容
@@ -360,7 +426,6 @@
                 var curr = id.substr(6, id.length);
                 var cur_price = $('#price' + curr).text();
                 var total_price = cur_price * result;
-                
                 $('#total' + curr).text(cur_price * result);
                 //total_num update
                 var total_num = 0;
@@ -373,7 +438,7 @@
                 }
                 $('#total_num').text(total_num);
                 $('#total_price').text(total_all);
-                $('#orderbill').text(total_all);
+                $('#orderbill').val(total_all);
                 form.render();
             })
             num++;
@@ -381,44 +446,49 @@
 
         //监听product select
         form.on('select(product)', function (data) {
-            var id = $(data)[0].elem.id;
-            var curr = id.substr(7, id.length);
-            var data_pos = $('#' + id).val();
+            pro_data = JSON.parse(getData(1));
+            var price = []
+            for (var i in pro_data) {
+                price[pro_data[i].pk] = pro_data[i].fields.price
+            }
+            var id = $(data)[0].elem.id; //当前select的id
+            var curr = id.substr(7, id.length); //当前行
+            var data_pos = $('#' + id).val();//当前select的value==product id
             var total_all = 0;
-            if (data_pos < 0) {
+            if (data_pos == -1) {
                 $('#number' + curr).attr("readonly", "readonly");
                 $('#price' + curr).text('0');
                 $('#total' + curr).text('0');
                 var curr_num = parseInt($('#number' + curr).val());
                 var curr_total_num = parseInt($('#total_num').text());
-                $('#number' + curr).val('');
+                $('#number' + curr).val(0);
                 $('#total_num').text(curr_total_num - curr_num);
+                if ($('#total_num').text() == 'NaN') $('#total_num').text(0)
                 form.render();
             }
             else {
                 $('#number' + curr).removeAttr("readonly");
-                var price = pro_data[data_pos].price;
-                $('#price' + curr).text(price);
+                var pro_price = price[data_pos];
+                $('#price' + curr).text(pro_price);
                 if ($('#number' + curr).val() != "") {
-                    var price = pro_data[data_pos].price;
-                    var total_price = price * $('#number' + curr).val();
+                    var total_price = pro_price * $('#number' + curr).val();
                     $('#total' + curr).text(total_price);
                 }
                 form.render();
             }
-            
-            for(var i = 1; i <= curr; i ++) {
+
+            for (var i = 1; i <= curr; i++) {
                 total_all += parseFloat($('#total' + i).text());
             }
             $('#total_price').text(total_all);
-            $('#orderbill').text(total_all);
+            $('#orderbill').val(total_all);
             form.render();
         });
 
         //监听province select
         form.on('select(province)', function (data) {
             var province_id = $('#province').val();
-            if(province_id < 0) {
+            if (province_id < 0) {
                 $('#city').empty();
                 $('#district').empty();
                 form.render();
@@ -426,24 +496,24 @@
             }
             var city_data = getData(2);
             $('#city').empty();
-            for(i in city_data) {
+            for (i in city_data) {
                 $('#city').append('<option value="' + city_data[i].code + '">' + city_data[i].name + '</option>');
-           }
-           var city_id = $('#city').val();
-           var district_data = getData(3);
-           $('#district').empty();
-           for(i in district_data) {
-               $('#district').append('<option value="' + district_data[i].code + '">' + district_data[i].name + '</option>');
-           }
-           form.render();
-
-        })
-        //监听city select
-        form.on('select(city)', function(data) {
+            }
             var city_id = $('#city').val();
             var district_data = getData(3);
             $('#district').empty();
-            for(i in district_data) {
+            for (i in district_data) {
+                $('#district').append('<option value="' + district_data[i].code + '">' + district_data[i].name + '</option>');
+            }
+            form.render();
+
+        })
+        //监听city select
+        form.on('select(city)', function (data) {
+            var city_id = $('#city').val();
+            var district_data = getData(3);
+            $('#district').empty();
+            for (i in district_data) {
                 $('#district').append('<option value="' + district_data[i].code + '">' + district_data[i].name + '</option>');
             }
             form.render();
@@ -451,11 +521,14 @@
 
 
 
+
         //删除行
-        function removeTr(trNum) {
+        window.removeTr = function(trNum) {
             console.log("remove clicked");
             $("#tr" + trNum).remove();
+            num -= 1;
         };
+
 
 
     });
