@@ -92,13 +92,19 @@ def get_quotation_detail(request):
 		# 判断参数是否存在
 		if quotation_id:
 			try:
-				sm = SupplierMaterial.objects.get(id=quotation_id)
+				sm = SupplierMaterial.objects.select_related('supplier', 'material').get(id=quotation_id)
 			except SupplierMaterial.DoesNotExist:
 				# 捕获get不到的异常
 				return JsonResponse({'msg': 'this quotation does not exist'})
-			# normal
-			sm.delete()
-			return JsonResponse({'msg': 200, 'result': 'success'})
+			res = {
+				'supplier_name': sm.supplier.name,
+				'supplier_phone': sm.supplier.phonenumber,
+				'supplier_address': sm.supplier.address,
+				'material_id':sm.material.id,
+				'material_name':sm.material.name,
+				'material_price':sm.price
+			}
+			return JsonResponse({'msg': 200, 'result': res})
 		else:
 			return JsonResponse({'msg': 'Incomplete parameters'})
 	else:
