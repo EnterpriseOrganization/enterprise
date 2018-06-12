@@ -27,10 +27,10 @@
             <div class="layui-row">
                 <form class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
-                        <input type="text" name="username" placeholder="物料编号" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" placeholder="物料编号" autocomplete="off" class="layui-input" id="material_id">
                     </div>
                     <div class="layui-inline">
-                        <input type="text" name="username" placeholder="物料名称" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" placeholder="物料名称" autocomplete="off" class="layui-input" id="material_name">
                     </div>
                     <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                     </form>
@@ -40,59 +40,8 @@
                 <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('填写采购单','./AddPurchase.html',600,400)"><i class="fas fa-plus"></i> 填写采购单</button>
                  <!--<span class="fr" style="line-height:40px">共有数据：3 条</span>-->
             </div> 
-            <table class="layui-table" height="315">
-                <thead>
-                    <tr>
-                        <!--<th>
-                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                        </th>-->
-                        <th>物料编号</th>
-                        <th>物料名称</th>
-                        <th>当前数量</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <!--<td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>-->
-                        <td>ASD41324</td>
-                        <td>电阻</td>
-                        <td>
-                            <div class="layui-progress">
-                                <div class="layui-progress-bar layui-bg-red" lay-percent="30%"></div>
-                            </div>
-                            300/1000
-                        </td>
 
-                    </tr>
-                    <tr>
-                        <!--<td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>-->
-                        <td>QE9250CDJ</td>
-                        <td>散热片</td>
-                        <td>
-                            <div class="layui-progress">
-                                <div class="layui-progress-bar layui-bg-blue" lay-percent="90%"></div>
-                            </div>
-                            900/1000
-                        </td>
-                    </tr>
-                    <tr>
-                        <!--<td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                        </td>-->
-                        <td>QE9adc0CDJ</td>
-                        <td>磁针</td>
-                        <td>
-                            <div class="layui-progress">
-                                <div class="layui-progress-bar layui-bg-orange" lay-percent="50%"></div>
-                            </div>
-                            25/50
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <table id="missbrowse_table" lay-filter="missbrowse_filter"></table>
             <div class="page">
                 <div>
                     <a class="prev" href="">&lt;&lt;</a>
@@ -106,6 +55,92 @@
         </div>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/laydate.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/jquery.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/table.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/layer.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/form.js" charset="utf-8"></script>
+        <div id="aaa" class="layui-progress-bar layui-bg-red" lay-percent="30%"></div>
+        <script type="text/javascript">
+
+            layui.config({
+                base: '../../static/js/'
+                ,version: '101100'
+            }).use('admin');
+
+            var tableins;//handle
+
+            layui.use(['table', 'jquery','form'], function(){
+                    var table = layui.table;
+                    var missbrowsedata;
+                    var form=layui.form;
+                    $ = layui.jquery;
+                    $.ajax ({
+                    type: 'POST',
+                    url: 'http://localhost:8000/purchase/get_lack_list',
+                    dataType: 'json',
+                    cache: false,
+                    async: false,
+                    success: function (data) {
+                        missbrowsedata = data['result'];
+                    }
+                    });
+                    var tableins=table.render({
+                     elem: '#missbrowse_table'
+                    ,height: 400
+                    ,page: true
+                    ,data: missbrowsedata
+                    ,cols: [[
+                        {field: 'material_id', title: '物料编号', width:250},
+                        {field: 'material_name', title: '物料名称', width:200},
+                        {field: 'number', title: '当前数量', width:170},
+                        {field: 'threshold', title: '阈值', width:170},
+                    ]]
+                    });
+                    form.on('submit(search)', function (data) {
+                    //var time = new Date();
+                    var materialid = document.getElementById("material_id").value;
+                    var materialname = document.getElementById("material_name").value;
+                    $.ajax ({
+                        url: 'http://localhost:8000/purchase/lack_list_query',
+                        type: 'POST',
+                        dataType: 'json',
+                        cache: false,
+                        async: false,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        data:{
+                            material_id: materialid,
+                            material_name:materialname,
+                        },
+                        success: function (data) {
+                            console.log('hhhhhh');
+                            var msg=data['msg'];
+                            if(msg=='200')
+                            {
+                                var searchresult = data['result'];
+                                // alert(JSON.stringify(searchresult));
+                                tableins.reload({
+                                    data:searchresult
+                                });
+                            }
+                            else{
+                                alert(msg);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                    return false;
+                });
+            })
+
+            
+</script>
     </body>
 
 </html>

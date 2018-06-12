@@ -79,6 +79,33 @@ def add_quotation(request):
 
 
 @method_decorator(csrf_exempt)
+def get_quotation_detail(request):
+	"""
+	获取供应商报价详细信息
+	:param request: quotation_id
+	:return: 
+	"""
+	if request.method == 'POST':
+		params = request.POST
+		# 得到所有参数
+		quotation_id = params.get('quotation_id')
+		# 判断参数是否存在
+		if quotation_id:
+			try:
+				sm = SupplierMaterial.objects.get(id=quotation_id)
+			except SupplierMaterial.DoesNotExist:
+				# 捕获get不到的异常
+				return JsonResponse({'msg': 'this quotation does not exist'})
+			# normal
+			sm.delete()
+			return JsonResponse({'msg': 200, 'result': 'success'})
+		else:
+			return JsonResponse({'msg': 'Incomplete parameters'})
+	else:
+		return JsonResponse({'msg': 'Please use POST'})
+
+
+@method_decorator(csrf_exempt)
 def delete_quotation(request):
 	"""
 	删除某一条供应商报价
