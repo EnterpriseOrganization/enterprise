@@ -356,8 +356,7 @@ def get_purchase_list(request):
 		for purchase in purchases:
 			res = {
 				'id': purchase.id,
-				'date':purchase.date,
-				'checker': purchase.checker,
+				'date': purchase.date,
 				'supplier_name': purchase.supplier.name,
 				'totalprice': purchase.totalprice,
 				'purchaser': purchase.purchaser
