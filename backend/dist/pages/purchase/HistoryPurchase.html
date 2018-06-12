@@ -89,10 +89,10 @@
                     ,data: historypurchasedata
                     ,cols: [[
                         {field: 'id', title: '订单ID', width:170, fixed: 'left'},
-                        {field: 'date', title: '采购时间', width:250},
                         {field: 'supplier_name', title: '供应商', width:200},
                         {field: 'totalprice', title: '采购价格（总价）', width:170},
                         {field: 'purchaser', title: '采购人', width:170},
+                        {field: 'date', title: '采购时间', width:250},
                         {field: 'operate', title: '操作', width:170,toolbar: '#barDemo'},
                     ]]
                     });
@@ -101,6 +101,22 @@
                         var layEvent = obj.event;
                         if(layEvent=='detail')
                         {
+                            layer.open({
+                                type: 2,//此处以iframe举例
+                                title: '查看采购单详情',
+                                area: ['750px', '500px'],
+                                content: 'HistoryPurchaseInfo.html',
+                                closeBtn: 1,
+                                success: function (layero, index) {  
+                                    var iframe = window['layui-layer-iframe' + index];
+                                    // 向子页面的全局函数child传参
+                                    iframe.child(data.id);
+                                },
+                                btn: function(){
+                                    layer.closeAll();
+                                }
+                            });
+                        /**
                         $.ajax({
                         url: 'http://localhost:8000/purchase/get_purchase_detail',
                         type: 'post',
@@ -122,7 +138,7 @@
                              type: 2 //此处以iframe举例
                              ,title: '查看采购单详情'
                              ,area: ['750px', '500px']
-                             ,content: 'HistoryPurchaseInfo.html?arg=' + data
+                             ,content: 'HistoryPurchaseInfo.html?=' + data
                              ,closeBtn: 1
                              ,btn: function(){
                              layer.closeAll();
@@ -131,10 +147,10 @@
                         }
                         }
                         });
+                        **/
                         }
 
-                        }
-                    );
+                    });
 
 
                 //search
