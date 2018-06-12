@@ -443,3 +443,33 @@ def purchase_query(request):
 		return JsonResponse({'msg': 200, 'result': result})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+
+
+@method_decorator(csrf_exempt)
+def get_suppliers(request):
+	"""
+	获取提供商列表
+	:param request:
+	:return:list[{id: ,name: }{}]
+	"""
+	if request.method == 'POST':
+		suppliers = Supplier.objects.values('id', 'name')
+		suppliers_list = list(suppliers)
+		return JsonResponse({'msg': 200, 'result': suppliers_list})
+	else:
+		return JsonResponse({'msg': 'Please use POST'})
+
+
+@method_decorator(csrf_exempt)
+def get_materials(request):
+	"""
+	获取物料列表
+	:param request:
+	:return:list[{id: ,name: }{}]
+	"""
+	if request.method == 'POST':
+		materials = Material.objects.values('id', 'name')
+		materials_list = list(materials)
+		return JsonResponse({'msg': 200, 'result': materials_list})
+	else:
+		return JsonResponse({'msg': 'Please use POST'})
