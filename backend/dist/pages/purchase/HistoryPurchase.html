@@ -39,35 +39,6 @@
                 <button class="layui-btn" lay-filter="search"  lay-submit="" ><i  class="fas fa-search"></i></button>
             </form>
         </div>
-        <!--<div class="weadmin-block">
-            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-            <span class="fr" style="line-height:40px">共有数据：88 条</span>
-        </div>-->
-        <!--<table class="layui-table" id="historyrecord">-->
-            <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th lay-data="{field:'id', width:170}">订单编号</th>-->
-                    <!--<th lay-data="{field: 'date', title: '采购时间', width:170}">采购时间</th>-->
-                    <!--<th lay-date="{field: 'totalprice', title: '采购价格（总价）', width:170},">采购价格(总价)</th>-->
-                    <!--<th lay-date="{field: 'purchaser', title: '采购人', width:170}">采购人</th>-->
-                    <!--<th lay-date="{field: 'supplier_name', title: '供应商', width:170}">供应商</th>-->
-                    <!---->
-                <!--</tr>-->
-            <!--</thead>-->
-            <!--<tbody>-->
-                <!--<tr>-->
-                    <!--<td>123098501273</td>-->
-                    <!--<td>2017/3/1</td>-->
-                    <!--<td>5000</td>-->
-                    <!--<td>盖尔加朵</td>-->
-                    <!--<td class="td-manage">-->
-                        <!--<a title="详情" >-->
-                            <!--<i lay-filter="detail" lay-submit="" class="fas fa-info"></i>-->
-                        <!--</a>-->
-                    <!--</td>-->
-                <!--</tr>-->
-            <!--</tbody>-->
-        <!--</table>-->
 
      <table id="historypurchase_table" lay-filter="historypurchase_filter"></table>
                 <div class="page">
@@ -87,11 +58,15 @@
         <script src="../../lib/layui/lay/modules/jquery.js" charset="utf-8"></script>
         <script src="../../lib/layui/lay/modules/table.js" charset="utf-8"></script>
           <script src="../../lib/layui/lay/modules/layer.js" charset="utf-8"></script>
+    <script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    </script>
         <script type="text/javascript">
             layui.config({
                 base: '../../static/js/'
                 ,version: '101100'
             }).use('admin');
+            var tableins;//handle
             layui.use(['table', 'jquery','form'], function(){
                     var table = layui.table;
                     var historypurchasedata;
@@ -118,89 +93,96 @@
                         {field: 'supplier_name', title: '供应商', width:200},
                         {field: 'totalprice', title: '采购价格（总价）', width:170},
                         {field: 'purchaser', title: '采购人', width:170},
+                        {field: 'operate', title: '操作', width:170,toolbar: '#barDemo'},
                     ]]
                     });
-
-
-                //监听提交
-                form.on('submit(search)', function (data) {
-                    //var time = new Date();
-                    var purchaseid = document.getElementById("purchase_id").value;
-                    var purchasedate = document.getElementById("date").value;
-                    var purchaser = document.getElementById("purchaser").value;
-                    console.log('aaaa');
-                    /**
-                    $.ajax ({
-                    url: 'http://localhost:8000/purchase/purchase_query',
-                    type: 'POST',
-                    dataType: 'json',
-                    data:{
-                        purchase_id: purchaseid,
-                        purchaser: purchaser,
-                        date: purchasedate
-                    },
-                    cache: false,
-                    async: false,
-                    xhrFields: {
-                            withCredentials: true
-                     },
-                    success: function (data) {
-                        console.log('hhhhhh');
-                        var code=data['msg'];
-                        if(code=='200')
+                    table.on('tool(historypurchase_filter)',function(obj){
+                        var data=obj.data;
+                        var layEvent = obj.event;
+                        if(layEvent=='detail')
                         {
-                            var searchresult = data['result'];
-                            tableins.reload({
-                                data:searchresult
-                            })
-                        }
-
-
-                    }
-
-                    });
- **/
-                });
-
-                    console.log('outside the ajax！');
-                    return false;
-                });
-
-
-                          //显示订单详细信息
-                   form.on('submit(detail)', function (data) {
-                     var purchaseid = document.getElementById("purchase_id").innerText.trim();
-                       $.ajax({
-                        url: 'http://localhost:9000/purchase/get_purchase_detail',
+                        $.ajax({
+                        url: 'http://localhost:8000/purchase/get_purchase_detail',
                         type: 'post',
                         dataType: 'json',
                         data: {
-                            purchase_id: purchaseid
+                            purchase_id: data.id
                         },
                         xhrFields: {
                             withCredentials: true
                         },
                         success: function (data) {
+                            console.log(data);
                             console.log('okokokokokokoko!!');
-                            var jsonData = JSON.parse(data); //jsonData是该下路下的所有区间（json格式）
-                             for (var i = 0; i < jsonData.length; i++) {
-
-                                 }
-                        }
-                        });
-
-                         layer.open({
+                            var code=data['msg'];
+                        if(code=='200')
+                        {
+                            var searchresult = data['result'];
+                            layer.open({
                              type: 2 //此处以iframe举例
                              ,title: '查看采购单详情'
                              ,area: ['750px', '500px']
-                             ,content: 'HistoryPurchaseInfo.html'
+                             ,content: 'HistoryPurchaseInfo.html?arg=' + data
                              ,closeBtn: 1
                              ,btn: function(){
                              layer.closeAll();
                              }
                          });
-                        return false;
+                        }
+                        }
                         });
+                        }
+
+                        }
+                    );
+
+
+                //search
+                form.on('submit(search)', function (data) {
+                    //var time = new Date();
+                    var purchaseid = document.getElementById("purchase_id").value;
+                    var purchasedate = document.getElementById("date").value;
+                    var purchaser = document.getElementById("purchaser").value;
+                    $.ajax ({
+                        url: 'http://localhost:8000/purchase/purchase_query',
+                        type: 'POST',
+                        dataType: 'json',
+                        cache: false,
+                        async: false,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        data:{
+                            purchase_id: purchaseid,
+                            purchaser: purchaser,
+                            date: purchasedate
+                        },
+                        success: function (data) {
+                            //console.log('hhhhhh');
+                            var msg=data['msg'];
+                            if(msg=='200')
+                            {
+                                var searchresult = data['result'];
+                                // alert(JSON.stringify(searchresult));
+                                tableins.reload({
+                                    data:searchresult
+                                });
+                            }
+                            else{
+                                alert(msg);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                    return false;
+                });
+
+        });
+
+
+
 
 
 
