@@ -65,24 +65,26 @@
                     </select>
                 </div>
                 <div id="price-charts" class="layui-col-md11" style="height:300px;">	</div>
+            </form>
         </div>
 
         <div class="layui-row">
             <form class="layui-form layui-col-md12 we-search">
                 筛选 <i class="fas fa-filter"></i>
                 <div class="layui-inline">
-                    <input type="text" name="order_id" placeholder="物料编号" autocomplete="off" class="layui-input">
+                    <input type="text" id="mate_id" name="order_id" placeholder="物料编号" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-inline">
-                    <input type="text" name="mate_name" placeholder="物料名称" autocomplete="off" class="layui-input">
+                    <input type="text" id="mate_name" name="mate_name" placeholder="物料名称" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-inline">
-                    <input type="text" name="fact_name" placeholder="供应商名称" autocomplete="off" class="layui-input">
+                    <input type="text" id="supl_name" name="fact_name" placeholder="供应商名称" autocomplete="off" class="layui-input">
                 </div>
                 <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                 <!--<button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
             </form>
         </div>
+
         <div class="weadmin-block">
             <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
             <!--<button class="layui-btn layui-btn layui-btn-sm"><i class="fas fa-edit"></i> 批量更新</button>-->
@@ -90,7 +92,7 @@
             <button class="layui-btn layui-btn-sm"><i class="fas fa-external-link-alt"></i> 全部导出</button>
             <!--<span class="fr" style="line-height:40px">共有数据：88 条</span>-->
         </div>
-        <table class="layui-table" height="315">
+        <table class="layui-table" height="315" id="table1">
             <thead>
                 <tr>
                     <th>
@@ -159,95 +161,67 @@
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('price-charts'));
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: '           物料历史报价统计'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['供应商A', '供应商B', '供应商C', '供应商D', ]
-            },
-            xAxis: {
-                data: ["2017/7", "2017/8", "2017/9", "2017/10", "2017/11", "2017/12"]
-            },
-            yAxis: { type: 'value' },
-            series: [{
-                name: '供应商A',
-                type: 'line',
-                data: [5, 17, 10, 10, 20]
-            }, {
-                name: '供应商B',
-                type: 'line',
-                data: [3, 7, 16, 45, 9, 12]
-            },
-            {
-                name: '供应商C',
-                type: 'line',
-                data: [12, 14, 16, 17, 9, 11]
-            }, {
-                name: '供应商D',
-                type: 'line',
-                data: [2, 4, 16, 7, 9, 11]
-            }]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-    </script>
-
-
-
-
-
-    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-    <script>
         layui.extend({
             admin: '{/}../../static/js/admin'
         });
-        layui.use(['form', 'jquery', 'util', 'admin', 'layer'], function () {
+
+        layui.use(['form', 'jquery', 'util', 'admin', 'layer', 'table'], function () {
             var form = layui.form,
                 $ = layui.jquery,
                 util = layui.util,
                 admin = layui.admin,
-                layer = layui.layer;
+                layer = layui.layer,
+                table1 = layui.table;
 
-            //自定义验证规则
-            form.verify({
-                nikename: function (value) {
-                    if (value.length < 5) {
-                        return '昵称至少得5个字符啊';
-                    }
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('price-charts'));
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '           物料历史报价统计'
                 },
-                pass: [/(.+){6,12}$/, '密码必须6到12位'],
-                repass: function (value) {
-                    if ($('#L_pass').val() != $('#L_repass').val()) {
-                        return '两次密码不一致';
-                    }
-                }
-            });
-            //失去焦点时判断值为空不验证，一旦填写必须验证
-            $('input[name="email"]').blur(function () {
-                //这里是失去焦点时的事件
-                if ($('input[name="email"]').val()) {
-                    $('input[name="email"]').attr('lay-verify', 'email');
-                } else {
-                    $('input[name="email"]').removeAttr('lay-verify');
-                }
-            });
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['供应商A', '供应商B', '供应商C', '供应商D', ]
+                },
+                xAxis: {
+                    data: ["2017/7", "2017/8", "2017/9", "2017/10", "2017/11", "2017/12"]
+                },
+                yAxis: { type: 'value' },
+                series: [{
+                    name: '供应商A',
+                    type: 'line',
+                    data: [5, 17, 10, 10, 20]
+                }, {
+                    name: '供应商B',
+                    type: 'line',
+                    data: [3, 7, 16, 45, 9, 12]
+                },
+                {
+                    name: '供应商C',
+                    type: 'line',
+                    data: [12, 14, 16, 17, 9, 11]
+                }, {
+                    name: '供应商D',
+                    type: 'line',
+                    data: [2, 4, 16, 7, 9, 11]
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            dynamicRanderTable();
 
             //监听新增价格
             form.on('submit(add_price)', function (data) {
-                console.log('add price');
+                console.log('add price!!');
                 layer.open({
                          type: 2 //此处以iframe举例
                          ,title: '添加物料报价'
                          ,area: ['450px', '400px']
-                         ,content: 'PriceAdd.html'
+                         ,content: 'http://localhost:8000/static/pages/purchase/PriceAdd.html'
                          ,closeBtn: 1
                          ,btn: function(){
                              layer.closeAll();
@@ -255,6 +229,69 @@
                      });
                 return false;
             });
+
+            form.on('submit(search)', function (data) {
+                console.log('search!');
+                var mat_id = document.getElementById("mate_id").value.trim();
+                var mat_name = document.getElementById("mate_name").value.trim();
+                var supl_name = document.getElementById("supl_name").value.trim();
+                console.log(mat_id);
+                console.log(mat_name);
+                console.log(supl_name);
+
+                $.ajax({
+                    url: 'http://localhost:8000/purchase/quotation_query',
+                    type: 'post',
+                    dataType:'json',
+                    data: {
+                        quotation_id: mat_id,
+                        material_name: mat_name,
+                        supplier_name: supl_name,
+                    },
+                    xhrFields:{
+                            withCredentials:true
+                    },
+                    success: function(data){
+                        console.log('balabalalelvofmvimid!');
+                        if(data.msg == 200){
+                            console.log('200!!');
+                        }else if(data.msg == 500){
+                            console.log('500!!');
+                        }
+                    }
+                });
+                console.log('outside the ajax！');
+                return false;
+            });
+
+            function dynamicRanderTable(){
+              var pricedata;
+              $.ajax ({
+                    type: 'POST',
+                    url: 'http://localhost:8000/purchase/get_quotation_list',
+                    dataType: 'json',
+                    cache: false,
+                    async: false,
+                    success: function (data) {
+                        console.log('load data 200!');
+                        console.log(data);
+                        pricedata = data['result'];
+                    }
+                    });
+
+                table1.render({
+                    elem: '#table1'
+                    ,height: 400
+                    ,page: true
+                    ,data: pricedata
+                    ,cols: [[
+                        {field: 'material_id', title: '物料编号', width:170, fixed: 'left'},
+                        {field: 'material_name', title: '物料编号', width:250},
+                        {field: 'supplier_name', title: '供应商名称', width:200},
+                        {field: 'price', title: '价格', width:170},
+                    ]]
+                });
+          }
 
 
         });

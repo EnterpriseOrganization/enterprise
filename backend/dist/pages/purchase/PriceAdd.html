@@ -24,12 +24,12 @@
                     <span class="we-red">*</span>供应商
                 </label>
                 <div class="layui-input-block">
-                    <select class="layui-inline" name="factory" lay-verify="required" lay-search lay-filter="add_factory">
+                    <select id="supl_name" class="layui-inline" name="factory" lay-verify="required" lay-search lay-filter="add_factory">
                         <option value="">输入搜索或者点击寻找</option>
                         <option value="-1">供应商不存在？点击添加供应商</option>
-                        <option value="0">供应厂A</option>
+                        <!--option value="0">供应厂A</option>
                         <option value="1">供应商B</option>
-                        <option value="2">供应商C</option>
+                        <option value="2">供应商C</option-->
                     </select>
                 </div>
           </div>
@@ -39,11 +39,11 @@
                   <span class="we-red">*</span>物料名称
               </label>
               <div class="layui-input-block">
-                    <select class="layui-inline" name="factory" lay-verify="required" lay-search>
+                    <select id="mate_name" class="layui-inline" name="material" lay-verify="required" lay-search>
                         <option value="">输入搜索或者点击寻找</option>
-                        <option value="0">物料A</option>
+                        <!--option value="0">物料A</option>
                         <option value="1">物料B</option>
-                        <option value="2">物料C</option>
+                        <option value="2">物料C</option-->
                     </select>
                 </div>
           </div>
@@ -58,12 +58,14 @@
               </div>
           </div>
             <div class="layui-form-item">
-              <label for="L_repass" class="layui-form-label"></label>
+              <label class="layui-form-label"></label>
               <button  class="layui-btn" lay-filter="add" lay-submit="">增加</button>
           </div>
       </form>
     </div>
-        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript">
             layui.extend({
                     admin: '{/}../../static/js/admin'
@@ -72,14 +74,63 @@
           var form = layui.form,
               admin = layui.admin,
               layer = layui.layer;
+          getMaterial();
 
           //监听提交
           form.on('submit(add)', function(data){
-            console.log(data);
-            //发异步，把数据提交给php
-            layer.alert("增加成功", {icon: 6},function (index) {
-                layer.close(index);
-            });
+              console.log('add price!!');
+              //var supl_name = document.getElementById("supl_name").text().trim();
+              //var mate_name = document.getElementById("mate_name").text().trim();
+              var price = document.getElementById("price").value.trim();
+              //console.log(supl_name);
+              //console.log(mate_name);
+              console.log(price);
+            $.ajax({
+                    url: 'http://localhost:8000/purchase/add_quotation',
+                    type: 'post',
+                    dataType:'json',
+                    data: {
+                        material_id: 1,
+                        supplier_id: 3,
+                        price: price
+                    },
+                    xhrFields:{
+                            withCredentials:true
+                    },
+                    success: function(data){
+                        console.log('balabalalelvofmvimid!');
+                        if(data.msg == 200){
+                            console.log('add price 200!!');
+                            $.ajax ({
+                            type: 'POST',
+                            url: 'http://localhost:8000/purchase/get_purchase_list',
+                            dataType: 'json',
+                            cache: false,
+                            async: false,
+                            success: function (data) {
+                                console.log(data);
+                                historypurchasedata = data['result'];
+                            }
+                            });
+                            historypurchase_table.render({
+                            elem: '#historypurchase_table'
+                            ,height: 400
+                            ,page: true
+                            ,data: historypurchasedata
+                            ,cols: [[
+                                {field: 'id', title: '订单ID', width:170, fixed: 'left'},
+                                {field: 'date', title: '采购时间', width:250},
+                                {field: 'supplier_name', title: '供应商', width:200},
+                                {field: 'totalprice', title: '采购价格（总价）', width:170},
+                                {field: 'purchaser', title: '采购人', width:170},
+                            ]]
+                        });
+                        }else if(data.msg == 500){
+                            console.log('500!!');
+                        }
+                    }
+                });
+                console.log('outside the ajax！');
             return false;
           });
 
@@ -93,10 +144,71 @@
                       type: 2 //此处以iframe举例
                       ,title: '新增供应商'
                       ,area: ['400px', '300px']
-                      ,content: 'AddFactory.html'
+                      ,content: 'http://localhost:8000/static/pages/purchase/AddFactory.html'
                   });
               }
-          })
+          });
+
+          function getMaterial(){
+              $.ajax({
+                  url: 'http://localhost:8000/purchase/get_suppliers',
+                  type: 'post',
+                  dataType:'json',
+                  xhrFields:{
+                      withCredentials:true
+                  },
+                  success: function(data){
+                      console.log('balabalalelvofmvimid!');
+                      if(data.msg == 200){
+                          console.log('getmaterial 200!!');
+                          //console.log(data.result);
+                          genSuplierName(data.result);
+                      }else if(data.msg == 500){
+                          console.log('500!!');
+                      }
+                  }
+              });
+
+              $.ajax({
+                  url: 'http://localhost:8000/purchase/get_materials',
+                  type: 'post',
+                  dataType:'json',
+                  xhrFields:{
+                      withCredentials:true
+                  },
+                  success: function(data){
+                      console.log('balabalalelvofmvimid!');
+                      if(data.msg == 200){
+                          console.log('getmaterial 200!!');
+                          //console.log(data.result);
+                          genMateName(data.result);
+                      }else if(data.msg == 500){
+                          console.log('500!!');
+                      }
+                  }
+              });
+          };
+
+          function genMateName(data){
+              console.log('inside getMateName!');
+              for(var i = 0;i<data.length;i++){
+                  $('#mate_name').append('<option value="' + i + '">' + data[i].name + '</option>');
+                  console.log('mengyuhang!');
+
+              };
+              form.render("select");
+          }
+
+          function genSuplierName(data){
+              console.log('inside getSuplierName!');
+              for(var i = 0;i<data.length;i++){
+                  $('#supl_name').append('<option value="' + i + '">' + data[i].name + '</option>');
+                  console.log('mengyuhang!');
+
+              };
+              form.render("select");
+          }
+
         });
     </script>
   </body>
