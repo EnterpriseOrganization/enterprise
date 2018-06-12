@@ -477,7 +477,7 @@ layui.define(['jquery', 'form', 'layer', 'element'], function (exports) {
             var req = "province"
         }
         //根据市级信息获取区级信息
-        else if (type == 2) {
+        else if(type == 2) {
             var post_json = {
                 "province_id": myData[1] + "",
                 "city_id": myData[2] + ""
@@ -489,6 +489,8 @@ layui.define(['jquery', 'form', 'layer', 'element'], function (exports) {
             var post_json = {
                 "req_type": req
             }
+        
+//整合添加订单删除订单，添加订单信息，获取所有货品信息
         }
         var response_data
 

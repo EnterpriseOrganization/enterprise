@@ -307,17 +307,12 @@
             var payment = $("#payment").val();
             var checker = $("#check").val();
 
-
             var order_data = {
                 "date": begin_date,
                 "indentor": comp_name,
                 "receiver": contacter,
                 "checker": checker,
-                "area": district,
                 "address": address,
-                "indentorphonenumber": tele_num,
-                "totalprice": order_bill,
-                "status": 0,
                 "deliverydate": end_date,
                 "paymentway": payment,
             }
@@ -449,8 +444,8 @@
                 }
                 form.render();
             }
-            
-            for(var i = 1; i <= curr; i ++) {
+
+            for (var i = 1; i <= curr; i++) {
                 total_all += parseFloat($('#total' + i).text());
             }
             $('#total_price').text(total_all);
@@ -500,6 +495,9 @@
             console.log("remove clicked");
             $("#tr" + trNum).remove();
         };
+        function showSth(){
+            console.log("11111");
+        }
 
 
     });

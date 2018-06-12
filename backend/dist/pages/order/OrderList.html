@@ -93,7 +93,6 @@
 
 
 
-
     </div>
     <script>
         layui.extend({
@@ -271,11 +270,22 @@
                     data: JSON.stringify(post_json),
                     success: function (data) {
                         pdata = JSON.parse(data);
-                        tableIns.reload({
-                            data: pdata
-                        })
+                        var kdata = []
+                        for (var i in pdata) {
+                            var status
+                            if (pdata[i].fields.status) status = "已完成"
+                            else status = "未完成"
+                            kdata[i] = {
+                                "id": pdata[i].pk,
+                                "price": pdata[i].fields.totalprice,
+                                "start_date": pdata[i].fields.date.substr(0, 10),
+                                "end_date": pdata[i].fields.deliverydate.substr(0, 10),
+                                "indentor": pdata[i].fields.indentor,
+                                "status": status
+                            }
+                        }
                         table.reload("id", {
-                            data: pdata
+                            data: kdata
                         })
                     },
                     error: function (err) {

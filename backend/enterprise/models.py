@@ -166,7 +166,7 @@ class MaterialRequistion(models.Model):
 
 
 
-class Orderproduct(models.Model):
+class OrderProduct(models.Model):
     order = models.OneToOneField(Order, models.DO_NOTHING, db_column='orderID', null=True)  # Field name made lowercase.
     product = models.OneToOneField(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
