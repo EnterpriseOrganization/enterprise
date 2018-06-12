@@ -14,16 +14,20 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+      <style type="text/css">
+            .label1 {padding: 0.2cm;font-weight:bold}
+            .label2 {padding: 0.2cm}
+      </style>
   </head>
   
   <body>
     <div class="weadmin-body">
         <form class="layui-form">
           <div class="layui-form-item">
-                <label class="layui-form-label">
+                <label class="layui-form-label"  style="text-align:left;font-weight:700;width:100px;float:left;" class="label1">
                     <span class="we-red">*</span>供应商
                 </label>
-                <div class="layui-input-block">
+                <div   style="width:250px;float:left;" class="label2">
                     <select id="supl_name" class="layui-inline" name="factory" lay-verify="required" lay-search lay-filter="add_factory">
                         <option value="">输入搜索或者点击寻找</option>
                         <option value="-1">供应商不存在？点击添加供应商</option>
@@ -35,10 +39,11 @@
           </div>
 
           <div class="layui-form-item">
-              <label class="layui-form-label">
+              <label class="layui-form-label"  style="text-align:left;font-weight:700;width:100px;float:left;" class="label1">
                   <span class="we-red">*</span>物料名称
               </label>
-              <div class="layui-input-block">
+              <!--<div class="layui-input-block">-->
+              <div   style="width:250px;float:left;" class="label2">
                     <select id="mate_name" class="layui-inline" name="material" lay-verify="required" lay-search>
                         <option value="">输入搜索或者点击寻找</option>
                         <!--option value="0">物料A</option>
@@ -49,17 +54,18 @@
           </div>
 
           <div class="layui-form-item">
-              <label class="layui-form-label">
+              <label class="layui-form-label"  style="text-align:left;font-weight:700;width:100px;float:left;" class="label1">
                   <span class="we-red">*</span>价格
               </label>
-              <div class="layui-input-inline">
+              <div   style="width:250px;float:left;" class="label2">
                   <input type="text" id="price" name="price" required="" lay-verify="number"
                     autocomplete="off" class="layui-input">
               </div>
           </div>
             <div class="layui-form-item">
-              <label class="layui-form-label"></label>
-              <button  class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+
+              <button style="float:left;margin-left: 10px;"  class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+                 <label class="layui-form-label"></label>
           </div>
       </form>
     </div>

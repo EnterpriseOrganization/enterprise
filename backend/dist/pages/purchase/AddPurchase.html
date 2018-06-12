@@ -17,6 +17,7 @@
         <style type="text/css">
             .label1 {padding: 0.2cm;font-weight:bold}
             .label2 {padding: 0.2cm}
+            .button1 {padding: 1cm}
         </style>
     </head>
 
@@ -24,32 +25,33 @@
         <div class="weadmin-body">
             <form class="layui-form">
                 <div class="layui-form-item">
-                    <label  style="width:100px;float:left;" class="label1"></label>
+                    <label  for="product-id"  style="width:70px;float:left;" class="label1">
                         <span class="we-red">*</span>采购人
                     </label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-block"  style="float:left;" class="label2">
                         <input type="text" name="product-id" id="product-id" class="layui-input" lay-verify="required" autocomplete="off">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label for="product-name"  style="width:100px;float:left" class="label1">
+                    <label for="product-name"  style="width:70px;float:left" class="label1">
                         <span class="we-red">*</span>审核人
                     </label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-block" style="float:left;" class="label2">
                         <input type="text" name="product-name" id="product-name" class="layui-input" lay-verify="required" autocomplete="off">
                     </div>
                 </div>
+                <br>
                 <div class="layui-form-item">
-                     <label for="purchase" class="layui-form-label">
+                     <label for="purchase" class="layui-form-label label1" style="text-align: left;font-weight: 700">
                         采购商品：
                     </label>
                 </div>
 
                 <div class="layui-form-item">
-                    <label  style="width:100px;float:left" class="label1">
+                    <label  style="width:70px;float:left" class="label1">
                         供应商
                     </label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-block"  style="float:left;" class="label2">
                         <select class="layui-inline" name="factory" lay-verify="required" lay-search>
                             <option value="">输入搜索或者点击寻找</option>
                             <option value="0">供应商A</option>
@@ -60,10 +62,10 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <label for="purchase"  style="width:100px;float:left;" class="label1">
+                    <label for="purchase"  style="width:70px;float:left;" class="label1">
                         物料名称
                     </label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-block"  style="float:left;" class="label2">
                         <select class="layui-inline" name="stuff" lay-verify="required" lay-search>
                             <option value="">输入搜索或者点击寻找</option>
                             <option value="0">物料A</option>
@@ -73,10 +75,10 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label for="purchase"  style="width:100px;float:left;" class="label1">
+                    <label for="purchase"  style="width:70px;float:left;" class="label1">
                         数量
                     </label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-block"  style="float:left;" class="label2">
                         <input type="text" name="p-number" id="p-number" class="layui-input" lay-verify="required|number" autocomplete="off">
                     </div>
                 </div>
@@ -91,9 +93,10 @@
                 </div>-->
 
                 <div class="layui-form-item">
+
+                    <button style="float:left" class="layui-btn" lay-filter="add" lay-submit="">生成采购单</button>
                     <label class="layui-form-label">
                     </label>
-                    <button class="layui-btn" lay-filter="add" lay-submit="">生成采购单</button>
                 </div>
             </form>
         </div>
