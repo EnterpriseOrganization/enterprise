@@ -75,58 +75,9 @@
                   </label>
               </div>
           </form>
-          <!--<div class="weadmin-block">
-            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-            <span class="fr" style="line-height:40px">共有数据：88 条</span>
-        </div>-->
-          <!--<table class="layui-table">-->
-              <!--<thead>-->
-                  <!--<tr>-->
-                      <!--<th>-->
-                          <!--<div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>-->
-                      <!--</th>-->
-                      <!--<th>商品ID</th>-->
-                      <!--<th>商品名</th>-->
-                      <!--<th>数量</th>-->
-                      <!--<th>单价(元/个)</th>-->
-                      <!--<th>总价</th>-->
-                      <!--<th>厂商</th>-->
-                      <!--<th>完成状况</th>-->
-                      <!--&lt;!&ndash; 详情还应包括： 供应商、采购人、备注-->
-                    <!--<th>物料名称</th>&ndash;&gt;-->
-                  <!--</tr>-->
-              <!--</thead>-->
-              <!--<tbody>-->
-                  <!--<tr>-->
-                      <!--<td>-->
-                          <!--<div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>-->
-                      <!--</td>-->
-                      <!--<td>123098501273</td>-->
-                      <!--<td>双向电容器</td>-->
-                      <!--<td>3000</td>-->
-                      <!--<td>1.2</td>-->
-                      <!--<td>3600</td>-->
-                      <!--<td>天津沉沉集团</td>-->
-                      <!--<td>进行中</td>-->
-                      <!--&lt;!&ndash;<td class="td-manage">-->
-                          <!--<a title="详情" onclick="WeAdminShow('编辑','./edit.html')" href="javascript:;">-->
-                              <!--<i class="fas fa-info"></i>-->
-                          <!--</a>-->
-                      <!--</td>&ndash;&gt;-->
-                  <!--</tr>-->
-              <!--</tbody>-->
-          <!--</table>-->
+         
           <table id="item_table" lay-filter="item_filter"></table>
-          <div class="page">
-              <div>
-                  <a class="prev" href="">&lt;&lt;</a>
-                  <a class="num" href="">1</a>
-                  <span class="current">2</span>
-                  <a class="num" href="">3</a>
-                  <a class="num" href="">489</a>
-                  <a class="next" href="">&gt;&gt;</a>
-              </div>
-          </div>
+          
       </div>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
@@ -144,7 +95,8 @@
           }).use('admin');
           layui.use(['table', 'jquery', 'form'], function () {
               $ = layui.jquery;
-              alert(data);
+              table=layui.table;
+              
               $.ajax({
                   url: 'http://localhost:8000/purchase/get_purchase_detail',
                   type: 'POST',
@@ -164,18 +116,17 @@
                       $("#purchaser").text(resultdata.purchaser);
                       $("#date").text(resultdata.date);
                       $("#checker").text(resultdata.checker);
+                      console.log(resultdata.materials);
                       table.render({
                         elem: '#item_table'
                         , height: 400
                         , page: true
                         , data: resultdata.materials
                         , cols: [[
-                           {field: 'id', title: '订单ID', width: 170, fixed: 'left'},
-                            {field: 'supplier_name', title: '供应商', width: 200},
-                            {field: 'totalprice', title: '采购价格（总价）', width: 170},
-                            {field: 'purchaser', title: '采购人', width: 170},
-                            {field: 'date', title: '采购时间', width: 250},
-                            {field: 'operate', title: '操作', width: 170, toolbar: '#barDemo'},
+                            {field: 'material_id', title: '物料编号', width: 200,fixed: 'left'},
+                            {field: 'material_name', title: '物料名称', width: 170},  
+                            {field: 'price', title: '单价（元）', width: 170},
+                            {field: 'number', title: '数量', width: 170},                        
                         ]]
                         })
                   }
