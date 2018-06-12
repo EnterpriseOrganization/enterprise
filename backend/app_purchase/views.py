@@ -375,32 +375,36 @@ def get_purchase_detail(request):
 	:return:
 	"""
 	if request.method == 'POST':
-		purchase_id = request.POST.get('purchase_id')
-		if purchase_id:
-			try:
-				purchase = Purchase.objects.select_related('supplier').get(id=purchase_id)
-				purchase_products = PurchaseProduct.objects.select_related('material').filter(purchase=purchase)
-				res = {
-					'id': purchase.id,
-					'date': purchase.date,
-					'checker': purchase.checker,
-					'supplier_name': purchase.supplier.name,
-					'totalprice': purchase.totalprice,
-					'purchaser':purchase.purchaser
-				}
-				for purchase_product in purchase_products:
-					res['material_id'] = purchase_product.material.id
-					res['material_name'] = purchase_product.material.name
-					res['number'] = purchase_product.number
-					res['price'] = purchase_product.price
+   purchase_id = request.POST.get('purchase_id')
+   if purchase_id:
+      try:
+         purchase = Purchase.objects.select_related('supplier').get(id=purchase_id)
+         purchase_products = PurchaseProduct.objects.select_related('material').filter(purchase=purchase)
+         res = {
+            'id': purchase.id,
+            'date': purchase.date,
+            'checker': purchase.checker,
+            'supplier_name': purchase.supplier.name,
+            'totalprice': purchase.totalprice,
+            'purchaser': purchase.purchaser
+         }
+         res_list = []
+         for purchase_product in purchase_products:
+            temp = {}
+            temp['material_id'] = purchase_product.material.id
+            temp['material_name'] = purchase_product.material.name
+            temp['number'] = purchase_product.number
+            temp['price'] = purchase_product.price
+            res_list.append(temp)
+         res['materials'] = res_list
 
-				return JsonResponse({'msg': 200, 'result': res})
-			except IntegrityError:
-				return JsonResponse({'msg': 'this purchase is not fount'})
-		else:
-			return JsonResponse({'msg': 'Incomplete parameters'})
-	else:
-		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+         return JsonResponse({'msg': 200, 'result': res})
+      except IntegrityError:
+         return JsonResponse({'msg': 'this purchase is not fount'})
+   else:
+      return JsonResponse({'msg': 'Incomplete parameters'})
+else:
+   return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 
 
 @method_decorator(csrf_exempt)
