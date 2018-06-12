@@ -14,12 +14,62 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style type="text/css">
+            .label1 {padding: 0.2cm;font-weight:bold}
+            .label2 {padding: 0.2cm}
+        </style>
     </head>
 
     <body>
         <div class="weadmin-body">
             <form class="layui-form">
                 <div class="layui-form-item">
+                              <form class="layui-form">
+
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      供应商
+                  </label>
+                  <label id="supplier_name"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      供应商地址
+                  </label>
+                  <label  id="supplier_address"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      供应商电话
+                  </label>
+                  <label  id="supplier_phone"  style="width:200px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      物料名称
+                  </label>
+                  <label  id="material_name"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      物料编号
+                  </label>
+                  <label  id="material_id"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div><div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      物料价格
+                  </label>
+                  <label  id="material_price"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+
+          </form>
+                    <br>
                     <div id="content1"></div>
                     <button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
                     <input type="hidden" name="dataId" id="dataId" value="" />
@@ -61,13 +111,12 @@
                             var supplier_name = dicts.supplier_name;
                             var supplier_address = dicts.supplier_address;
                             var supplier_phone = dicts.supplier_phone;
-                            var content = "供应商：" + supplier_name + "<br>"
-                                        + "供应商地址：" + supplier_address + "<br>"
-                                        + "供应尚电话：" + supplier_phone + "<br>"
-                                        + "物料编号：" + material_id + "<br>"
-                                        + "物料名称：" + material_name + "<br>"
-                                        + "物料价格：" + material_price + "<br>"
-                            $("#content1").html(content);
+                            $("#material_id").text(material_id);
+                            $("#material_name").text(material_name);
+                            $("#material_price").text(material_price);
+                            $("#supplier_name").text(supplier_name);
+                            $("#supplier_address").text(supplier_address);
+                            $("#supplier_phone").html(supplier_phone);
                             //location.reload();
                         }
                     }
