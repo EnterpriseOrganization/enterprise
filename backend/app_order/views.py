@@ -19,6 +19,62 @@ def getAllOrder(request):
     return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
+# 更新单条信息的状态，0变1,1变0
+def  updateOneOrder(request):
+	user=request.user
+	info="no permission"
+	if(user.has_perm('modify_Order')):
+		req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+		diction = json.loads(req_str)
+		order_id=diction['id']
+		o = Order.objects.filter(id=order_id)
+		if(o.status==1):
+			o.status=0
+		elif(o.status==0):
+			o.status=1
+		o.save()
+		info="update order successfully"
+	else:
+		info="no permission"
+    return HttpResponse(info)
+
+# by ymk
+# 将选择的订单信息全部改为完成
+def completeOrders(request):
+	user=request.user
+	info="no permission"
+	if(user.has_perm('modify_Order')):
+		req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+		diction = json.loads(req_str)
+		for i in range(len(diction)):
+			o_id = diction[i]['id']
+			o = Order.objects.filter(id=o_id)
+			o.status=1
+			o.save()
+		info="update orders successfully"
+	else:
+		info="no permission"
+	return HttpResponse(info)
+
+# by ymk
+# 将选择的订单信息全部删除，传入的json应该是一个数组，数组中的每一个元素应该是 id:1000000
+def deleteOrders(request):
+	user=request.user
+	info="no permission"
+	if(user.has_perm('modify_Order')):
+		req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+		diction = json.loads(req_str)
+		for i in range(len(diction)):
+			id = diction[i]['id']
+			o=Order.objects.get(id=int(id))
+			OrderProduct.objects.filter(order=o).delete()
+			Order.objects.filter(id=int(id)).delete() #级联删除
+		info="update orders successfully"
+	else:
+		info="no permission"
+	return HttpResponse(info)
+
+# by ymk
 # 增加用户权限控制
 def updateOrderDetail(request):
 	user=request.user
