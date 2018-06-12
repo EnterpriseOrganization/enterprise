@@ -28,6 +28,7 @@ def get_quotation_list(request):
 		result = []
 		for sm in sms:
 			res = {
+				'id': sm.id,
 				'material_id': sm.material.id,
 				'material_name': sm.material.name,
 				'price': sm.price,
