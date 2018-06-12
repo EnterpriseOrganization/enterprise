@@ -49,7 +49,7 @@
                     </label>
                 </div>
                 <div class="layui-form-item">
-                    <label for="L_repass" class="layui-form-label">
+                    <label class="layui-form-label">
                   </label>
                     <button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
                     <input type="hidden" name="dataId" id="dataId" value="" />
@@ -59,42 +59,48 @@
 
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript">
-            layui.extend({
-                admin: '{/}../../static/js/admin'
-            });
-            layui.use(['form', 'jquery', 'admin','layer'], function() {
-                var form = layui.form,
+            function child(data){
+                layui.extend({
+                    admin: '{/}../../static/js/admin'
+                });
+                layui.use(['form', 'jquery', 'admin','layer'], function() {
+                    var form = layui.form,
                     $ = layui.jquery,
                     admin = layui.admin,
                     layer = layui.layer;
 
-                //监听提交
-                form.on('submit(add)', function(data) {//Author：FantLeo
-                    //var time = new Date();
-                    /*var f = data.field;
-                    var ma_name = document.getElementById("material_name").innerText.trim();
-                    var pro_fact_name = document.getElementById("provide_factory_name").innerText.trim();
-                    var pro_fact_id = document.getElementById("provide_factory_id").innerText.trim();
-                    var newprice = document.getElementById("new_price").value;
-                    //var name = document.getElementById()
-                    //console.log(time);
-                    console.log('data')
-                    console.log(data)
-                    console.log('data field')
-                    console.log(f)
-                    console.log('getelementById')
-                    console.log(ma_name)
-                    console.log(pro_fact_id)
-                    console.log(pro_fact_name)
-                    console.log(newprice)*/
-                    console.log('add price!');
-                    console.log(data);
-
-                    console.log('outside the ajax！')
-                    return false;
+                    form.on('submit(add)', function(arg) {//Author：FantLeo
+                        console.log(arg.field.username);
+                        $.ajax({
+                            url: 'http://localhost:8000/purchase/update_quotation_price',
+                            type: 'post',
+                            dataType:'json',
+                            data: {
+                                quotation_id: data,
+                                new_price: arg.field.username,
+                            },
+                            xhrFields:{
+                                    withCredentials:true
+                            },
+                            success: function(data){
+                                if(data.msg == 200){
+                                    console.log('Modify price 200!!');
+                                    window.parent.location.reload(); //刷新父页面
+                                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                    parent.layer.close(index);  // 关闭layer
+                                }else if(data.msg == 500){
+                                    console.log('Modify price 500!!');
+                                }else{
+                                    console.log('Modify price other!');
+                                }
+                            }
+                        });
+                        console.log('outside the ajax！')
+                        return false;
                 });
 
             });
+            };
         </script>
     </body>
 
