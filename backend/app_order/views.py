@@ -17,60 +17,64 @@ def getAllOrder(request):
 	return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
-# 
+# 增加用户权限控制
 def updateOrderDetail(request):
-	info = ""
-	req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
-	diction = json.loads(req_str)
-	print(diction)
-	# 获取相关的key值
-	order_id = diction['order_data']['id']
-	date = diction['order_data']['date']
-	indentor = diction['order_data']['indentor']
-	receiver = diction['order_data']['receiver']
-	checker = diction['order_data']['checker']
-	recevieraddress = diction['order_data']['recevieraddress']
-	indentorphonenumber = diction['order_data']['indentorphonenumber']
-	totalprice = diction['order_data']['totalprice']
-	status = diction['order_data']['status']
-	deliverydate = diction['order_data']['deliverydate']
-	paymentway = diction['order_data']['paymentway']
-	o = Order.objects.filter(id=order_id)
-	#获取到 order对象
-	o.date = date
-	o.indentor = indentor
-	o.receiver = receiver
-	o.checker = checker
-	o.recevieraddress = recevieraddress
-	o.indentorphonenumber = indentorphonenumber
-	o.totalprice = totalprice
-	o.status = status
-	o.deliverydate = deliverydate
-	o.paymentway = paymentway
-	# 提高修改效率
-	o.save()
-	for dict_temp in range(len(diction['product'])):
-		id = diction['product'][dict_temp]['product']#获取product的id
-		product = Product.objects.get(id = id) #获取product对象
-		number = diction['product'][dict_temp]['number']#获取数量
-		price = product.price#获取单价
+	user=request.user
+	if(user.has_perm('modify_Order')):
+		info = ""
+		req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+		diction = json.loads(req_str)
+		print(diction)
+		# 获取相关的key值
+		order_id = diction['order_data']['id']
+		date = diction['order_data']['date']
+		indentor = diction['order_data']['indentor']
+		receiver = diction['order_data']['receiver']
+		checker = diction['order_data']['checker']
+		recevieraddress = diction['order_data']['recevieraddress']
+		indentorphonenumber = diction['order_data']['indentorphonenumber']
+		totalprice = diction['order_data']['totalprice']
+		status = diction['order_data']['status']
+		deliverydate = diction['order_data']['deliverydate']
+		paymentway = diction['order_data']['paymentway']
+		o = Order.objects.filter(id=order_id)
+		#获取到 order对象
+		o.date = date
+		o.indentor = indentor
+		o.receiver = receiver
+		o.checker = checker
+		o.recevieraddress = recevieraddress
+		o.indentorphonenumber = indentorphonenumber
+		o.totalprice = totalprice
+		o.status = status
+		o.deliverydate = deliverydate
+		o.paymentway = paymentway
+		# 提高修改效率
+		o.save()
+		for dict_temp in range(len(diction['product'])):
+			id = diction['product'][dict_temp]['product']#获取product的id
+			product = Product.objects.get(id = id) #获取product对象
+			number = diction['product'][dict_temp]['number']#获取数量
+			price = product.price#获取单价
 
-		op_temp = orderproduct.objects.filter(order=o)
-		op_temp =op_temp.filter()
-		if(op_temp):
-			op.number=number
-			price=price
-			info="update an order successfully"
-		else: 
-			# 查询是否存在相应的order_product
-			op = Orderproduct(
-				order = o,
-				product = product,
-				number = number,
-				price = price
-				)
-			op.save()
-			info="add an order successfully"
+			op_temp = orderproduct.objects.filter(order=o)
+			op_temp =op_temp.filter()
+			if(op_temp):
+				op.number=number
+				price=price
+				info="update an order successfully"
+			else: 
+				# 查询是否存在相应的order_product
+				op = Orderproduct(
+					order = o,
+					product = product,
+					number = number,
+					price = price
+					)
+				op.save()
+				info="add an order successfully"
+	else:
+		info="no permission"
 
 	return HttpResponse(info)
 
@@ -161,48 +165,53 @@ def addOrder(request):
 		# deliverydate = req['deliverydate']
 		# paymentway= req['paymentway']
 	if request.method == 'POST':
-		req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
-		diction = json.loads(req_str)
-		print(diction)
-		# 获取相关的key值
-		date = diction['order_data']['date']
-		indentor = diction['order_data']['indentor']
-		receiver = diction['order_data']['receiver']
-		checker = diction['order_data']['checker']
-		recevieraddress = diction['order_data']['recevieraddress']
-		indentorphonenumber = diction['order_data']['indentorphonenumber']
-		totalprice = diction['order_data']['totalprice']
-		status = diction['order_data']['status']
-		deliverydate = diction['order_data']['deliverydate']
-		paymentway = diction['order_data']['paymentway']
+		user=request.user
+		if(user.has_perm('modify_Order')):
+			req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+			diction = json.loads(req_str)
+			print(diction)
+			# 获取相关的key值
+			date = diction['order_data']['date']
+			indentor = diction['order_data']['indentor']
+			receiver = diction['order_data']['receiver']
+			checker = diction['order_data']['checker']
+			recevieraddress = diction['order_data']['recevieraddress']
+			indentorphonenumber = diction['order_data']['indentorphonenumber']
+			totalprice = diction['order_data']['totalprice']
+			status = diction['order_data']['status']
+			deliverydate = diction['order_data']['deliverydate']
+			paymentway = diction['order_data']['paymentway']
 
-		o = Order(date=date,
-			indentor=indentor,
-			receiver=receiver,
-			checker=checker,
-			recevieraddress=recevieraddress,
-			indentorphonenumber=indentorphonenumber,
-			totalprice=totalprice,
-			status=status,
-			deliverydate=deliverydate,
-			paymentway=paymentway
-			)
-		o.save()
-		info = "add an order successfully"
-		order = Order.objects.last()# 获取order对象
-		for dict_temp in range(len(diction['product'])):
-			id = diction['product'][dict_temp]['product']#获取product的id
-			product = Product.objects.get(id = id) #获取product对象
-			number = diction['product'][dict_temp]['number']#获取数量
-			price = product.price#获取单价
-			op = Orderproduct(
-				order = order,
-				product = product,
-				number = number,
-				price = price
+			o = Order(date=date,
+				indentor=indentor,
+				receiver=receiver,
+				checker=checker,
+				recevieraddress=recevieraddress,
+				indentorphonenumber=indentorphonenumber,
+				totalprice=totalprice,
+				status=status,
+				deliverydate=deliverydate,
+				paymentway=paymentway
 				)
-			op.save()
-			info="add an order successfully"
+			o.save()
+			info = "add an order successfully"
+			order = Order.objects.last()# 获取order对象
+			for dict_temp in range(len(diction['product'])):
+				id = diction['product'][dict_temp]['product']#获取product的id
+				product = Product.objects.get(id = id) #获取product对象
+				number = diction['product'][dict_temp]['number']#获取数量
+				price = product.price#获取单价
+				op = Orderproduct(
+					order = order,
+					product = product,
+					number = number,
+					price = price
+					)
+				op.save()
+				info="add an order successfully"
+		else:
+			info="no permission"
+
 
 
 
@@ -216,13 +225,20 @@ def addOrder(request):
 def deleteOrder(request):
 	info = "Delete an Order"
 	if request.method == 'POST':
-		req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
-		diction = json.loads(req_str)
-		print(diction)
+		user=request.user
+		if(user.has_perm('modify_Order')):
+			req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
+			diction = json.loads(req_str)
+			print(diction)
 
-		id = diction['order']
-		Order.objects.filter(id=id).delete()
-		info = "delete an order successfully"
+			id = diction['order']
+			o=Order.objects.get(id=int(id))
+			OrderProduct.objects.filter(order=o).delete()
+			Order.objects.filter(id=int(id)).delete()
+
+			info = "delete an order successfully"
+		else:
+			info = "no permission"
 	else:
 		info = "get no json data"
 	return HttpResponse(info)
@@ -233,35 +249,39 @@ def updateOrder(request):
 	info = "Update an Order"
 
 	if request.method == 'POST':
-		diction = json.loads(request.raw_post_data)
+		user=request.user
+		if(user.has_perm('modify_Order')):
+			diction = json.loads(request.raw_post_data)
 
-		id = diction[0]['id']
-		date = diction[0]['date']
-		indentor = diction[0]['indentor']
-		receiver = diction[0]['receiver']
-		checker = diction[0]['checker']
-		recevieraddress = diction[0]['recevieraddress']
-		indentorphonenumber = diction[0]['indentorphonenumber']
-		totalprice = diction[0]['totalprice']
-		status = diction[0]['status']
-		deliverydate = diction[0]['deliverydate']
-		paymentway = diction[0]['paymentway']
+			id = diction[0]['id']
+			date = diction[0]['date']
+			indentor = diction[0]['indentor']
+			receiver = diction[0]['receiver']
+			checker = diction[0]['checker']
+			recevieraddress = diction[0]['recevieraddress']
+			indentorphonenumber = diction[0]['indentorphonenumber']
+			totalprice = diction[0]['totalprice']
+			status = diction[0]['status']
+			deliverydate = diction[0]['deliverydate']
+			paymentway = diction[0]['paymentway']
 
-		o = Order.objects.filter(id=id)
+			o = Order.objects.filter(id=id)
 
-		o.date = date,
-		o.indentor = indentor,
-		o.receiver = receiver,
-		o.checker = checker,
-		o.recevieraddress = recevieraddress,
-		o.indentorphonenumber = indentorphonenumber,
-		o.totalprice = totalprice,
-		o.status = status,
-		o.deliverydate = deliverydate,
-		o.paymentway = paymentway
-		# 提高修改效率
-		o.save()
-		info = "update an order successfully"
+			o.date = date,
+			o.indentor = indentor,
+			o.receiver = receiver,
+			o.checker = checker,
+			o.recevieraddress = recevieraddress,
+			o.indentorphonenumber = indentorphonenumber,
+			o.totalprice = totalprice,
+			o.status = status,
+			o.deliverydate = deliverydate,
+			o.paymentway = paymentway
+			# 提高修改效率
+			o.save()
+			info = "update an order successfully"
+		else:
+			info = "no permission"
 	else:
 		info = 'get no json data'
 
