@@ -20,53 +20,52 @@
                 padding-left: 10px;
             }
             #treelist {
-                max-width: 300px;
-                max-height: 700px;
-                min-height: 550px;
-                overflow-x: scroll;
+                max-width: 235px;
+                height: 700px;
                 overflow-x: auto;
+                overflow-y: scroll;
             }
         </style>
         <script>
             
-        function zTreeOnClick(event, treeId, treeNode) {
-            if (treeNode.id.split("_")[0]=="class"){
-                //alert("asdf")
-                return ;
-            }
-            console.log(treeNode.id)
-            urltogo="http://127.0.0.1:8000/bom/productmaterial/product/"+treeNode.id.split("_")[1]+"/"
-            $.ajax({
-                url:urltogo,
-                type:"GET",
-                xhrFields:{
-                    withCredentials:true
-                },
-                success:function(msg){
-                    console.log(msg.data)
-                    mdata=msg.data
-
-                    mtableIns.reload({
-                        data:mdata,
-                        page:{
-                            curr:1
-                        }
-                    });
-
-                    mdatanum=mdata.length
-                    $("#mdcount").text("共有数据："+mdatanum+"条")
-
-                    $("#bomlegend").html(treeNode.name+":物料列表")
-
-                    curselectp=parseInt(treeNode.id.split("_")[1])
-                    console.log(curselectp)
-                },
-                error:function(error){
-                    console.log(error)
+            function zTreeOnClick(event, treeId, treeNode) {
+                if (treeNode.id.split("_")[0]=="class"){
+                    //alert("asdf")
+                    return ;
                 }
+                console.log(treeNode.id)
+                urltogo="http://127.0.0.1:8000/bom/productmaterial/product/"+treeNode.id.split("_")[1]+"/"
+                $.ajax({
+                    url:urltogo,
+                    type:"GET",
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(msg){
+                        console.log(msg.data)
+                        mdata=msg.data
 
-            });
-        };
+                        mtableIns.reload({
+                            data:mdata,
+                            page:{
+                                curr:1
+                            }
+                        });
+
+                        mdatanum=mdata.length
+                        //$("#mdcount").text("共有数据："+mdatanum+"条")
+
+                        $("#bomlegend").html(treeNode.name+":BOM列表")
+
+                        curselectp=parseInt(treeNode.id.split("_")[1])
+                        console.log(curselectp)
+                    },
+                    error:function(error){
+                        console.log(error)
+                    }
+
+                });
+            };
         </script>
         <script>
             var pdata=[]
@@ -131,7 +130,7 @@
                             });
 
                             mdatanum=mdata.length
-                            $("#mdcount").text("共有数据："+mdatanum+"条")
+                            //$("#mdcount").text("共有数据："+mdatanum+"条")
 
                             $("#bomlegend").html(obj.data.name+":BOM列表")
 
@@ -164,6 +163,12 @@
                     }
                 };
                 zTreeObj=$.fn.zTree.init($("#treelist"),setting,null);
+                //alert($("#hsrc1").height())
+                //alert($("#hsrc1").innerHeight())
+                //alert($("#hsrc1").outerHeight())
+                //alert($("#hsrc1").outerHeight(true))
+                //$("#treelist").css("height",$("#rightpanel").height()+"px");
+                //$("#treelist").css("height","2000px");
             });
         </script>
         <script >
@@ -225,7 +230,7 @@
                         });
 
                         pdatanum=pdata.length
-                        $("#pdcount").text("共有数据："+pdatanum+"条")
+                        //$("#pdcount").text("共有数据："+pdatanum+"条")
 
                         for (var i=0;i<pdata.length;i++){
                             var j={}
@@ -282,7 +287,7 @@
                             });
 
                             pdatanum=pdata.length
-                            $("#pdcount").text("共有数据："+pdata.length+"条")
+                            //$("#pdcount").text("共有数据："+pdata.length+"条")
 
                         },
                         error:function(error){
@@ -296,19 +301,20 @@
             });   
 
         </script>
-        <script>
 
-
-
-                //zTreeObj.getNodesByParam("id",111,null)[0].children=[newnode112,newnode113]
-
-
-            
-        </script>
     </head>
 
     <body>
-        
+        <div class="weadmin-nav">
+            <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">BOM信息管理</a>
+        <a>
+          <cite>货品信息</cite></a>
+      </span>
+            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+                <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+        </div>
         <div class="weadmin-body">
             <div class="layui-row left-panel">
                 <fieldset id="ztree-container" class="layui-elem-field layui-col-md3">
@@ -318,7 +324,7 @@
                 <span class="layui-col-md9 right-panel">
                     <fieldset class="layui-elem-field layui-row">
                         <legend>货品列表</legend>
-                        <div class="layui-field-box">
+                        <div id="hsrc1" class="layui-field-box">
                             <div class="layui-row">
                                 <form class="layui-form layui-col-md12 we-search">
                                     筛选 <i class="fas fa-filter"></i>
@@ -341,7 +347,7 @@
                                 <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
                                 <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('创建货品','./CreateProduct.html',600,400)"><i class="fas fa-plus"></i> 创建货品</button>
                                 <button class="layui-btn layui-btn-sm"><i class="fas fa-share"></i> 全部导出</button>
-                                <span class="fr" style="line-height:40px" id="pdcount"></span>
+                                <!--<span class="fr" style="line-height:40px" id="pdcount"></span>-->
                             </div>
                             <div id="protab">
                                 <table class="layui-table" id="producttable" lay-filter="protab"></table>
@@ -358,7 +364,7 @@
                                     <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="bom_delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
                                     <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加物料','./AddParets.html',600,400)"><i class="fas fa-plus"></i> 添加物料</button>
                                     <button class="layui-btn layui-btn-sm" ><i class="fas fa-share"></i> 全部导出</button>
-                                    <span class="fr" style="line-height:40px" id="mdcount"></span>
+                                    <!--<span class="fr" style="line-height:40px" id="mdcount"></span>-->
                             </div>
 
                             <table class="layui-table" id="materialtable" lay-filter="mattab"></table>
@@ -397,8 +403,12 @@
 
                                 pdatanum=pdata.length
                                 
-                                $("#pdcount").text("共有数据："+pdatanum+"条")
-                                $(obj).parents("tr").remove();
+                                //$("#pdcount").text("共有数据："+pdatanum+"条")
+                                //$(obj).parents("tr").remove();
+
+                                ptableIns.reload({
+                                    data:pdata
+                                });
 
                                 zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+id,null)[0])
 
@@ -424,8 +434,7 @@
                     var checkStatus=table.checkStatus('producttable');
                     
                     console.log(checkStatus)
-                    console.log("fuck");
-                    //var data = tableCheck.getData();
+                    
                     var urltogo="http://127.0.0.1:8000/bom/product/";
                     layer.confirm('确认要删除这些记录吗？', function(index) {
                         console.log(checkStatus)
@@ -459,9 +468,12 @@
 
                                 pdatanum=pdata.length
 
-                                $("#pdcount").text("共有数据："+pdatanum+"条")
+                                //$("#pdcount").text("共有数据："+pdatanum+"条")
 
-                                $(".layui-form-checked").not('.header').parents('tr').remove();
+                                //$(".layui-form-checked").not('.header').parents('tr').remove();
+                                ptableIns.reload({
+                                    data:pdata
+                                });                                
 
                                 for(var i=0;i<checkStatus.data.length;i++){
                                     zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+checkStatus.data[i].id,null)[0])
@@ -506,8 +518,13 @@
 
                                 mdatanum=mdata.length;
 
-                                $(obj).parents("tr").remove();
-                                $("#mdcount").text("共有数据："+mdatanum+"条")
+                                //$(obj).parents("tr").remove();
+                                //$("#mdcount").text("共有数据："+mdatanum+"条")
+
+                                mtableIns.reload({
+                                    data:mdata
+                                });
+
                                 layer.msg('已删除!', {
                                     icon: 6,
                                     time: 1000
@@ -564,9 +581,14 @@
 
                                 mdatanum=mdata.length;
 
-                                $("#mdcount").text("共有数据："+mdatanum+"条")
+                                //$("#mdcount").text("共有数据："+mdatanum+"条")
 
-                                $(".layui-form-checked").not('.header').parents('tr').remove();
+                                //$(".layui-form-checked").not('.header').parents('tr').remove();
+
+                                mtableIns.reload({
+                                    data:mdata
+                                });
+
                                 layer.msg('删除成功!', {
                                     icon: 6,
                                     time: 1000
@@ -618,7 +640,6 @@
             <a title="删除" onclick="bom_member_del(this,{{d.id}})" href="javascript:;">
                 <i class="fas fa-trash-alt"></i>
             </a>
-
         </script>
 
 
