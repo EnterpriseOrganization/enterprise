@@ -128,7 +128,7 @@
         layui.extend({
             admin: '{/}../../static/js/admin'
         });
-
+         var tableins;
         layui.use(['form', 'jquery', 'util', 'admin', 'layer', 'table'], function () {
             var form = layui.form,
                 $ = layui.jquery,
@@ -136,7 +136,7 @@
                 admin = layui.admin,
                 layer = layui.layer,
                 table1 = layui.table;
-
+            
             // 基于准备好的dom，初始化echarts实例
             /*var myChart = echarts.init(document.getElementById('price-charts'));
             // 指定图表的配置项和数据
@@ -193,58 +193,7 @@
                      });
                 return false;
             });
-
-            form.on('submit(search)', function (data) {
-                console.log('search!');
-                var mat_id = document.getElementById("mate_id").value.trim();
-                var mat_name = document.getElementById("mate_name").value.trim();
-                var supl_name = document.getElementById("supl_name").value.trim();
-                console.log(mat_id);
-                console.log(mat_name);
-                console.log(supl_name);
-
-                $.ajax({
-                    url: 'http://localhost:8000/purchase/quotation_query',
-                    type: 'post',
-                    dataType:'json',
-                    data: {
-                        quotation_id: mat_id,
-                        material_name: mat_name,
-                        supplier_name: supl_name,
-                    },
-                    xhrFields:{
-                            withCredentials:true
-                    },
-                    success: function(data){
-                        if(data.msg == 200){
-                            console.log('Search 200!!');
-                            //console.log(data.result);
-                            table1.render({
-                                elem: '#AllPrice_table'
-                                ,height: 315
-                                ,page: true
-                                ,data: data.result
-                                ,cols: [[
-                                    {field: 'id', title: '订单编号', width:170, fixed: '#left'},
-                                    {field: 'material_id', title: '物料编号', width:170, fixed: '#left'},
-                                    {field: 'material_name', title: '物料名称', width:250},
-                                    {field: 'supplier_name', title: '供应商名称', width:200},
-                                    {field: 'price', title: '价格', width:170},
-                                    {field: 'operate2', title: '详细信息', width:105,toolbar: '#detail'},
-                                    {field: 'operate3', title: '编辑', width:100,toolbar: '#edit'},
-                                    {field: 'operate4', title: '删除', width:100,toolbar: '#delete-item'},
-                                ]]
-                            });
-                        }else if(data.msg == 500){
-                            console.log('Search 500!!');
-                        }else{
-                            console.log('Search other!!');
-                        }
-                    }
-                });
-                console.log('outside the ajax！');
-                return false;
-            });
+            
             
             function dynamicRanderTable(){
                 var pricedata;
@@ -260,7 +209,7 @@
                         pricedata = data['result'];
                     }
                     });
-                table1.render({
+                tableins=table1.render({
                     elem: '#AllPrice_table'
                     ,height: 315
                     ,page: true
@@ -277,7 +226,44 @@
                     ]]
                 });
             };
-
+            form.on('submit(search)', function (data) {
+                    //var time = new Date();
+                    var mat_id = document.getElementById("mate_id").value.trim();
+                    var mat_name = document.getElementById("mate_name").value.trim();
+                    var supl_name = document.getElementById("supl_name").value.trim();
+                    $.ajax ({
+                        url: 'http://localhost:8000/purchase/quotation_query',
+                    type: 'post',
+                    dataType:'json',
+                    data: {
+                        quotation_id: mat_id,
+                        material_name: mat_name,
+                        supplier_name: supl_name,
+                    },
+                    xhrFields:{
+                            withCredentials:true
+                    },
+                    success: function(data){
+                        if(data.msg == 200)
+                            {
+                                var searchresult = data['result'];
+                                // alert(JSON.stringify(searchresult));
+                                tableins.reload({
+                                    data:searchresult
+                                });
+                            }
+                            else{
+                                alert(msg);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                    return false;
+                });
+            
+                
             table1.on('tool(AllPrice_filter)', function(obj){
                 var data=obj.data;
                 var layEvent = obj.event;

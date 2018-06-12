@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
 from enterprise.models import UserTable
-from django.db.models import Max
+from django.db.models import Min
 from enterprise.models import Purchase
 from enterprise.models import PurchaseProduct
 from enterprise.models import InventoryInformation
@@ -293,8 +293,8 @@ def get_min_price(material_id):
 		mt = Material.objects.get(id=material_id)
 	except Material.DoesNotExist:
 		return 'this Material does not exist'
-	price = SupplierMaterial.objects.filter(material=mt).aggregate(Max('price'))
-	return price
+	price = SupplierMaterial.objects.filter(material=mt).aggregate(Min('price'))
+	return price['price__min']
 
 
 @method_decorator(csrf_exempt)
@@ -304,7 +304,43 @@ def add_purchase(request):
 	:param: 采购人,审核人,采购商品列表字典items(matreial_id,num,supplier_id)
 	:return: 200 or error message
 	"""
+	if request.method == 'POST':
+		params = request.POST
+		print(params)
+		purchaser = params.get('purchaser')
+		checker = params.get('checker')
+		supplier_id = params.get('supplier')
+		material_id = params.get('material_id')
+		num = params.get('number')
+		if purchaser and checker and supplier_id and material_id and num:
+			# insert into db
+			price = get_min_price(material_id)
+			print(price)
+			supplier = Supplier.objects.get(id=supplier_id)
+			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier, totalprice=price)
+			try:
+				purchase.save()
+			except IntegrityError:
+				return JsonResponse({'msg': ' primary key error'})
 
+			
+			try:
+				material = Material.objects.get(id=material_id)
+				purchase_item = PurchaseProduct(purchase=purchase, material=material, number=num, price=price)
+				purchase_item.save()
+				return JsonResponse({'msg': 200, 'result': 'success'})
+			except IntegrityError:		# 捕获主键唯一冲突异常
+				return JsonResponse({'msg': ' primary key error'})
+			except Material.DoesNotExist:		# 捕获get异常
+				return JsonResponse({'msg': 'this Material does not exist'})
+			except Supplier.DoesNotExist:
+				return JsonResponse({'msg': 'this Supplier does not exist'})
+
+		else:
+			return JsonResponse({'msg':'parameter error'})
+	else:
+		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+	"""
 	if request.method == 'POST':
 		params = request.POST
 		purchaser = params.get('purchaser')
@@ -325,6 +361,7 @@ def add_purchase(request):
 			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier_id, totalprice=total_price)
 			try:
 				purchase.save()
+				print(1231231);
 			except IntegrityError:
 				return JsonResponse({'msg': ' primary key error'})
 
@@ -349,10 +386,11 @@ def add_purchase(request):
 
 				else:
 					return JsonResponse({'msg': 'Incomplete parameters'})
-
-		return JsonResponse({'msg': 200, 'result': 'ok'})
+		else:
+			return JsonResponse({'msg':'parameter error'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
+	"""
 
 
 @method_decorator(csrf_exempt)

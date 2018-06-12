@@ -29,15 +29,25 @@
                         <span class="we-red">*</span>采购人
                     </label>
                     <div class="layui-input-block"  style="float:left;" class="label2">
-                        <input type="text" name="product-id" id="product-id" class="layui-input" lay-verify="required" autocomplete="off">
+                        <input type="text" name="product-id" id="purchaser" class="layui-input" lay-verify="required" autocomplete="off">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label for="product-name"  style="width:70px;float:left" class="label1">
+                    <label for="product-name"   style="width:70px;float:left" class="label1">
                         <span class="we-red">*</span>审核人
                     </label>
                     <div class="layui-input-block" style="float:left;" class="label2">
-                        <input type="text" name="product-name" id="product-name" class="layui-input" lay-verify="required" autocomplete="off">
+                        <input type="text" name="product-name" id="checker" class="layui-input" lay-verify="required" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label  style="width:70px;float:left" class="label1">
+                        供应商
+                    </label>
+                    <div class="layui-input-block"  style="float:left;" class="label2">
+                        <select class="layui-inline" id="supl_name" name="factory" lay-verify="required" lay-search>
+                            <option value="">输入搜索或者点击寻找</option>
+                        </select>
                     </div>
                 </div>
                 <br>
@@ -48,29 +58,13 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <label  style="width:70px;float:left" class="label1">
-                        供应商
-                    </label>
-                    <div class="layui-input-block"  style="float:left;" class="label2">
-                        <select class="layui-inline" name="factory" lay-verify="required" lay-search>
-                            <option value="">输入搜索或者点击寻找</option>
-                            <option value="0">供应商A</option>
-                            <option value="1">供应商B</option>
-                            <option value="2">供应商C</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
                     <label for="purchase"  style="width:70px;float:left;" class="label1">
                         物料名称
                     </label>
                     <div class="layui-input-block"  style="float:left;" class="label2">
-                        <select class="layui-inline" name="stuff" lay-verify="required" lay-search>
+                        <select class="layui-inline" id="mate_name" name="stuff" lay-verify="required" lay-search>
                             <option value="">输入搜索或者点击寻找</option>
-                            <option value="0">物料A</option>
-                            <option value="1">物料B</option>
-                            <option value="2">物料C</option>
+                            
                         </select>
                     </div>
                 </div>
@@ -79,7 +73,7 @@
                         数量
                     </label>
                     <div class="layui-input-block"  style="float:left;" class="label2">
-                        <input type="text" name="p-number" id="p-number" class="layui-input" lay-verify="required|number" autocomplete="off">
+                        <input type="text" name="p-number" id="number"  class="layui-input" lay-verify="required|number" autocomplete="off">
                     </div>
                 </div>
 
@@ -112,6 +106,7 @@
                     util = layui.util,
                     admin = layui.admin,
                     layer = layui.layer;
+                getMaterial();
 
                 //自定义验证规则
                 form.verify({
@@ -139,21 +134,130 @@
 
                 //监听提交
                 form.on('submit(add)', function(data) {
-                    console.log(data.field);
-                    var f = data.field;
-                    //console.log(f.username);
-                    //console.log(f.sex);
-                    //var sex = $('input:radio[name="sex"]:checked').val();
+                    var purchaser = document.getElementById("purchaser").value;
+                    var checker = document.getElementById("checker").value;
+                    var number = document.getElementById("number").value;
+                    //首先获得下拉框的节点对象；
+                      var select = document.getElementById("supl_name");
+                      var options = select.options;
+                      var index = select.selectedIndex;
+                      var selectedText = options[index].value;
 
-                    //发异步，把数据提交给php
-                    var time = new Date();
-                    console.log('test')
-                    console.log(time)
-                    layer.alert("增加成功", {
-                        icon: 6
+                      //首先获得下拉框的节点对象；
+                      var select1 = document.getElementById("mate_name");
+                      var options1 = select1.options;
+                      var index1 = select1.selectedIndex;
+                      var selectedText1 = options1[index1].value;
+                    var Data={
+                        "purchaser": purchaser,
+                        "checker": checker,
+                        "supplier": selectedText,
+                        "number": number,
+                        "material_id":selectedText1,
+                    }
+                    $.ajax({
+                          url: 'http://localhost:8000/purchase/add_purchase',
+                          type: 'post',
+                          dataType:'json',
+                          data: Data,
+                          xhrFields:{
+                              withCredentials:true
+                          },
+                          success: function(data){
+                              //console.log('balabalalelvofmvimid!');
+                              if(data.msg == 200){
+                                layer.confirm('添加成功！', {icon: 1, title:'提示'}, function(index){ 
+                                 layer.close(index);
+                                 var index2 = parent.layer.getFrameIndex(window.name);
+                                 parent.layer.close(index2);
+                              
+                              });
+                              }else{
+                                  layer.alert("add failed", {
+                                    icon: 6
+                                });
+                              }
+                          }
                     });
+                    
                     return false;
                 });
+
+                          //监听下拉框
+          form.on('select(add_factory)', function(data){
+              console.log('select');
+              //console.log(data);
+              if(data.value == -1){
+                  console.log('添加供应商');
+                  layer.open({
+                      type: 2 //此处以iframe举例
+                      ,title: '新增供应商'
+                      ,area: ['400px', '300px']
+                      ,content: 'http://localhost:8000/static/pages/purchase/AddFactory.html'
+                  });
+              }
+          });
+
+          function getMaterial(){
+              $.ajax({
+                  url: 'http://localhost:8000/purchase/get_suppliers',
+                  type: 'post',
+                  dataType:'json',
+                  xhrFields:{
+                      withCredentials:true
+                  },
+                  success: function(data){
+                      //console.log('balabalalelvofmvimid!');
+                      if(data.msg == 200){
+                          //console.log('getmaterial 200!!');
+                          //console.log(data.result);
+                          genSuplierName(data.result);
+                      }else if(data.msg == 500){
+                          console.log('500!!');
+                      }
+                  }
+              });
+
+              $.ajax({
+                  url: 'http://localhost:8000/purchase/get_materials',
+                  type: 'post',
+                  dataType:'json',
+                  xhrFields:{
+                      withCredentials:true
+                  },
+                  success: function(data){
+                      console.log('balabalalelvofmvimid!');
+                      if(data.msg == 200){
+                          console.log('getmaterial 200!!');
+                          //console.log(data.result);
+                          genMateName(data.result);
+                      }else if(data.msg == 500){
+                          console.log('500!!');
+                      }
+                  }
+              });
+          };
+
+          function genMateName(data){
+              console.log('inside getMateName!');
+              console.log(data);
+              for(var i = 0;i<data.length;i++){
+                  $('#mate_name').append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+              };
+              //console.log('mengyuhang!');
+              form.render("select");
+          }
+
+          function genSuplierName(data){
+              console.log('inside getSuplierName!');
+              console.log(data);
+              for(var i = 0;i<data.length;i++){
+                  $('#supl_name').append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+              };
+              //console.log('mengyuhang!');
+              form.render("select");
+          };
+
 
             });
         </script>
