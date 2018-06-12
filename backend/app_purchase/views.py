@@ -28,7 +28,7 @@ def get_quotation_list(request):
 		result = []
 		for sm in sms:
 			res = {
-				'id': sm.id,
+				'material_id': sm.material.id,
 				'material_name': sm.material.name,
 				'price': sm.price,
 				'supplier_name':sm.supplier.name,
@@ -199,7 +199,6 @@ def get_lack_list(request):
 		result = []
 		for inif in inifs:
 			res = {
-				'id': inif.id,
 				'material_id': inif.material.id,
 				'material_name': inif.material.name,
 				'number': inif.number,
@@ -346,7 +345,7 @@ def delete_purchases(request):
 @method_decorator(csrf_exempt)
 def get_purchase_list(request):
 	"""
-	获取采购单列表
+	获取采购记录列表
 	:param request:
 	:return: list[{},{}]
 	"""
