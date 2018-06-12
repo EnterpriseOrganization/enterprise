@@ -284,27 +284,37 @@
                 console.log(data);
                 console.log(layEvent);
                 if(layEvent=='delete-item') {
-                    $.ajax({
-                    url: 'http://localhost:8000/purchase/delete_quotation',
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        quotation_id: data.id
-                    },
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    success: function (data) {
 
-                        var code=data['msg'];
-                        if(code=='200') {
-                            console.log(data);
-                            console.log('okokokokokokoko!!');
-                            location.reload();
+                    layer.confirm('是否确认删除', {btn:['Yes','No'],btn1:function()
+                        {
+                            $.ajax({
+                            url: 'http://localhost:8000/purchase/delete_quotation',
+                            type: 'post',
+                            dataType: 'json',
+                            data: {
+                                quotation_id: data.id
+                            },
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            success: function (data) {
+
+                                var code=data['msg'];
+                                if(code=='200') {
+                                    console.log(data);
+                                    console.log('okokokokokokoko!!');
+                                    location.reload();
+                                }
+                            }
+                            });
+                        },
+                        btn2:function(){
+
                         }
-                    }
-                    });
-                }
+
+
+                });
+                };
 
                 if(layEvent=='detail') {
                     layer.open({
