@@ -23,22 +23,20 @@
       <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
+
     <div class="weadmin-body">
         <div class="layui-row">
-            <form class="layui-form layui-col-md12 we-search layui-form-pane">
+            <form class="layui-form ">
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="订单编号" name="cate_name">
+                    <input class="layui-input" placeholder="订单编号"  id="purchase_id">
                 </div>
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="物料编号" name="cate_name">
+                    <input class="layui-input" placeholder="采购日期"  id="date">
                 </div>
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="采购日期" name="cate_name">
+                    <input class="layui-input" placeholder="采购人" id="purchaser">
                 </div>
-                <div class="layui-inline">
-                    <input class="layui-input" placeholder="采购人" name="cate_name">
-                </div>
-                <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="fas fa-search"></i></button>
+                <button class="layui-btn"  lay-filter="search"  lay-submit=""><i class="fas fa-search"></i></button>
             </form>
         </div>
         <!--<div class="weadmin-block">
@@ -48,13 +46,10 @@
         <table class="layui-table">
             <thead>
                 <tr>
-                    <th>
-                        <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                    </th>
+
                     <th>订单编号</th>
-                    <th>物料编号</th>
                     <th>采购时间</th>
-                    <th>采购价格(元/个)</th>
+                    <th>采购价格(总价)</th>
                     <th>采购人</th>
                     <th>操作</th>
                 <!-- 详情还应包括： 供应商、采购人、备注
@@ -63,17 +58,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                    </td>
                     <td>123098501273</td>
-                    <td>ASD41324</td>
                     <td>2017/3/1</td>
-                    <td>0.7</td>
+                    <td>5000</td>
                     <td>盖尔加朵</td>
                     <td class="td-manage">
-                        <a title="详情"  onclick="WeAdminShow('编辑','./HistoryPurchaseInfo.html')" href="javascript:;">
-                            <i class="fas fa-info"></i>
+                        <a title="详情" >
+                            <i lay-filter="detail" lay-submit="" class="fas fa-info"></i>
                         </a>
                     </td>
                 </tr>
@@ -92,6 +83,100 @@
     </div>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+     <script src="../../lib/layui/lay/modules/laydate.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/jquery.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/form.js" charset="utf-8"></script>
+          <script src="../../lib/layui/lay/modules/layer.js" charset="utf-8"></script>
+        <script type="text/javascript">
+             layui.extend({
+                admin: '{/}../../static/js/admin'
+            });
+            layui.use(['form', 'jquery', 'admin','layer','laydate'], function() {
+                var form = layui.form,
+                    $ = layui.jquery,
+                    laydate=layui.laydate,
+                    admin = layui.admin,
+                    layer = layui.layer;
+
+
+                 //页面初始化加载
+                /**
+                 $(function(){
+                    setTimeout(function(){
+                        frameVal();
+                    },100);
+                });
+                 function frameVal(){
+                    var dataId = $('input[name="dataId"]').val();
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layui.jquery("#memberList tr").each(function(){
+                        if($(this).attr('data-id')==dataId){
+                            console.log($(this));
+                            var tdArr=$(this).children('td');
+                            var username = tdArr.eq(2).text(); //姓名
+                            var sex = tdArr.eq(3).text(); //性别
+                            var phone = tdArr.eq(4).text(); //电话
+                            var email = tdArr.eq(5).text(); //邮箱
+                            var address = tdArr.eq(6).text(); //地址
+
+                            $('input[name="username"]').val(username);
+                            console.log("sex:"+sex);
+                            $('input[name="sex"][value="'+sex+'"]').attr("checked",true);
+                            $('input[name="phone"]').val(phone);
+                            $('input[name="email"]').val(email);
+                            $('input[name="address"]').val(address);
+                            form.render();
+                        }
+                    });
+                }**/
+                //监听提交
+                form.on('submit(search)', function (data) {//Author：FantLeo
+                    //var time = new Date();
+
+                    var purchaseid = document.getElementById("purchase_id").value;
+                    var purchasedate = document.getElementById("date").value;
+                    var purchaser = document.getElementById("purchaser").value;
+                    $.post("http://127.0.0.1:9000/purchase/purchase_query", {
+                            purchase_id: purchaseid,
+                            purchaser: purchaser,
+                            date: purchasedate
+                        }
+                        , function (res) {
+                            console.log('eeee');
+                            console.log(res);
+                        }, 'json');
+                    console.log('outside the ajax！')
+                    return false;
+                })
+
+
+                          //显示订单详细信息
+                   form.on('submit(detail)', function (data) {
+                    var purchaseid = document.getElementById("purchase_id").innerText.trim();
+                   $.post("http://127.0.0.1:9000/purchase/get_purchase_detail", {
+                            purchase_id: purchaseid
+                        }
+                        , function (res) {
+                            console.log('eeee');
+                            console.log(res);
+                        }, 'json');
+         layer.open({
+             type: 2 //此处以iframe举例
+             ,title: '查看采购单详情'
+             ,area: ['750px', '500px']
+             ,content: 'HistoryPurchaseInfo.html'
+             ,closeBtn: 1
+             ,btn: function(){
+                 layer.closeAll();
+        }
+         });
+    return false;
+});
+
+            });
+
+        </script>
+
   </body>
 
 </html>
