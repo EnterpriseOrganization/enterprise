@@ -17,4 +17,5 @@ urlpatterns = [
 	url(r'^purchase_query', views.purchase_query),
 	url(r'^get_suppliers', views.get_suppliers),
 	url(r'^get_materials', views.get_materials),
+	url(r'^get_quotation_detail', views.get_quotation_detail),
 ]
