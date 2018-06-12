@@ -348,15 +348,168 @@ layui.define(['jquery', 'form', 'layer', 'element'], function(exports) {
             content: url,
             success: function(layero, index) {
                 //向iframe页的id=house的元素传值  // 参考 https://yq.aliyun.com/ziliao/133150
-                var body = layer.getChildFrame('body', index);
-                body.contents().find("#dataId").val(id);
-                console.log(id);
+                //向子页面中填充信
+                var body = layer.getChildFrame('body', index)
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                body.find("#orderId").val(id)
+                var order_data = getOrderDetail(id, 0)
+                var product_data = order_data.product
+                var order_data = JSON.parse(order_data.order)[0].fields
+                body.find("#ordercomp").val(order_data.indentor)
+                body.find("#ordercontacter").val(order_data.receiver)
+                body.find("#ordertel").val(order_data.indentorphonenumber)
+                body.find("#begindate").val(order_data.date.substr(0, 10))
+                body.find("#enddate").val(order_data.deliverydate.substr(0, 10))
+                body.find("#orderbill").val(order_data.totalprice)
+                body.find('#payment').val(order_data.paymentway)
+                body.find('#check').val(order_data.checker)
+                var area = []
+                area[3] = parseInt(order_data.recevieraddress.substr(0, 6))//district id
+                area[1] = parseInt(area[3] / 10000) * 10000//province id
+                area[2] = parseInt(area[3] / 100) * 100//city id
+                area[4] = order_data.recevieraddress.substr(7, order_data.recevieraddress.length)
+                //set province
+                body.find("#province").val(area[1])
+                //getCity
+                var getCity = getOrderDetail(area[1], 1)
+                //update province
+                for (var i in getCity) {
+                    body.find('#city').append('<option value="' + getCity[i].code + '">' + getCity[i].name + '</option>')
+                }
+                //set city
+                body.find("#city").val(area[2])
+                //getDistrict
+                var getDistrict = getOrderDetail(area, 2)
+                //update district
+                for (var i in getDistrict) {
+                    body.find('#district').append('<option value="' + getDistrict[i].code + '">' + getDistrict[i].name + '</option>')
+                }
+                //set district
+                body.find("#district").val(area[3])
+                //set address
+                body.find("#address").text(area[4])
+                var getProduct = getOrderDetail(null, 4)
+                var num = 1
+                var product_price = []
+                var total_price = 0
+                var total_num = 0
+                for (var i in product_data) {
+                    var tableHtml = "";
+                    tableHtml += '<tr id="tr' + num + '">' +
+                        '<td>' + num + '</td>' +
+                        '<td><div class="layui-input-inline"><select lay-filter="product" id="product' + num + '" class="product"><option value="-1">请选择</option></select></div></td>' +
+                        '<td><div class="layui-input-inline"><a id="price' + num + '"></a></div></td>' +
+                        '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" id="number' + num + '"class="layui-input" class="productnum"></input></div></td>' +
+                        '<td><div class="layui-input-inline"><a id="total' + num + '"></div></td>' +
+                        '<td><button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeTr(' + num + ')">删除</button>' +
+                        '</td>' +
+                        '</tr>';
+                    var elements = body.find("#myTable").children().length
+                    body.find("#myTable").children().eq(elements - 1).after(tableHtml)
+
+                    for (var j in getProduct) {
+                        body.find("#product" + num).append('<option value="' + getProduct[j].pk + '">' + getProduct[j].fields.name + '</option>')
+                    }
+                    body.find("#number" + num).val(product_data[i].number)
+                    body.find("#price" + num).text(product_data[i].price)
+                    body.find("#total" + num).text(parseInt(product_data[i].number) * parseFloat(product_data[i].price))
+                    total_price += parseFloat(body.find("#total" + num).text())
+                    total_num += parseInt(body.find("#number" + num).val())
+                    body.find("#total_price").text(total_price)
+                    body.find("#total_num").text(total_num)
+                    //此处应该为val（productid）
+                    body.find("#product" + num).val(product_data[i].id)
+                    //动态监听input输入内容
+                    var $inputContainer = body.find('#myTable');
+                    $inputContainer.find('input').on('input proertychange', function () {
+                        var result = $(this).val();
+                        var id = $(this)[0].id;
+                        var curr = id.substr(6, id.length);
+                        var cur_price = body.find('#price' + curr).text();
+                        var total_price = cur_price * result;
+
+                        body.find('#total' + curr).text(cur_price * result);
+                        //total_num update
+                        var total_num = 0;
+                        var total_all = 0;
+                        for (var i = 1; i < num; i++) {
+                            if (body.find('#number' + i).val() != "") {
+                                total_num += parseInt(body.find('#number' + i).val());
+                                total_all += parseFloat(body.find('#total' + i).text());
+                            }
+                        }
+                        body.find('#total_num').text(total_num);
+                        body.find('#total_price').text(total_all);
+                        body.find('#orderbill').val(total_all);
+                        form.render();
+                    })
+                    num++
+
+                }
+
+
+
+
+
             },
             error: function(layero, index) {
                 alert("aaa");
             }
         });
     }
+    function getOrderDetail(myData, type) {
+        //根据订单号获取订单信息
+        if (type == 0) {
+            var post_json = {
+                "order": myData
+            }
+            var req = "get-order-detail"
+        }
+        //根据省份信息获取市级信息
+        else if (type == 1) {
+            var post_json = {
+                "province_id": myData + ""
+            }
+            var req = "province"
+        }
+        //根据市级信息获取区级信息
+        else if (type == 2) {
+            var post_json = {
+                "province_id": myData[1] + "",
+                "city_id": myData[2] + ""
+            }
+            var req = "city"
+        }
+        else {
+            var req = "get-all-product"
+            var post_json = {
+                "req_type": req
+            }
+        }
+        var response_data
+
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/order/" + req,
+            cache: false,
+            async: false,
+            contentType: "application/json",
+            dataTye: "json",
+            data: JSON.stringify(post_json),
+            xhrFields:{
+                withCredentials:true
+            },
+            success: function (data) {
+                if (type == 1 || type == 2) response_data = data
+                else response_data = JSON.parse(data)
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+        return response_data
+    }
+
 
     /**
      *@todo tab监听：点击tab项对应的关闭按钮事件
