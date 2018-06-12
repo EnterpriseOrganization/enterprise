@@ -35,7 +35,6 @@ layui.use(['table', 'jquery', 'form', 'admin'], function () {
             }]
         ],
         data: mdata,
-
         event: true,
         page: true
     });
@@ -84,7 +83,6 @@ layui.use(['table', 'jquery', 'form', 'admin'], function () {
         form.render();
     });
     function getListInfo() {
-
         return pdata;
     }
     var active = {
