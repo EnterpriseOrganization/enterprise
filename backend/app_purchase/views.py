@@ -132,9 +132,10 @@ def quotation_query(request):
 		for sm in sms:
 			res = {
 				'id': sm.id,
+				'material_id': sm.material.id,
 				'material_name': sm.material.name,
 				'price': sm.price,
-				'supplier_name': sm.supplier.name,
+				'supplier_name':sm.supplier.name,
 			}
 			result.append(res)
 
