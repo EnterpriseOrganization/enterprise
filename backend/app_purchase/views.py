@@ -181,6 +181,7 @@ def add_supplier(request):
 		if supplier_address and supplier_name and supplier_phone:
 			sp = Supplier(name=supplier_name, contact='no', phonenumber=supplier_phone, address=supplier_address)
 			sp.save()
+			return JsonResponse({'msg': 200})
 		else:
 			return JsonResponse({'msg': 'Incomplete parameters'})
 	else:
