@@ -36,22 +36,6 @@
         <div class="weadmin-body"> 
             <form class="layui-form layui-col-md12 we-search">          
             <div class="layui-row">
-<<<<<<< HEAD
-                <div class="layui-inline">
-                    <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">    
-                </div>
-                <div class="layui-inline">
-                    <select name="workshop" lay-verify="">
-                        <option value="">存储仓库</option>
-                        <option value="010">1</option>
-                        <option value="021">2</option>
-                        <option value="021">3</option>
-                        <option value="021">4</option>
-                    </select>
-                </div>
-                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-=======
                 <div class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
                         <input type="text" name="title" required  id="materialName"
@@ -60,7 +44,6 @@
 
                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search" onclick="search()"><i class="fas fa-search"></i></button>
                 </div>
->>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
             </div>
             </form>
 
@@ -75,32 +58,6 @@
 
 
         </div>
-<<<<<<< HEAD
-        <script>    
-            layui.extend({
-                admin: '{/}../../static/js/admin'
-            });
-            layui.use(['laydate', 'jquery','admin'], function() {
-                var laydate = layui.laydate,
-                    $ = layui.jquery,
-                    layer = layui.layer,
-                    admin = layui.admin;
-                //执行一个laydate实例
-                laydate.render({
-                    elem: '#start' //指定元素
-                });
-                //执行一个laydate实例
-                laydate.render({
-                    elem: '#end' //指定元素
-                });
-            
-            });
-
-            
-            
-        </script>
-=======
->>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
         <style>
             .amount-input {
                 width: 70px;
@@ -129,11 +86,6 @@
                 ]],
                 data:mdata
             });
-<<<<<<< HEAD
-            form.on('submit(search)', function() {
-
-            })
-=======
             var pdata
             if (true) {
                 //初次渲染table
@@ -222,7 +174,6 @@
 
                 })       
             }
->>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
 
         });
     </script>

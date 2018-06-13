@@ -100,72 +100,6 @@ def removeRecord(req):
         return JsonResponse({'res':'Sorry!Permission denied!'})
 
 def getParams(req):
-<<<<<<< HEAD
-    """
-    :req 前端请求体
-    :return 请求体所带的参数字典
-    """
-    answer = {}
-    params = None
-    if(req.method == 'GET'):
-        params = dict(req.GET)
-    elif(req.method == 'POST'):
-        params = json.loads(req.body.decode('utf-8'))
-    elif(req.method == 'DELETE'):
-        params = json.loads(req.body.decode('utf-8'))
-    for param in params:
-        if(params[param]!=''):
-            answer.setdefault(param,params[param])
-    return answer
-
-def hasQueryCondition(queryset):
-    """
-    :queryset 前端向后端发起的请求参数
-    :return bool变量，确认是否有查询条件
-    """
-    for i in queryset:
-        if(queryset[i] != ''):
-            return True
-    return False
-
-def getInventoryByConditions(params):
-    """
-    :params 查询条件列表
-    :return 查询结果字典
-    """
-    query_answer = {}
-    old_query_answer = {}
-    print(params)
-    params_list = ['material','shelfnumber','number','threshold','newestinwarehousedate']
-    if('material' in list(params.keys())):
-        query_material = Material.objects.filter(name = params['material'])
-        old_query_answer = InventoryInformation.objects.filter(material = query_material)
-    else:
-        old_query_answer = InventoryInformation.objects.all()
-    for i in list(params.keys()):
-        if(i == 'shelfnumber'):
-            query_answer = old_query_answer.filter(shelfnumber = params[i])
-        elif(i == 'number'):
-            query_answer = old_query_answer.filter(number = params[i])
-        elif(i == 'threhold'):
-            query_answer = old_query_answer.filter(threshold = params[i])
-        elif(i == 'newestinwarehousedate'):
-            query_answer = old_query_answer.filter(newestinwarehousedate = params[i])
-        elif(i == 'material'):
-            query_answer = old_query_answer
-        old_query_answer = query_answer
-    answer = toDict(old_query_answer)
-    print(answer)
-    return answer
-
-def getAllInventory():
-    """
-    :return 查询结果字典
-    """
-    answer_list = InventoryInformation.objects.all()
-    answer = toDict(answer_list)
-    return answer
-=======
 	"""
 	:req 前端请求体
 	:return 请求体所带的参数字典
@@ -228,7 +162,6 @@ def getAllInventory():
 	answer = toDict(answer_list)
 	print(answer)
 	return answer
->>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
 
 def toDict(queryset):
     """
