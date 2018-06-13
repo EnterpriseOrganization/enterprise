@@ -14,6 +14,7 @@
     <script>
         var tableIns
         var mdata = null
+        var order_id
     </script>
 </head>
 
@@ -50,21 +51,22 @@
             <div class="layui-inline">
                 <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input" id="indentor_name">
             </div>
-            <button class="layui-btn layui-btn-normal" onclick="search()">
+            <button class="layui-btn" onclick="search()">
                 <i class="fas fa-search"></i>
             </button>
         </div>
         <div class="weadmin-block">
-            <button class="layui-btn layui-btn-danger" onclick="multiDelete()">
+            <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="multiDelete()">
                 <i class="fas fa-trash"></i> 批量删除</button>
-            <button class="layui-btn layui-btn-warm" onclick="multiComplete()">
+            <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="multiComplete()">
                 <i class="fas fa-check"></i> 标记为完成</button>
-            <button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')">
+            <button class="layui-btn layui-btn-sm
+            " onclick="WeAdminShow('添加订单','./OrderAdd.html')">
                 <i class="fas fa-plus"></i> 添加</button>
         </div>
 
 
-        <table class="layui-hide" id="orderList" lay-filter="orderInfo"></table>
+        <table class="layui-hide" id="orderList" lay-filter="orderInfo" style="height:350px;"></table>
         <script type="text/html" id="operateTpl">
                 <a title="编辑" lay-event="edit" href="javascript:;">
                     <i class="fas fa-edit"></i>
@@ -100,7 +102,7 @@
                     [{
                         type: 'checkbox'
                     }, {
-                        field: 'id', title: '订单编号', sort: true, width: 180
+                        field: 'id', title: '订单编号', sort: true
                     }, {
                         field: 'price', title: '订单金额', sort: true
                     }, {
@@ -236,13 +238,13 @@
                                 icon_num = 5
                             }
                         }
-                        layer.msg(msg , {
+                        layer.confirm(msg , {
                             icon: icon_num
                         });
                     },
                     error: function (error) {
                         console.log(err)
-                        layer.msg('操作失败，请重试!', {
+                        layer.confirm('操作失败，请重试!', {
                             icon: 5
                         });
                     }
@@ -254,7 +256,7 @@
             table.on('tool(orderInfo)', function (obj) {
                 var data = obj.data //获得当前行数据
                 var layEvent = obj.event
-                var order_id = data.id
+                order_id = data.id
 
                 switch (layEvent) {
                     case "edit":
@@ -317,7 +319,7 @@
                     },
                     error: function (err) {
                         console.log(err);
-                        layer.msg("更新列表失败，请刷新页面！", {
+                        layer.confirm("更新列表失败，请刷新页面！", {
                             icon: 5
                         })
                     }
@@ -356,14 +358,14 @@
                             }
                         } else {
                             if(data.result == 1) {
-                                msg = "已标记为完成"
+                                msg = "订单状态已修改"
                                 icon_num = 6
                             } else {
                                 msg = "无用户权限"
                                 icon_num = 5
                             } 
                         }
-                        layer.msg(msg, {
+                        layer.confirm(msg, {
                             icon: icon_num
                         })
                     },
@@ -373,9 +375,9 @@
                         if (req == "delete-order") {
                             msg = "订单删除失败"
                         } else {
-                            msg = "无法标记为完成，请重试"
+                            msg = "无法修改订单状态，请刷新后重试"
                         }
-                        layer.msg(msg, {
+                        layer.confirm(msg, {
                             icon: 5
                         })
                     }
@@ -430,13 +432,13 @@
                                 curr:1
                             }
                         })
-                        layer.msg("查找成功",  {
+                        layer.confirm("查找成功",  {
                             icon: 6
                         })
                     },
                     error: function (err) {
                         console.log(err);
-                        layer.msg("查找失败，请重试", {
+                        layer.confirm("查找失败，请重试", {
                             icon:5
                         })
                     }

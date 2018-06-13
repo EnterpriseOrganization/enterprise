@@ -205,12 +205,15 @@
     </div>
 </body>
 <script>
+    var that_form
+</script>
+<script>
     layui.use(['form', 'jquery', 'table', 'layer', 'laydate'], function () {
         var form = layui.form,
             $ = layui.jquery,
             table = layui.table,
-            laydate = layui.laydate
-        layer = layui.layer;
+            laydate = layui.laydate,
+            layer = layui.layer;
         that_form = form
         laydate.render({
             elem: '#enddate'
@@ -219,8 +222,146 @@
         laydate.render({
             elem: '#begindate'
         });
+        var num = 1;
+        var price = [];
+        var total = 0;
+        var pro_data = {};
+        var number = [];
+        pro_data = JSON.parse(getData(1))
+        for (var i in pro_data) {
+            price[pro_data[i].pk] = pro_data[i].fields.price
+        }
+        //初次打开页面，执行渲染
+        firstRender(parent.order_id)
+        //执行渲染函数
+        function firstRender(id) {
+            var order_detail = getOrderDetail(id)
+            var total_price = 0
+            var total_num = 0
+            var area = []
+            var get_city
+            var get_district
+            order_data = JSON.parse(order_detail.order)[0].fields
+            product_data = order_detail.product
+            //渲染表单数据
+            $("#ordercomp").val(order_data.indentor)
+            $("#ordercontacter").val(order_data.receiver)
+            $("#ordertel").val(order_data.indentorphonenumber)
+            $("#begindate").val(order_data.date.substr(0, 10))
+            $("#enddate").val(order_data.deliverydate.substr(0, 10))
+            $("#orderbill").val(order_data.totalprice)
+            $('#payment').val(order_data.paymentway)
+            $('#check').val(order_data.checker)
+            //获取地区信息
+            
+            area[3] = parseInt(order_data.recevieraddress.substr(0, 6))//district id
+            area[1] = parseInt(area[3] / 10000) * 10000//province id
+            area[2] = parseInt(area[3] / 100) * 100//city id
+            area[4] = order_data.recevieraddress.substr(7,
+                order_data.recevieraddress.length) //address detail
+
+            //渲染地址信息
+            $("#province").val(area[1])
+            get_city = getData(2)
+            for (var i in get_city) {
+                $('#city').append('<option value="' + get_city[i].code + '">' + get_city[i].name + '</option>');
+            }
+            $("#city").val(area[2])
+            get_district = getData(3)
+            for (var i in get_district) {
+                $('#district').append('<option value="' + get_district[i].code + '">' + get_district[i].name + '</option>')
+            }
+            $("#district").val(area[3])
+            $("#address").text(area[4])
+            form.render("select")
+            //渲染order product信息
+            for (var i in product_data) {
+                var tableHtml = "";
+                tableHtml += '<tr id="tr' + num + '">' +
+                    '<td>' + num + '</td>' +
+                    '<td><div class="layui-input-inline"><select lay-filter="product" id="product' + num + '" class="product"><option value="-1">请选择</option></select></div></td>' +
+                    '<td><div class="layui-input-inline"><a id="price' + num + '"></a></div></td>' +
+                    '<td><div class="layui-input-inline"><input type="text" placeholder="请输入" id="number' + num + '"class="layui-input" class="productnum"></input></div></td>' +
+                    '<td><div class="layui-input-inline"><a id="total' + num + '"></div></td>' +
+                    '<td><button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeTr(' + num + ')">删除</button>' +
+                    '</td>' +
+                    '</tr>';
+                var elements = $("#myTable").children().length
+                $("#myTable").children().eq(elements - 1).after(tableHtml)
+
+                for (var j in pro_data) {
+                    $("#product" + num).append('<option value="' + pro_data[j].pk + '">' + pro_data[j].fields.name + '</option>')
+                }         
+                //此处应该为val（productid）
+                $("#product" + num).val(product_data[i].id)       
+                form.render("select");
+                $("#number" + num).val(product_data[i].number)
+                $("#price" + num).text(product_data[i].price)
+                $("#total" + num).text(parseInt(product_data[i].number) * parseFloat(product_data[i].price))
+                total_price += parseFloat($("#total" + num).text())
+                total_num += parseInt($("#number" + num).val())
+                $("#total_price").text(total_price)
+                $("#total_num").text(total_num)
+                
+                //动态监听input输入内容
+                var $inputContainer = $('#myTable');
+                $inputContainer.find('input').on('input proertychange', function () {
+                    var result = $(this).val();
+                    var id = $(this)[0].id;
+                    var curr = id.substr(6, id.length);
+                    var cur_price = $('#price' + curr).text();
+                    var total_price = cur_price * result;
+
+                    $('#total' + curr).text(cur_price * result);
+                    //total_num update
+                    var total_num = 0;
+                    var total_all = 0;
+                    for (var i = 1; i < num; i++) {
+                        if ($('#number' + i).val() != "") {
+                            total_num += parseInt($('#number' + i).val());
+                            total_all += parseFloat($('#total' + i).text());
+                        }
+                    }
+                    $('#total_num').text(total_num);
+                    $('#total_price').text(total_all);
+                    $('#orderbill').val(total_all);
+                })
+                num++
+            }
 
 
+
+        }
+
+        //获取订单信息
+        function getOrderDetail(id) {
+            //根据订单号获取订单信息
+            var post_json = {
+                "order": id
+            }
+            var req = "get-order-detail"
+            var response_data
+
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/order/" + req,
+                cache: false,
+                async: false,
+                contentType: "application/json",
+                dataTye: "json",
+                data: JSON.stringify(post_json),
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    response_data = JSON.parse(data)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+            return response_data
+        }
 
         //获取数据
         function getData(type) {
@@ -385,17 +526,11 @@
 
 
 
-        var num = 1;
-        var price = [];
-        var total = 0;
-        var pro_data = {};
-        var number = [];
+
 
         //动态添加订单明细
         window.addTable = function () {
-            pro_data = JSON.parse(getData(1));
             var tableHtml = "";
-            num = $("#myTable").children().length - 2
             tableHtml += '<tr id="tr' + num + '">' +
                 '<td>' + num + '</td>' +
                 '<td><div class="layui-input-inline"><select lay-filter="product" id="product' + num + '" class="product"><option value="-1">请选择</option></select></div></td>' +
@@ -411,8 +546,6 @@
             //动态向select添加option
             for (var i in pro_data) {
                 $('#product' + num).append('<option value="' + pro_data[i].pk + '">' + pro_data[i].fields.name + '</option>');
-
-                price[pro_data[i].pk] = pro_data[i].fields.price
             }
             $('#price' + num).text(0)
             $('#number' + num).val(0)
@@ -446,11 +579,6 @@
 
         //监听product select
         form.on('select(product)', function (data) {
-            pro_data = JSON.parse(getData(1));
-            var price = []
-            for (var i in pro_data) {
-                price[pro_data[i].pk] = pro_data[i].fields.price
-            }
             var id = $(data)[0].elem.id; //当前select的id
             var curr = id.substr(7, id.length); //当前行
             var data_pos = $('#' + id).val();//当前select的value==product id
@@ -522,9 +650,12 @@
 
 
 
+
         //删除行
-        window.removeTr = function(trNum) {
-            console.log("remove clicked");
+        window.removeTr = function (trNum) {
+
+            $("#total_num").text(parseInt($("#total_num").text()) - parseInt($("#number" + trNum).val()))
+            $("#total_price").text(parseFloat($("#total_price").text()) - parseFloat($("#total" + trNum).text()))
             $("#tr" + trNum).remove();
             num -= 1;
         };
