@@ -72,7 +72,7 @@ def getTasksByTaskStatus(gte, lte):
     return tasks_list
 
 
-def getTasksByOrderID(order_id):
+def getTasksByOrderID(order_id, status_gte=0, status_lte=2):
     """
     获取某一订单的详细任务分配信息
     :param order_id:
@@ -82,14 +82,14 @@ def getTasksByOrderID(order_id):
     """
     # tasks_list = queryTasks({"order_id": order_id})
     tasks = ProduceTaskBasic.objects.select_related('workshop').filter(
-        order_id=order_id)
+        order_id=order_id, status__gte=status_gte, status__lte=status_lte)
     tasks_list = []
     for task in tasks:
         tasks_list.append(util.wrapTaskDTO(task))
     return tasks_list
 
 
-def getTasksByWorkshopID(workshop_id):
+def getTasksByWorkshopID(workshop_id, status_gte=0, status_lte=2):
     """
     获取某一车间的所有分配任务
     :param order_id:
@@ -99,7 +99,7 @@ def getTasksByWorkshopID(workshop_id):
     """
     #tasks_list = queryTasks({"workshop_id": workshop_id})
     tasks = ProduceTaskBasic.objects.select_related('workshop').filter(
-        workshop_id=workshop_id)
+        workshop_id=workshop_id, status__gte=status_gte, status__lte=status_lte)
     tasks_list = []
     for task in tasks:
         tasks_list.append(util.wrapTaskDTO(task))
