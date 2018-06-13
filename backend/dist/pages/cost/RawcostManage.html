@@ -16,6 +16,11 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <script>
+            var tableIns
+            var mdata = null
+            var order_id
+        </script>
     </head>
 
     <body>
@@ -31,6 +36,7 @@
         <div class="weadmin-body"> 
             <form class="layui-form layui-col-md12 we-search">          
             <div class="layui-row">
+<<<<<<< HEAD
                 <div class="layui-inline">
                     <input type="text" name="title" required lay-verify="required"
                             placeholder="请输入物料编号" autocomplete="off" class="layui-input">    
@@ -45,6 +51,16 @@
                     </select>
                 </div>
                 <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+=======
+                <div class="layui-form layui-col-md12 we-search">
+                    <div class="layui-inline">
+                        <input type="text" name="title" required  id="materialName"
+                             placeholder="请输入物料名称" autocomplete="off" class="layui-input">    
+                    </div>
+
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search" onclick="search()"><i class="fas fa-search"></i></button>
+                </div>
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
             </div>
             </form>
 
@@ -59,6 +75,7 @@
 
 
         </div>
+<<<<<<< HEAD
         <script>    
             layui.extend({
                 admin: '{/}../../static/js/admin'
@@ -82,6 +99,8 @@
             
             
         </script>
+=======
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
         <style>
             .amount-input {
                 width: 70px;
@@ -90,44 +109,120 @@
     </body>
 
     <script>
-        layui.use('table', function(){
-            var table = layui.table;
+        layui.use(['table','jquery'], function(){
+            var table = layui.table,
+            $ = layui.jquery
 
             //第一个实例
-            table.render({
+            tableIns = table.render({
                 elem: '#order-cost'
                 ,height: 315
                 ,width: 1000
                 // ,url: '' //数据接口
                 ,page: true //开启分页
                 ,cols: [[ //表头
-                    { checkbox: true}
-                    ,{field: 'id', title: '物料编号', width:200, sort: true}
-                    ,{field: 'name', title: '名称', width:150}
+                    {field: 'parent_name', title: '种类名称', width:200, sort: true}
+                    ,{field: 'name', title: '名称', width:250}
                     ,{field: 'price', title: '单价', width:200}
-                    ,{field: 'store', title: '存储仓库', width:200} 
-                    ,{field: 'remain', title: '剩余库存', width: 200}
+                    ,{field: 'purchaser', title: '采购人', width:200} 
+                    ,{field: 'supplier', title: '供应商', width: 200}
                 ]],
-                data:[
-                {
-                        "id" : "10000",
-                        "name" : "无线手套",
-                        "price" : "心灵宝石/1",
-                        "store" : "灵魂宝石/2",
-                        "remain" : "时间宝石/3"
-                },
-                {
-                        "id" : "10000",
-                        "name" : "无线手套",
-                        "price" : "心灵宝石/1",
-                        "store" : "灵魂宝石/2",
-                        "remain" : "时间宝石/3"
-                }
-                ]
+                data:mdata
             });
+<<<<<<< HEAD
             form.on('submit(search)', function() {
 
             })
+=======
+            var pdata
+            if (true) {
+                //初次渲染table
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:8000/cost/get-all-cost",
+                    success: function (data) {
+                        pdata = data;
+                        console.log(pdata)
+                        mdata = []
+                        for (var i in pdata) {
+                            mdata[i] = {
+                                "parent_name": pdata[i].parent_name,
+                                "name": pdata[i].name,
+                                "price": pdata[i].price,
+                                "purchaser": pdata[i].purchaser,
+                                "supplier":pdata[i].supplier
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    },
+                    error: function (err) {
+                        layer.confirm("获取订单列表失败，请重试", {
+                            icon : 6
+                        })
+                    }
+                })
+            }
+            window.search = function(){
+                var materialName = $("#materialName").val()
+                var post_json = {
+                    "materialName": materialName
+                }
+                var pdata
+                var mdata = []  
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/cost/get-cost-by-name",
+                    cache: false,
+                    async: false,
+                    contentType: "application/json",
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: JSON.stringify(post_json),
+                    success: function (data) {
+                        if(data.res==null)
+                        {
+                        pdata = data
+                        for (var i in pdata) {
+                               mdata[i]={ 
+                                "parent_name": pdata[i].parent_name,
+                                "name": pdata[i].name,
+                                "price": pdata[i].price,
+                                "purchaser": pdata[i].purchaser,
+                                "supplier":pdata[i].supplier
+                        }
+                    }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                        layer.confirm("查找成功",  {
+                            icon: 6
+                        })
+                    }
+                    else{
+                     alert("不存在符合条件的查询")
+                    }
+                },
+                    error: function (err) {
+                        console.log(err);
+                        layer.confirm("查找失败，请重试", {
+                            icon:5
+                        })
+                    }
+
+
+                })       
+            }
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
 
         });
     </script>

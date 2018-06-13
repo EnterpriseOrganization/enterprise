@@ -33,8 +33,8 @@ class Order(models.Model):
     checker = models.CharField(max_length=45, null=True)
     recevieraddress = models.CharField(db_column='recevierAddress', max_length=200, null=True)  # Field name made lowercase.
     indentorphonenumber = models.CharField(db_column='indentorPhoneNumber', max_length=45, null=True)  # Field name made lowercase.
-    totalprice = models.DecimalField(db_column='totalPrice', max_digits=3, decimal_places=0, null=True)  # Field name made lowercase.
-    status = models.IntegerField(default=0)  # 0: 寰呯敓浜�1: 鐢熶骇涓�2:閰嶉�涓�紙鐢熶骇瀹屾垚锛�3: 閲囪喘涓�
+    totalprice = models.DecimalField(db_column='totalPrice', max_digits=10, decimal_places=3, null=True)  # Field name made lowercase.
+    status = models.IntegerField(default=0)  # 0: 待生产 1: 生产中 2:配送中（生产完成） 3: 采购中
     deliverydate = models.DateTimeField(db_column='deliveryDate', auto_now_add=True)  # Field name made lowercase.
     paymentway = models.CharField(db_column='paymentWay', max_length=45, default='default paymentway')  # say 椤轰赴
 
@@ -62,7 +62,7 @@ class Product(models.Model):
     # class_field =   # Field renamed because it was a Python reserved word.
     # class_id = models.OneToOneField(ProductClass, models.DO_NOTHING, null=True)
     class_obj = models.ForeignKey(ProductClass, models.DO_NOTHING, null=True)
-    price = models.DecimalField(max_digits=3, decimal_places=0, blank=True, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=3, blank=True, default=0)
 
     class Meta:
         managed = True
@@ -85,7 +85,7 @@ class ProduceTaskBasic(models.Model):
     # id = models.AutoField(primary_key=True)
     personincharge = models.CharField(db_column='personInCharge', max_length=45, blank=True, null=True)  # Field name made lowercase.
     topic = models.CharField(max_length=45, blank=True, null=True)
-    status = models.IntegerField(default=0, validators=[TaskStatusValidator]) # 0：已分配,待领料 1： 已领料,待生产 2: 生产完成
+    status = models.IntegerField(default=0, validators=[TaskStatusValidator]) # 0：已分配,待领料 1：已领料,待生产 2: 生产完成
     # producestatus = models.IntegerField(db_column='produceStatus', blank=True, null=True, default=0)  # Field name made lowercase.
     archivedate = models.DateField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
@@ -200,7 +200,7 @@ class OrderProduct(models.Model):
     order = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', null=True)  # Field name made lowercase.
     product = models.ForeignKey(Product, models.DO_NOTHING, db_column='productID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
-    price = models.DecimalField(default=0, decimal_places=0, max_digits=3)
+    price = models.DecimalField(default=0, decimal_places=3, max_digits=10)
 
     class Meta:
         managed = True
@@ -240,7 +240,7 @@ class Purchase(models.Model):
     purchaser = models.CharField(max_length=45, null=True)
     date = models.DateTimeField(auto_now_add=True)
     checker = models.CharField(max_length=45, null=True)
-    totalprice = models.DecimalField(db_column='totalPrice', max_digits=3, decimal_places=0, default=0)  # Field name made lowercase.
+    totalprice = models.DecimalField(db_column='totalPrice', max_digits=10, decimal_places=3, default=0)  # Field name made lowercase.
     supplier = models.ForeignKey(Supplier, models.DO_NOTHING, db_column='supplier', null=True)
 
     class Meta:
@@ -253,7 +253,7 @@ class PurchaseProduct(models.Model):
     purchase = models.ForeignKey(Purchase, models.DO_NOTHING, db_column='purchaseID', null=True)  # Field name made lowercase.
     material = models.ForeignKey(Material, models.DO_NOTHING, db_column='materialID', null=True)  # Field name made lowercase.
     number = models.IntegerField(default=0)
-    price = models.DecimalField(max_digits=3, decimal_places=0, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=3, default=0)
 
     class Meta:
         managed = True
@@ -277,7 +277,7 @@ class SupplierMaterial(models.Model):
     # id = models.AutoField(primary_key=True)
     supplier = models.ForeignKey(Supplier, models.DO_NOTHING, db_column='supplierID', null=True)  # Field name made lowercase.
     material = models.ForeignKey(Material, models.DO_NOTHING, db_column='materialID', null=True)  # Field name made lowercase.
-    price = models.DecimalField(max_digits=3, decimal_places=0, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
 
     class Meta:
         managed = True

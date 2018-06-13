@@ -25,12 +25,12 @@
             <div class="layui-row">
                 <form class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
-                        <input type="text" name="username" placeholder="订单ID" autocomplete="off" class="layui-input">
+                        <input type="text" name="orderid" placeholder="订单ID" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
-                        <input type="text" name="username" placeholder="车间ID" autocomplete="off" class="layui-input">
+                        <input type="text" name="workshopid" placeholder="车间ID" autocomplete="off" class="layui-input">
                     </div>
-                    <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+                    <button class="layui-btn" lay-submit lay-filter="material_requisition_search"><i class="fas fa-search"></i></button>
                 </form>
             </div>
             <table id="meterial-req-table" lay-filter="meterial-req-table-filter"></table>
@@ -62,6 +62,7 @@
                 ,version: '101100'
             }).use('admin');
             layui.use(['table', 'jquery'], function(){
+                var form = layui.form;
                 var meterial_req_table = layui.table;
                 var $ = layui.jquery;
                 var assign_data;
@@ -80,6 +81,7 @@
                     ,height: 315
                     ,page: true
                     ,data: assign_data
+                    ,id: 'meterialTableReload'
                     ,cols: [[
                         {field: 'task_id', title: '分配ID'},
                         {field: 'order_id', title: '订单ID'},
@@ -177,6 +179,25 @@
                             });
                         }
                     }
+                });
+                form.on('submit(material_requisition_search)', function(data) {
+                    var dataField = data.field;
+                    $.ajax ({
+                        type: 'GET',
+                        url: 'http://localhost:8000/product/tasks/undone',
+                        dataType: 'json',
+                        data: { 'order_id': dataField.orderid, 'workshop_id': dataField.workshopid },
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            assign_data = data['tasks'];
+                            console.log(assign_data);
+                        }
+                    });
+                    meterial_req_table.reload('meterialTableReload', {
+                        data: assign_data
+                    });
+                    return false;
                 });
             });
         </script>

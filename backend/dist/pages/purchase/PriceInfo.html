@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>物料价格编辑-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style type="text/css">
+            .label1 {padding: 0.2cm;font-weight:bold}
+            .label2 {padding: 0.2cm}
+        </style>
+    </head>
+
+    <body>
+        <div class="weadmin-body">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                              <form class="layui-form">
+
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      供应商
+                  </label>
+                  <label id="supplier_name"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      供应商地址
+                  </label>
+                  <label  id="supplier_address"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      供应商电话
+                  </label>
+                  <label  id="supplier_phone"  style="width:200px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      物料名称
+                  </label>
+                  <label  id="material_name"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+              <div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      物料编号
+                  </label>
+                  <label  id="material_id"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div><div class="layui-form-item">
+                  <label  style="width:100px;float:left;" class="label1">
+                      物料价格
+                  </label>
+                  <label  id="material_price"  style="width:100px;float:left;" class="label2">
+                  </label>
+              </div>
+
+          </form>
+                    <br>
+                    <div id="content1"></div>
+                    
+                    <input type="hidden" name="dataId" id="dataId" value="" />
+                </div>
+            </form>
+        </div>
+
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript">
+            function child(data){
+                layui.extend({
+                    admin: '{/}../../static/js/admin'
+                });
+                layui.use(['form', 'jquery', 'admin','layer'], function() {
+                    var form = layui.form,
+                    $ = layui.jquery,
+                    admin = layui.admin,
+                    layer = layui.layer;
+
+                    
+                    //alert(data);
+                    $.ajax({
+                    url: 'http://localhost:8000/purchase/get_quotation_detail',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        quotation_id: data
+                    },
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (res) {
+                        var code=res['msg'];
+                        if(code=='200') {
+                            console.log(res);
+                            var dicts = res['result'];
+                            var material_id= dicts.material_id;
+                            var material_name = dicts.material_name;
+                            var material_price = dicts.material_price;
+                            var supplier_name = dicts.supplier_name;
+                            var supplier_address = dicts.supplier_address;
+                            var supplier_phone = dicts.supplier_phone;
+                            $("#material_id").text(material_id);
+                            $("#material_name").text(material_name);
+                            $("#material_price").text(material_price);
+                            $("#supplier_name").text(supplier_name);
+                            $("#supplier_address").text(supplier_address);
+                            $("#supplier_phone").html(supplier_phone);
+                            //location.reload();
+                        }
+                    }
+                    });
+
+            });
+            };
+        </script>
+    </body>
+
+</html>

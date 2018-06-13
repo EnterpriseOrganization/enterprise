@@ -23,75 +23,138 @@
       <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
+
     <div class="weadmin-body">
         <div class="layui-row">
-            <form class="layui-form layui-col-md12 we-search layui-form-pane">
+            <form id="searchform" class="layui-form ">
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="订单编号" name="cate_name">
+                    <input class="layui-input" placeholder="订单编号"  id="purchase_id">
                 </div>
+                <!--
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="物料编号" name="cate_name">
+                    <input class="layui-input" placeholder="采购日期"  id="date">
                 </div>
+                -->
                 <div class="layui-inline">
-                    <input class="layui-input" placeholder="采购日期" name="cate_name">
+                    <input class="layui-input" placeholder="采购人" id="purchaser">
                 </div>
-                <div class="layui-inline">
-                    <input class="layui-input" placeholder="采购人" name="cate_name">
-                </div>
-                <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="fas fa-search"></i></button>
+                <button class="layui-btn" lay-filter="search"  lay-submit="" ><i  class="fas fa-search"></i></button>
             </form>
         </div>
-        <!--<div class="weadmin-block">
-            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-            <span class="fr" style="line-height:40px">共有数据：88 条</span>
-        </div>-->
-        <table class="layui-table">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                    </th>
-                    <th>订单编号</th>
-                    <th>物料编号</th>
-                    <th>采购时间</th>
-                    <th>采购价格(元/个)</th>
-                    <th>采购人</th>
-                    <th>操作</th>
-                <!-- 详情还应包括： 供应商、采购人、备注
-                <th>物料名称</th>-->
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-                    </td>
-                    <td>123098501273</td>
-                    <td>ASD41324</td>
-                    <td>2017/3/1</td>
-                    <td>0.7</td>
-                    <td>盖尔加朵</td>
-                    <td class="td-manage">
-                        <a title="详情"  onclick="WeAdminShow('编辑','./HistoryPurchaseInfo.html')" href="javascript:;">
-                            <i class="fas fa-info"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="page">
-            <div>
-                <a class="prev" href="">&lt;&lt;</a>
-                <a class="num" href="">1</a>
-                <span class="current">2</span>
-                <a class="num" href="">3</a>
-                <a class="num" href="">489</a>
-                <a class="next" href="">&gt;&gt;</a>
-            </div>
-        </div>
+
+     <table id="historypurchase_table" lay-filter="historypurchase_filter"></table>
+
     </div>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
-  </body>
+     <script src="../../lib/layui/lay/modules/laydate.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/jquery.js" charset="utf-8"></script>
+        <script src="../../lib/layui/lay/modules/table.js" charset="utf-8"></script>
+          <script src="../../lib/layui/lay/modules/layer.js" charset="utf-8"></script>
+    <script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    </script>
+        <script type="text/javascript">
+            layui.config({
+                base: '../../static/js/'
+                ,version: '101100'
+            }).use('admin');
+            var tableins;//handle
+            layui.use(['table', 'jquery','form'], function(){
+                    var table = layui.table;
+                    var historypurchasedata;
+                    var form=layui.form;
+                    $ = layui.jquery;
+                    $.ajax ({
+                    type: 'POST',
+                    url: 'http://localhost:8000/purchase/get_purchase_list',
+                    dataType: 'json',
+                    cache: false,
+                    async: false,
+                    success: function (data) {
+                        historypurchasedata = data['result'];
+                    }
+                    });
+                     tableins=table.render({
+                    elem: '#historypurchase_table'
+                    ,height: 315
+                    ,page: true
+                    ,data: historypurchasedata
+                    ,cols: [[
+                        {field: 'id', title: '订单ID', width:140},
+                        {field: 'supplier_name', title: '供应商', width:200},
+                        {field: 'totalprice', title: '采购价格（总价）', width:170},
+                        {field: 'purchaser', title: '采购人', width:170},
+                        {field: 'date', title: '采购时间', width:250},
+                        {field: 'operate', title: '操作', width:120,toolbar: '#barDemo'},
+                    ]]
+                    });
+                    table.on('tool(historypurchase_filter)',function(obj){
+                        var data=obj.data;
+                        var layEvent = obj.event;
+                        if(layEvent=='detail')
+                        {
+                            layer.open({
+                                type: 2,//此处以iframe举例
+                                title: '查看采购单详情',
+                                area: ['750px', '500px'],
+                                content: 'HistoryPurchaseInfo.html',
+                                closeBtn: 1,
+                                success: function (layero, index) {  
+                                    var iframe = window['layui-layer-iframe' + index];
+                                    // 向子页面的全局函数child传参
+                                    iframe.child(data.id);
+                                },
+                                btn: function(){
+                                    layer.closeAll();
+                                }
+                            });
+                        }
 
+                    });
+
+
+                //search
+                form.on('submit(search)', function (data) {
+                    //var time = new Date();
+                    var purchaseid = document.getElementById("purchase_id").value;
+                    //var purchasedate = document.getElementById("date").value;
+                    var purchaser = document.getElementById("purchaser").value;
+                    $.ajax ({
+                        url: 'http://localhost:8000/purchase/purchase_query',
+                        type: 'POST',
+                        dataType: 'json',
+                        cache: false,
+                        async: false,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        data:{
+                            purchase_id: purchaseid,
+                            purchaser: purchaser,
+                        },
+                        success: function (data) {
+                            //console.log('hhhhhh');
+                            var msg=data['msg'];
+                            if(msg=='200')
+                            {
+                                var searchresult = data['result'];
+                                tableins.reload({
+                                    data:searchresult
+                                });
+                            }
+                            else{
+                                alert(msg);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                    return false;
+                });
+
+        });
+    </script>
+  </body>
 </html>

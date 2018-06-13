@@ -16,6 +16,11 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <script>
+            var tableIns
+            var mdata = null
+            var order_id
+        </script>
     </head>
 
     <body>
@@ -30,6 +35,7 @@
         </div>
         <div class="weadmin-body">            
             <div class="layui-row">
+<<<<<<< HEAD
                 <i class="layui-icon layui-icon-note"></i><a> 查询库存: </a>
                 <div class="layui-inline">
                     <input type="text" name="title" 
@@ -49,6 +55,20 @@
             <div class="weadmin-block">
             <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="WeAdminShow('新增入库信息','./inRecord.html')"><i class="layui-icon">&#xe654;入库信息添加</i></button>
                 <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('新增出库信息','./outRecord.html')"><i class="layui-icon">&#xe654;出库信息添加</i></button>
+=======
+                <divclass="layui-form layui-col-md12 we-search">
+                    筛选 <i class="fas fa-filter"></i>
+                    <div class="layui-inline">
+                        <input type="text" name="title" required lay-verify="required" id="materialNo"
+                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" name="title" required lay-verify="required" id="shelfnumber"
+                            placeholder="请输入货架号" autocomplete="off" class="layui-input">   
+                    </div>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search" onclick = "search()"><i class="fas fa-search"></i></button>
+                </div>
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
             </div>
             <!--<div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
@@ -57,6 +77,17 @@
             </div>-->
             <table class="layui-table" id="store-list" lay-filter="storeEvent">
             </table>
+<<<<<<< HEAD
+=======
+<!--             <script id="tools">
+                    <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                    <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
+                        <i class="fas fa-minus"></i>
+                    </a>
+            </script> -->
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
 
         </div>
         <script>
@@ -75,59 +106,8 @@
                 //执行一个laydate实例
                 laydate.render({
                     elem: '#end' //指定元素
-                });
-                
-                /*用户-停用*/
-                function member_stop(obj, id) {
-                    layer.confirm('确认要停用吗？', function(index) {
-                        if($(obj).attr('title') == '启用') {
-                            //发异步把用户状态进行更改
-                            $(obj).attr('title', '停用')
-                            $(obj).find('i').html('&#xe62f;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                            layer.msg('已停用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-
-                        } else {
-                            $(obj).attr('title', '启用')
-                            $(obj).find('i').html('&#xe601;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                            layer.msg('已启用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-                        }
-                    });
-                }
-    
-                /*用户-删除*/
-                function member_del(obj, id) {
-                    layer.confirm('确认要删除吗？', function(index) {
-                        //发异步删除数据
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
-                    });
-                }
-    
-                function delAll(argument) {
-                    var data = tableCheck.getData();
-                    layer.confirm('确认要删除吗？' + data, function(index) {
-                        //捉到所有被选中的，发异步进行删除
-                        layer.msg('删除成功', {
-                            icon: 1
-                        });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
-                    });
-                }
-            });
-            
+                })
+            })
         </script>
         <style>
             .amount-input {
@@ -140,6 +120,7 @@
     </body>
     <script src="./interaction-warehouse.js"></script>
     <script>
+<<<<<<< HEAD
 
 
         layui.use(['form', 'admin', 'jquery', 'table', 'layer', 'laydate'], function(){
@@ -153,12 +134,20 @@
             
             //第一个实例
             var tablelns = table.render({
+=======
+        layui.use(['table','jquery'], function(){
+            var table = layui.table;
+            $ = layui.jquery
+            //第一个实例
+            tableIns = table.render({
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
                 elem: '#store-list'
                 ,height: 315
                 ,width: 1000
                 // ,url: '' //数据接口
                 ,page: true //开启分页
                 ,cols: [[ //表头
+<<<<<<< HEAD
                     { checkbox: true }
                     ,{field: 'id', title: '物料编号',  sort: true}
                     ,{field: 'name', title: '物料名称'}
@@ -168,7 +157,93 @@
                 ]],
                 data:[
                 ]
+=======
+                    { checkbox: true}
+                    ,{field: 'id', title: '物料编号', width:200, sort: true}
+                    ,{field: 'name', title: '物料名称', width:150}
+                    ,{field: 'num', title: '数量', width:150}
+                    ,{field: 'time', title: '入库时间', width:200} 
+                    ,{field: 'shelfnumber', title: '货架号', width: 300}
+                ]],
+                data:mdata
+>>>>>>> ebbeb694c0983a2a8519902b99d3ae45f19bdeae
             });
+            if (true) {
+                //初次渲染table
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:8000/warehouse/inventory",
+                    success: function (data) {
+                        pdata = data;
+                        mdata = []
+                        for (var i in pdata) {
+                            var status
+                            mdata[i] = {
+                                "id": pdata[i].id,
+                                "name": pdata[i].name,
+                                "num": pdata[i].number,
+                                "time": pdata[i].newestinwarehousedate.substr(0, 10),
+                                "shelfnumber": pdata[i].shelfnumber,
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    },
+                    error: function (err) {
+                        layer.confirm("获取订单列表失败，请重试", {
+                            icon : 6
+                        })
+                    }
+                })
+            }
+
+            window.search = function(){
+                var matNo = $('#materialNo').val()
+                var shelfnumber = $('#shelfnumber').val()
+                $.post("http://127.0.0.1:8000/warehouse/inventory",
+                    JSON.stringify({
+                    "id":matNo,
+                    "shelfnumber":shelfnumber
+                    }),
+                    function (data,status) {
+                        if(data.res==null)
+                        {
+                        pdata = data;
+                        mdata = []
+                        for (var i in pdata) {
+                            var status
+                            mdata[i] = {
+                                "id": pdata[i].id,
+                                "name": pdata[i].name,
+                                "num": pdata[i].number,
+                                "time": pdata[i].newestinwarehousedate.substr(0, 10),
+                                "shelfnumber": pdata[i].shelfnumber,
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    }
+                        else{
+                            alert("不存在符合条件的查询")
+                        }
+                    }
+                    // error: function (err) {
+                    //     layer.confirm("获取订单列表失败，请重试", {
+                    //         icon : 6
+                    //     })
+                    // }
+                )
+            }
+
+
 
             form.on('submit(search)', function() {
                 //layer.msg(document.getElementById("test").value)
