@@ -107,6 +107,10 @@ def getParams(req):
 		return params
 	elif(req.method == 'POST'):
 		params = json.loads(req.body.decode('utf-8'))
+		for i in list(params.keys()):
+			if params[i]=='':
+				params.pop(i)
+		print(params)
 		return params
 	elif(req.method == 'DELETE'):
 		params = json.loads(req.body.decode('utf-8'))
@@ -118,7 +122,7 @@ def hasQueryCondition(queryset):
 	:return bool变量，确认是否有查询条件
 	"""
 	for i in queryset:
-		if(queryset[i] != ''):
+		if(i != ''):
 			return True
 	return False
 
@@ -127,24 +131,25 @@ def getInventoryByConditions(params):
 	:params 查询条件列表
 	:return 查询结果字典
 	"""
-	params_list = ['material','shelfnumber','number','threshold','newestinwarehousedate']
+	params_list = ['id','material','shelfnumber','number','threshold','newestinwarehousedate']
 	old_query_answer = None
 	if('material' in list(params.keys())):
-		query_material = Material.objects.filter(id = params['material'][id])
+		query_material = Material.objects.filter(name = params['material'])
 		old_query_answer = InventoryInformation.objects.filter(material = query_material)
 	else:
 		old_query_answer = InventoryInformation.objects.all()
 	for i in list(params.keys()):
 		if(i == 'shelfnumber'):
 			query_answer = old_query_answer.filter(shelfnumber = params[i])
-		elif(i == 'number'):
-			query_answer = old_query_answer.filter(number = params[i])
+		elif(i == 'id'):
+			query_answer = old_query_answer.filter(id = params[i])
 		elif(i == 'threhold'):
 			query_answer = old_query_answer.filter(threshold = params[i])
 		elif(i == 'newestinwarehousedate'):
 			query_answer = old_query_answer.filter(newestinwarehousedate = params[i])
 		old_query_answer = query_answer
 	answer = toDict(old_query_answer)
+	print(answer)
 	return answer
 
 def getAllInventory():
@@ -153,6 +158,7 @@ def getAllInventory():
 	"""
 	answer_list = InventoryInformation.objects.all()
 	answer = toDict(answer_list)
+	print(answer)
 	return answer
 
 def toDict(queryset):

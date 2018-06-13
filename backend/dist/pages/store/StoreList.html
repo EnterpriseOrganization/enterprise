@@ -16,6 +16,11 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <script>
+            var tableIns
+            var mdata = null
+            var order_id
+        </script>
     </head>
 
     <body>
@@ -30,24 +35,18 @@
         </div>
         <div class="weadmin-body">            
             <div class="layui-row">
-                <form class="layui-form layui-col-md12 we-search">
+                <divclass="layui-form layui-col-md12 we-search">
                     筛选 <i class="fas fa-filter"></i>
                     <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
+                        <input type="text" name="title" required lay-verify="required" id="materialNo"
                             placeholder="请输入物料编号" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料名称" autocomplete="off" class="layui-input">   
+                        <input type="text" name="title" required lay-verify="required" id="shelfnumber"
+                            placeholder="请输入货架号" autocomplete="off" class="layui-input">   
                     </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="入库时间" name="start" id="start">
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="截止时间" name="end" id="end">
-                    </div>
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                </form>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search" onclick = "search()"><i class="fas fa-search"></i></button>
+                </div>
             </div>
 
             <!--<div class="weadmin-block">
@@ -57,14 +56,14 @@
             </div>-->
             <table class="layui-table" id="store-list">
             </table>
-            <script id="tools">
+<!--             <script id="tools">
                     <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
                         <i class="fas fa-plus"></i>
                     </a>
                     <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
                         <i class="fas fa-minus"></i>
                     </a>
-            </script>
+            </script> -->
 
         </div>
         <script>
@@ -83,59 +82,8 @@
                 //执行一个laydate实例
                 laydate.render({
                     elem: '#end' //指定元素
-                });
-                
-                /*用户-停用*/
-                function member_stop(obj, id) {
-                    layer.confirm('确认要停用吗？', function(index) {
-                        if($(obj).attr('title') == '启用') {
-                            //发异步把用户状态进行更改
-                            $(obj).attr('title', '停用')
-                            $(obj).find('i').html('&#xe62f;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                            layer.msg('已停用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-
-                        } else {
-                            $(obj).attr('title', '启用')
-                            $(obj).find('i').html('&#xe601;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                            layer.msg('已启用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-                        }
-                    });
-                }
-    
-                /*用户-删除*/
-                function member_del(obj, id) {
-                    layer.confirm('确认要删除吗？', function(index) {
-                        //发异步删除数据
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
-                    });
-                }
-    
-                function delAll(argument) {
-                    var data = tableCheck.getData();
-                    layer.confirm('确认要删除吗？' + data, function(index) {
-                        //捉到所有被选中的，发异步进行删除
-                        layer.msg('删除成功', {
-                            icon: 1
-                        });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
-                    });
-                }
-            });
-            
+                })
+            })
         </script>
         <style>
             .amount-input {
@@ -144,11 +92,11 @@
         </style>
     </body>
     <script>
-        layui.use('table', function(){
+        layui.use(['table','jquery'], function(){
             var table = layui.table;
-
+            $ = layui.jquery
             //第一个实例
-            table.render({
+            tableIns = table.render({
                 elem: '#store-list'
                 ,height: 315
                 ,width: 1000
@@ -160,40 +108,86 @@
                     ,{field: 'name', title: '物料名称', width:150}
                     ,{field: 'num', title: '数量', width:150}
                     ,{field: 'time', title: '入库时间', width:200} 
-                    ,{field: 'status', title: '状态', width: 100}
-                    ,{title: '操作', width: 150, toolbar: '#tools' }
+                    ,{field: 'shelfnumber', title: '货架号', width: 300}
                 ]],
-                data:[
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                }
-                ]
+                data:mdata
             });
+            if (true) {
+                //初次渲染table
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:8000/warehouse/inventory",
+                    success: function (data) {
+                        pdata = data;
+                        mdata = []
+                        for (var i in pdata) {
+                            var status
+                            mdata[i] = {
+                                "id": pdata[i].id,
+                                "name": pdata[i].name,
+                                "num": pdata[i].number,
+                                "time": pdata[i].newestinwarehousedate.substr(0, 10),
+                                "shelfnumber": pdata[i].shelfnumber,
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    },
+                    error: function (err) {
+                        layer.confirm("获取订单列表失败，请重试", {
+                            icon : 6
+                        })
+                    }
+                })
+            }
+
+            window.search = function(){
+                var matNo = $('#materialNo').val()
+                var shelfnumber = $('#shelfnumber').val()
+                $.post("http://127.0.0.1:8000/warehouse/inventory",
+                    JSON.stringify({
+                    "id":matNo,
+                    "shelfnumber":shelfnumber
+                    }),
+                    function (data,status) {
+                        if(data.res==null)
+                        {
+                        pdata = data;
+                        mdata = []
+                        for (var i in pdata) {
+                            var status
+                            mdata[i] = {
+                                "id": pdata[i].id,
+                                "name": pdata[i].name,
+                                "num": pdata[i].number,
+                                "time": pdata[i].newestinwarehousedate.substr(0, 10),
+                                "shelfnumber": pdata[i].shelfnumber,
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    }
+                        else{
+                            alert("不存在符合条件的查询")
+                        }
+                    }
+                    // error: function (err) {
+                    //     layer.confirm("获取订单列表失败，请重试", {
+                    //         icon : 6
+                    //     })
+                    // }
+                )
+            }
+
+
 
         });
     </script>

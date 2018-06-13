@@ -16,6 +16,11 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <script>
+            var tableIns
+            var mdata = null
+            var order_id
+        </script>
     </head>
 
     <body>
@@ -30,22 +35,14 @@
         </div>
         <div class="weadmin-body">            
             <div class="layui-row">
-                <form class="layui-form layui-col-md12 we-search">
+                <div class="layui-form layui-col-md12 we-search">
                     <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                             placeholder="请输入物料编号" autocomplete="off" class="layui-input">    
+                        <input type="text" name="title" required  id="materialName"
+                             placeholder="请输入物料名称" autocomplete="off" class="layui-input">    
                     </div>
-                    <div class="layui-inline">
-                        <select name="workshop" lay-verify="">
-                            <option value="">存储仓库</option>
-                            <option value="010">1</option>
-                            <option value="021">2</option>
-                            <option value="021">3</option>
-                            <option value="021">4</option>
-                        </select>
-                    </div>
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                </form>
+
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search" onclick="search()"><i class="fas fa-search"></i></button>
+                </div>
             </div>
 
             <!--<div class="weadmin-block">
@@ -59,78 +56,6 @@
 
 
         </div>
-        <script>    
-            layui.extend({
-                admin: '{/}../../static/js/admin'
-            });
-            layui.use(['laydate', 'jquery','admin'], function() {
-                var laydate = layui.laydate,
-                    $ = layui.jquery,
-                    layer = layui.layer,
-                    admin = layui.admin;
-                //执行一个laydate实例
-                laydate.render({
-                    elem: '#start' //指定元素
-                });
-                //执行一个laydate实例
-                laydate.render({
-                    elem: '#end' //指定元素
-                });
-                
-                /*用户-停用*/
-                function member_stop(obj, id) {
-                    layer.confirm('确认要停用吗？', function(index) {
-                        if($(obj).attr('title') == '启用') {
-                            //发异步把用户状态进行更改
-                            $(obj).attr('title', '停用')
-                            $(obj).find('i').html('&#xe62f;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                            layer.msg('已停用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-
-                        } else {
-                            $(obj).attr('title', '启用')
-                            $(obj).find('i').html('&#xe601;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                            layer.msg('已启用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-                        }
-                    });
-                }
-    
-                /*用户-删除*/
-                function member_del(obj, id) {
-                    layer.confirm('确认要删除吗？', function(index) {
-                        //发异步删除数据
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
-                    });
-                }
-    
-                function delAll(argument) {
-                    var data = tableCheck.getData();
-                    layer.confirm('确认要删除吗？' + data, function(index) {
-                        //捉到所有被选中的，发异步进行删除
-                        layer.msg('删除成功', {
-                            icon: 1
-                        });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
-                    });
-                }
-            });
-
-            
-            
-        </script>
         <style>
             .amount-input {
                 width: 70px;
@@ -139,41 +64,114 @@
     </body>
 
     <script>
-        layui.use('table', function(){
-            var table = layui.table;
+        layui.use(['table','jquery'], function(){
+            var table = layui.table,
+            $ = layui.jquery
 
             //第一个实例
-            table.render({
+            tableIns = table.render({
                 elem: '#order-cost'
                 ,height: 315
                 ,width: 1000
                 // ,url: '' //数据接口
                 ,page: true //开启分页
                 ,cols: [[ //表头
-                    { checkbox: true}
-                    ,{field: 'id', title: '物料编号', width:200, sort: true}
-                    ,{field: 'name', title: '名称', width:150}
+                    {field: 'parent_name', title: '种类名称', width:200, sort: true}
+                    ,{field: 'name', title: '名称', width:250}
                     ,{field: 'price', title: '单价', width:200}
-                    ,{field: 'store', title: '存储仓库', width:200} 
-                    ,{field: 'remain', title: '剩余库存', width: 200}
+                    ,{field: 'purchaser', title: '采购人', width:200} 
+                    ,{field: 'supplier', title: '供应商', width: 200}
                 ]],
-                data:[
-                {
-                        "id" : "10000",
-                        "name" : "无线手套",
-                        "price" : "心灵宝石/1",
-                        "store" : "灵魂宝石/2",
-                        "remain" : "时间宝石/3"
-                },
-                {
-                        "id" : "10000",
-                        "name" : "无线手套",
-                        "price" : "心灵宝石/1",
-                        "store" : "灵魂宝石/2",
-                        "remain" : "时间宝石/3"
-                }
-                ]
+                data:mdata
             });
+            var pdata
+            if (true) {
+                //初次渲染table
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:8000/cost/get-all-cost",
+                    success: function (data) {
+                        pdata = data;
+                        console.log(pdata)
+                        mdata = []
+                        for (var i in pdata) {
+                            mdata[i] = {
+                                "parent_name": pdata[i].parent_name,
+                                "name": pdata[i].name,
+                                "price": pdata[i].price,
+                                "purchaser": pdata[i].purchaser,
+                                "supplier":pdata[i].supplier
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    },
+                    error: function (err) {
+                        layer.confirm("获取订单列表失败，请重试", {
+                            icon : 6
+                        })
+                    }
+                })
+            }
+            window.search = function(){
+                var materialName = $("#materialName").val()
+                var post_json = {
+                    "materialName": materialName
+                }
+                var pdata
+                var mdata = []  
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/cost/get-cost-by-name",
+                    cache: false,
+                    async: false,
+                    contentType: "application/json",
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: JSON.stringify(post_json),
+                    success: function (data) {
+                        if(data.res==null)
+                        {
+                        pdata = data
+                        for (var i in pdata) {
+                               mdata[i]={ 
+                                "parent_name": pdata[i].parent_name,
+                                "name": pdata[i].name,
+                                "price": pdata[i].price,
+                                "purchaser": pdata[i].purchaser,
+                                "supplier":pdata[i].supplier
+                        }
+                    }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                        layer.confirm("查找成功",  {
+                            icon: 6
+                        })
+                    }
+                    else{
+                     alert("不存在符合条件的查询")
+                    }
+                },
+                    error: function (err) {
+                        console.log(err);
+                        layer.confirm("查找失败，请重试", {
+                            icon:5
+                        })
+                    }
+
+
+                })       
+            }
 
         });
     </script>
