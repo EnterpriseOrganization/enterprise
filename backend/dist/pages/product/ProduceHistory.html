@@ -21,7 +21,9 @@
                 <i class="layui-icon" style="line-height:30px">ဂ</i>
             </a>
         </div>
-        <table id="produce-table" lay-filter="produce-table-filter"></table>
+        <div class="weadmin-body">
+            <table id="produce-table" lay-filter="produce-table-filter"></table>
+        </div>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
@@ -29,24 +31,33 @@
                 base: '../../static/js/'
                 ,version: '101100'
             }).use('admin');
-            layui.use('table', function(){
+            layui.use(['table', 'jquery'], function(){
                 var product_table = layui.table;
+                var $ = layui.jquery;
                 var produce_data;
-                // TODO: 从后端获取生产记录解析到produce_data中
-                // produce_data = [{'orderID': 0, 'groupID': 101, 'productID': '20A'}];
+                $.ajax ({
+                    type: 'GET',
+                    url: 'http://localhost:8000/product/tasks/history',
+                    dataType: 'json',
+                    cache: false,
+                    async: false,
+                    success: function (data) {
+                        produce_data = data['tasks'];
+                    }
+                });
                 product_table.render({
                     elem: '#produce-table'
-                    ,height: 200
+                    ,height: 315
                     ,page: true
                     ,data: produce_data
                     ,cols: [[
-                        {field: 'orderID', title: '订单ID', width:170, fixed: 'left'},
-                        {field: 'groupID', title: '车间ID', width:170},
-                        {field: 'productID', title: '货品ID', width:170},
-                        {field: 'productName', title: '货品名称', width:170},
-                        {field: 'productNumber', title: '货品数量'},
+                        {field: 'order_id', title: '订单ID', width:170, fixed: 'left'},
+                        {field: 'workshop_id', title: '车间ID', width:170},
+                        {field: 'product_id', title: '货品ID', width:170},
+                        {field: 'product_name', title: '货品名称', width:170},
+                        {field: 'amount', title: '货品数量'},
                         {field: 'deadline', title: '截止时间', width:170},
-                        {field: 'finishTime', title: '完成时间', width:170, fixed: 'right'},
+                        {field: 'archive_date', title: '完成时间', width:170, fixed: 'right'},
                     ]]
                 });
             });

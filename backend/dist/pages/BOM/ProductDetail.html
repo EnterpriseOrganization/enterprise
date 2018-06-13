@@ -134,6 +134,19 @@
                             var zto=parent.zTreeObj;
                             zto.getNodesByParam("id","product_"+productid,null)[0].name=productname;
                             zto.updateNode(zto.getNodesByParam("id","product_"+productid,null)[0])
+
+                            var pti=parent.ptableIns;
+                            for(var i=0;i<parent.pdata.length;i++){
+                                if(parent.pdata[i].id==msg.id){
+                                    parent.pdata[i]=msg;
+                                    break;
+                                }
+                            }
+
+                            pti.reload({
+                                data:parent.pdata
+                            });
+
                             layer.alert("修改成功",{
                                 icon:6
                             },function(){
@@ -144,7 +157,7 @@
                         error:function(error){
                             console.log(error)
                             layer.alert("修改失败",{
-                                icon:6
+                                icon:5
                             });
                         }
 

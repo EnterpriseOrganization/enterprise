@@ -4,6 +4,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
 @require_GET
 def getAllTasks(request):
     """
@@ -32,6 +33,12 @@ def getAllTasks(request):
 
 
 @require_GET
+def getRealAllTasks(request):
+    l = ProduceTask.queryTasks()
+    return JsonResponse({"tasks": l})
+
+
+@require_GET
 def getOrderTasks(request):
     """
     返回指定order的所有生产任务
@@ -41,9 +48,28 @@ def getOrderTasks(request):
         "tasks": [{ taskDTO }]
     }
     """
+
     order_id = request.GET.get("order_id")
     if order_id != -1:
         tasks = ProduceTask.getTasksByOrderID(order_id)
+        return JsonResponse({"tasks": tasks})
+    else:
+        return JsonResponse({}, status=401)
+
+
+@require_GET
+def getWorkshopTasks(request):
+    """
+    返回指定order的所有生产任务
+    :param request: GET /product/tasks/byorder/<order_id>
+    :param order_id:
+    :return: {
+        "tasks": [{ taskDTO }]
+    }
+    """
+    workshop_id = request.GET.get("workshop_id")
+    if workshop_id != -1:
+        tasks = ProduceTask.getTasksByWorkshopID(workshop_id)
         return JsonResponse({"tasks": tasks})
     else:
         return JsonResponse({}, status=401)
@@ -71,9 +97,19 @@ def getUndoneTasks(request):
         "tasks": [taskDTO]
     }
     """
-    tasks = ProduceTask.getTasksByTaskStatus(1, 1)
+    workshop_id = request.GET.get("workshop_id")
+    order_id = request.GET.get("order_id")
+    if not workshop_id and not order_id: # 啥条件都没有就直接搜索所有的
+        tasks = ProduceTask.getTasksByTaskStatus(0, 1)
+    elif workshop_id and not order_id: # 按车间搜索
+        tasks = ProduceTask.getTasksByWorkshopID(workshop_id, 0, 1)
+    elif order_id and not workshop_id: # 订单搜索
+        tasks = ProduceTask.getTasksByOrderID(order_id, 0, 1)
+    else: # 同时搜索
+        a = ProduceTask.getTasksByWorkshopID(workshop_id, 0, 1)
+        b = ProduceTask.getTasksByOrderID(order_id, 0, 1)
+        tasks = [t for t in a if t in b] # 求交集
     return JsonResponse({"tasks": tasks})
-
 
 @require_GET
 def getWorkshops(request):
@@ -88,7 +124,7 @@ def getWorkshops(request):
         }
     }
     """
-    workshops = ProduceTask.getWorkshops()
+    workshops = ProduceTask.getWorkshops(-1, True)
     return JsonResponse({"workshops": workshops})
 
 
@@ -104,7 +140,7 @@ def getWorkshopByProduct(request):
         }
     }
     """
-    product_id = request.GET.get("product_id")
+    product_id = request.GET.get("product_id", -1)
     workshops = ProduceTask.getWorkshops(product_id)
     return JsonResponse({"workshops": workshops})
 
@@ -156,7 +192,7 @@ def createTasks(request):
 
 def checkUpdateInfo(form):
     #if form["material_checker"] == None or form["material_getter"] == None :
-        #return False
+    #return False
     return True
 
 
@@ -183,7 +219,6 @@ def updateTaskMaterialGet(request):
     if task_id != -1 and checkUpdateInfo(info):
         info["status"] = 1
         task = ProduceTask.updateTask(task_id, info)
-        print("final", task)
         return JsonResponse({"task": task})
     else:
         return JsonResponse({}, status=401)
@@ -204,9 +239,7 @@ def updateTaskDone(request):
     params = json.loads(body_unicode)
     task_id = params["task_id"]
     if task_id:
-        params = {
-            "status": 2
-        }
+        params = {"status": 2}
         task = ProduceTask.updateTask(task_id, params)
         return JsonResponse({"task": task})
     else:

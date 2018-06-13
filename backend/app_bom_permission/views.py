@@ -104,7 +104,7 @@ class MaterialProcessor:
         class_obj = MaterialClass.objects.get(id=int(class_id_str))
         m = Material(name=name_str, class_obj=class_obj)
         m.save()
-        return HttpResponse(201)
+        return HttpResponse(json.dumps(MaterialProcessor.singleMaterialToDict(m)), content_type="application/json")
 
     # process specific material
     @staticmethod
@@ -126,7 +126,7 @@ class MaterialProcessor:
         item.name = name_str
         item.class_obj = class_obj
         item.save()
-        return HttpResponse(status=201)
+        return HttpResponse(json.dumps(MaterialProcessor.singleMaterialToDict(item)), content_type="application/json")
 
     # TODO: Object not found
     @staticmethod
@@ -269,7 +269,7 @@ class ProductProcessor:
         item.class_obj = class_obj
         item.price = float(price_str)
         item.save()
-        return HttpResponse(status=201)
+        return HttpResponse(json.dumps(ProductProcessor.singleProductToDict(item)), content_type="application/json")
 
     # TODO: Object not found
     @staticmethod
@@ -348,7 +348,7 @@ class ProductmaterialProcessor:
                             comments=comments
                             )
         m.save()
-        return HttpResponse(201)
+        return HttpResponse(json.dumps(ProductmaterialProcessor.singleProductmaterialToDict(m)), content_type="application/json")
 
     @staticmethod
     def deleteProductmaterial(request):
@@ -399,7 +399,7 @@ class ProductmaterialProcessor:
         productmaterial.number = number
         productmaterial.comments = comments
         productmaterial.save()
-        return HttpResponse(status=201)
+        return HttpResponse(json.dumps(ProductmaterialProcessor.singleProductmaterialToDict(productmaterial)), content_type="application/json")
 
     # TODO: Object not found
     @staticmethod
