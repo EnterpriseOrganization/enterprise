@@ -22,8 +22,8 @@
         <div class="weadmin-nav">
             <span class="layui-breadcrumb">
                 <a href="">首页</a>
-                <a href="">仓库管理</a>
-                <a><cite>库存信息</cite></a>
+                <a href="">成本管理</a>
+                <a><cite>货品成本</cite></a>
             </span>
             <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
@@ -31,20 +31,18 @@
         <div class="weadmin-body">            
             <div class="layui-row">
                 <form class="layui-form layui-col-md12 we-search">
-                    筛选 <i class="fas fa-filter"></i>
                     <div class="layui-inline">
                         <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">
+                             placeholder="请输入物料编号" autocomplete="off" class="layui-input">    
                     </div>
                     <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料名称" autocomplete="off" class="layui-input">   
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="入库时间" name="start" id="start">
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="截止时间" name="end" id="end">
+                        <select name="workshop" lay-verify="">
+                            <option value="">存储仓库</option>
+                            <option value="010">1</option>
+                            <option value="021">2</option>
+                            <option value="021">3</option>
+                            <option value="021">4</option>
+                        </select>
                     </div>
                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
                 </form>
@@ -55,19 +53,13 @@
                 <button class="layui-btn" onclick="WeAdminShow('添加订单','./add.html')"><i class="layui-icon"></i>添加</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
             </div>-->
-            <table class="layui-table" id="store-list">
+            <table id="order-cost" lay-filter="test">
             </table>
-            <script id="tools">
-                    <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
-                        <i class="fas fa-plus"></i>
-                    </a>
-                    <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
-                        <i class="fas fa-minus"></i>
-                    </a>
-            </script>
+
+
 
         </div>
-        <script>
+        <script>    
             layui.extend({
                 admin: '{/}../../static/js/admin'
             });
@@ -135,6 +127,8 @@
                     });
                 }
             });
+
+            
             
         </script>
         <style>
@@ -143,13 +137,14 @@
             }
         </style>
     </body>
+
     <script>
         layui.use('table', function(){
             var table = layui.table;
 
             //第一个实例
             table.render({
-                elem: '#store-list'
+                elem: '#order-cost'
                 ,height: 315
                 ,width: 1000
                 // ,url: '' //数据接口
@@ -157,44 +152,30 @@
                 ,cols: [[ //表头
                     { checkbox: true}
                     ,{field: 'id', title: '物料编号', width:200, sort: true}
-                    ,{field: 'name', title: '物料名称', width:150}
-                    ,{field: 'num', title: '数量', width:150}
-                    ,{field: 'time', title: '入库时间', width:200} 
-                    ,{field: 'status', title: '状态', width: 100}
-                    ,{title: '操作', width: 150, toolbar: '#tools' }
+                    ,{field: 'name', title: '名称', width:150}
+                    ,{field: 'price', title: '单价', width:200}
+                    ,{field: 'store', title: '存储仓库', width:200} 
+                    ,{field: 'remain', title: '剩余库存', width: 200}
                 ]],
                 data:[
                 {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
+                        "id" : "10000",
+                        "name" : "无线手套",
+                        "price" : "心灵宝石/1",
+                        "store" : "灵魂宝石/2",
+                        "remain" : "时间宝石/3"
                 },
                 {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
+                        "id" : "10000",
+                        "name" : "无线手套",
+                        "price" : "心灵宝石/1",
+                        "store" : "灵魂宝石/2",
+                        "remain" : "时间宝石/3"
                 }
                 ]
             });
 
         });
     </script>
+
 </html>

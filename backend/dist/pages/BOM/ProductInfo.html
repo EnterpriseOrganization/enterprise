@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>会员列表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <title>BOM</title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -11,6 +11,300 @@
         <link rel="stylesheet" href="../../static/css/weadmin.css">
         <link rel="stylesheet" href="../../static/css/zTreeStyle/zTreeStyle.css">
         <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+        <script type="text/javascript" src="../../static/js/jquery-1.4.4.min.js"></script>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../static/js/jquery.ztree.all.min.js"></script>
+        <style>
+            .right-panel {
+                padding-left: 10px;
+            }
+            #treelist {
+                max-width: 300px;
+                max-height: 700px;
+                min-height: 550px;
+                overflow-x: scroll;
+                overflow-x: auto;
+            }
+        </style>
+        <script>
+            
+        function zTreeOnClick(event, treeId, treeNode) {
+            if (treeNode.id.split("_")[0]=="class"){
+                //alert("asdf")
+                return ;
+            }
+            console.log(treeNode.id)
+            urltogo="http://127.0.0.1:8000/bom/productmaterial/product/"+treeNode.id.split("_")[1]+"/"
+            $.ajax({
+                url:urltogo,
+                type:"GET",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:function(msg){
+                    console.log(msg.data)
+                    mdata=msg.data
+
+                    mtableIns.reload({
+                        data:mdata,
+                        page:{
+                            curr:1
+                        }
+                    });
+
+                    mdatanum=mdata.length
+                    $("#mdcount").text("共有数据："+mdatanum+"条")
+
+                    $("#bomlegend").html(treeNode.name+":物料列表")
+
+                    curselectp=parseInt(treeNode.id.split("_")[1])
+                    console.log(curselectp)
+                },
+                error:function(error){
+                    console.log(error)
+                }
+
+            });
+        };
+        </script>
+        <script>
+            var pdata=[]
+            var pdatanum=0
+            var mdata=[]
+            var mdatanum=0
+            var cureditp=0
+            var curselectp=0
+            var cureditm=0
+            var mtableIns;
+            var ptableIns;
+            layui.use(['form','table'], function(){
+                var $=layui.jquery;
+                var table = layui.table;
+                var form=layui.form;
+                mtableIns=table.render({
+                    elem:'#materialtable'
+                    ,height:315
+                    ,data:mdata
+                    ,page:true
+                    ,cols:[[
+                        {field:'',title:'kh',type:'checkbox'}
+                        ,{field:'material_id',title:'物料编号',width:'15%',sort:true}
+                        ,{field:'material_name',title:'物料名称',width:'20%'}
+                        ,{field:'procedure',title:'工序',width:'10%',sort:true}
+                        ,{field:'number',title:'数量',width:'20%',sort:true}
+                        ,{title:'操作',width:'20%',templet:'#med'}
+                    ]]
+                }); 
+                ptableIns=table.render({
+                    elem: '#producttable'
+                    ,height: 315
+                    ,data:pdata //数据接口
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {field:'',title:'kh',type:'checkbox'}
+                        ,{field: 'id', title: '货品编号', width:'15%', sort: true, event:"faketrclick"}
+                        ,{field: 'name', title: '货品名称', width:'20%', event:"faketrclick"}
+                        ,{field: 'class_field', title: '货品类别', width:'20%', sort: true, event:"faketrclick"}
+                        ,{field: 'price', title: '货品价格', width:'15%', sort: true, event:"faketrclick"}
+                        ,{title: '操作', width:'25%',templet:'#ped'} 
+                    ]]
+                });   
+                table.on('tool(protab)',function(obj){
+                    console.log(obj.data)
+                    urltogo="http://127.0.0.1:8000/bom/productmaterial/product/"+obj.data.id+"/"
+                    $.ajax({
+                        url:urltogo,
+                        type:"GET",
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(msg){
+                            console.log(msg.data)
+                            mdata=msg.data
+
+                            mtableIns.reload({
+                                data:mdata,
+                                page:{
+                                    curr:1
+                                }
+                            });
+
+                            mdatanum=mdata.length
+                            $("#mdcount").text("共有数据："+mdatanum+"条")
+
+                            $("#bomlegend").html(obj.data.name+":物料列表")
+
+                            curselectp=obj.data.id
+                        },
+                        error:function(error){
+                            console.log(error)
+                        }
+
+                    });
+                });
+            });         
+        </script>
+        <script>
+            var zTreeObj;
+            var setting;
+            var zNodes=[];
+            $(document).ready(function(){                       
+                setting = {
+                    callback:{
+                        onClick:zTreeOnClick
+                    },
+                    data:{
+                        simpleData:{
+                            enable:true,
+                            idKey:"id",
+                            pIdKey:"pid",
+                            rootpid:null
+                        }
+                    }
+                };
+                zTreeObj=$.fn.zTree.init($("#treelist"),setting,null);
+            });
+        </script>
+        <script >
+            layui.use(['form','table'], function(){
+                var $=layui.jquery;
+                var table = layui.table;
+                var form=layui.form;
+
+                $.ajax({
+                    url:"http://127.0.0.1:8000/bom/productclass/",
+                    type:"GET",
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(msg){
+                        console.log(msg.data)
+                        var producttypeoptions=msg.data;
+                        $("#pt").prepend("<option value='null'>货品类型</option>")
+                        for (var i = 0; i < producttypeoptions.length; i++) {
+                            $("#pt").append("<option value='"+producttypeoptions[i].class_id+"'>"+producttypeoptions[i].class_field+"</option>")
+                        }
+                        form.render('select');
+
+                        
+                        for(var i=0;i<producttypeoptions.length;i++){
+                            var j={};
+                            j.id="class_"+String(producttypeoptions[i].class_id);
+                            j.pid="class_"+String(producttypeoptions[i].parent_class_id);
+                            j.name=producttypeoptions[i].class_field;
+                            j.isParent=true;
+                            j.open=true;
+                            zNodes.push(j);
+                        }
+                        console.log(zTreeObj)
+                        //zTreeObj.addNodes(null,zNodes);
+
+                    },
+                    error:function(error){
+                        console.log(error)
+                    }        
+                });
+
+
+                $.ajax({
+                    url:"http://127.0.0.1:8000/bom/product/?name=null&class_id=null&id=null&price=null",
+                    type:"GET",
+                    xhrFields:{
+                        withCredentials:true
+                    },
+                    success:function(msg){
+                        console.log(msg.data)
+                        pdata=msg.data
+
+                        ptableIns.reload({
+                            data:pdata,
+                            page:{
+                                curr:1
+                            }
+                        });
+
+                        pdatanum=pdata.length
+                        $("#pdcount").text("共有数据："+pdatanum+"条")
+
+                        for (var i=0;i<pdata.length;i++){
+                            var j={}
+                            j.id="product_"+String(pdata[i].id);
+                            j.pid="class_"+String(pdata[i].class_id);
+                            j.name=pdata[i].name;
+                            j.isParent=false;
+                            //chd=zTreeObj.getNodesByParam("id",j.pid,null)[0].children;
+                            //chd.push(j);
+                            //zTreeObj.getNodesByParam("id",j.pid,null)[0].children=chd;
+                            zNodes.push(j)
+                        }
+                        zTreeObj.addNodes(null,zNodes);
+                        /*
+                        var toopen=zTreeObj.getNodesByParamFuzzy("id","class",null);
+                        for (var i=0;i<toopen.length;i++){
+                            toopen[i].open=true;
+                        }*/
+                        
+                    },
+                    error:function(error){
+                        console.log(error)
+                    }
+                });
+
+                form.on('submit(search)',function(data){
+                    var productid=data.field.productid
+                    var productname=data.field.productname
+                    var producttype=data.field.producttype
+                    if(productid==""){
+                        productid="null";
+                    } 
+                    if(productname==""){
+                        productname="null";
+                    }
+                    // alert(materialname)
+                    var urltogo="http://127.0.0.1:8000/bom/product/?name="+productname+"&class_id="+producttype+"&id="+productid+"&price=null";
+                    // alert(urltogo)
+                    $.ajax({
+                        url:urltogo,
+                        type:"GET",
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success:function(msg){
+                            console.log(msg.data)
+                            pdata=msg.data
+
+                            ptableIns.reload({
+                                data:pdata,
+                                page:{
+                                    curr:1
+                                }
+                            });
+
+                            pdatanum=pdata.length
+                            $("#pdcount").text("共有数据："+pdata.length+"条")
+
+                        },
+                        error:function(error){
+                            console.log(error)
+                        }
+
+                    });
+                    return false;
+                });  
+
+            });   
+
+        </script>
+        <script>
+
+
+
+                //zTreeObj.getNodesByParam("id",111,null)[0].children=[newnode112,newnode113]
+
+
+            
+        </script>
     </head>
 
     <body>
@@ -23,24 +317,20 @@
                 </fieldset>
                 <span class="layui-col-md9 right-panel">
                     <fieldset class="layui-elem-field layui-row">
-                        <legend>成品列表</legend>
+                        <legend>货品列表</legend>
                         <div class="layui-field-box">
                             <div class="layui-row">
                                 <form class="layui-form layui-col-md12 we-search">
                                     筛选 <i class="fas fa-filter"></i>
                                     <div class="layui-inline">
-                                        <input class="layui-input" placeholder="编号" >
+                                        <input name="productid" class="layui-input" placeholder="货品编号" >
                                     </div>
                                     <div class="layui-inline">
-                                        <input class="layui-input" placeholder="名称" >
+                                        <input name="productname" class="layui-input" placeholder="货品名称" >
                                     </div>
                                     <div class="layui-inline">
-                                        <select name="city" lay-search>
-                                            <option value="-1">类别</option>
-                                            <option value="0">供电类</option>
-                                            <option value="0">电阻类</option>
-                                            <option value="0">机械类</option>
-                                            <option value="0">中间件类</option>
+                                        <select id="pt" name="producttype" lay-search>
+
                                         </select>
                                     </div>
                                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
@@ -49,194 +339,236 @@
                             
                             <div class="weadmin-block">
                                 <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
-                                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加成品','./AddProduct.html',600,400)"><i class="fas fa-plus"></i> 添加</button>
+                                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('创建货品','./CreateProduct.html',600,400)"><i class="fas fa-plus"></i> 创建货品</button>
                                 <button class="layui-btn layui-btn-sm"><i class="fas fa-share"></i> 全部导出</button>
-                                <span class="fr" style="line-height:40px">共有数据：88 条</span>
+                                <span class="fr" style="line-height:40px" id="pdcount"></span>
                             </div>
-                            <table class="layui-table" id="memberList">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                                        </th>
-                                        <th>货品编号</th>
-                                        <th>货品名称</th>
-                                        <th>类型</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr data-id="1">
-                                        <td>
-                                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id="1"><i class="layui-icon">&#xe605;</i></div>
-                                        </td>
-                                        <td>E30OK031</td>
-                                        <td>微型光伏太阳能电池阵列</td>
-                                        <td>能源</td>
-                                        <td class="td-manage">
-                                            <a title="编辑" onclick="WeAdminEdit('货品编辑','./ProductDetail.html', 1, 600, 400)" href="javascript:;">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                            
-                                            <a title="导出BOM" href="javascript:;">
-                                                <i class="fas fa-share"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="page">
-                                <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
-                                    <span class="current">2</span>
-                                    <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a>
-                                </div>
+                            <div id="protab">
+                                <table class="layui-table" id="producttable" lay-filter="protab"></table>
                             </div>
+                            
+
+
                         </div>
                     </fieldset>
                     <fieldset class="layui-elem-field layui-row">
-                        <legend>配料列表</legend>
+                        <legend id="bomlegend"></legend>
                         <div class="layui-field-box">
-                            <div class="layui-row">
-                                <form class="layui-form layui-col-md12 we-search">
-                                    筛选 <i class="fas fa-filter"></i>
-                                    <div class="layui-inline">
-                                            <input class="layui-input" placeholder="编号" >
-                                        </div>
-                                    <div class="layui-inline">
-                                        <input class="layui-input" placeholder="名称" >
-                                    </div>
-                                    <div class="layui-inline">
-                                        <select name="property" lay-search>
-                                            <option value="-1">性质</option>
-                                            <option value="0">原料</option>
-                                            <option value="0">中间件</option>
-                                        </select>
-                                    </div>
-                                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                                </form>
-                            </div>
                             <div class="weadmin-block">
-                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
-                                    <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加配料','./AddParets.html',600,400)"><i class="fas fa-plus"></i> 添加</button>
+                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="bom_delAll()"><i class="fas fa-trash-alt"></i> 批量删除</button>
+                                    <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('添加物料','./AddParets.html',600,400)"><i class="fas fa-plus"></i> 添加物料</button>
                                     <button class="layui-btn layui-btn-sm" ><i class="fas fa-share"></i> 全部导出</button>
-                                    <span class="fr" style="line-height:40px">共有数据：88 条</span>
+                                    <span class="fr" style="line-height:40px" id="mdcount"></span>
                             </div>
-                            <table class="layui-table" id="memberList">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                                        </th>
-                                        <th>编号</th>
-                                        <th>名称</th>
-                                        <!--<th>性质</th> 注释掉的属性 以modal形式展示-->
-                                        <th>数量</th>
-                                        <!--<th>投料说明</th>-->
-                                        <!--<th>工序</th>
-                                        <th>备注</th>-->
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr data-id="1">
-                                        <td>
-                                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id="1"><i class="layui-icon">&#xe605;</i></div>
-                                        </td>
-                                        <td>E30OK031</td>
-                                        <td>0603电阻（1KΩ）</td>
-                                        <td>10</td>
-                                        <td class="td-manage">
-                                            
-                                            <a title="编辑" onclick="WeAdminEdit('配料编辑','./ParetsDetail.html', 1, 600, 400)" href="javascript:;">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="page">
-                                <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
-                                    <span class="current">2</span>
-                                    <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a>
-                                </div>
-                            </div>
+
+                            <table class="layui-table" id="materialtable" lay-filter="mattab"></table>
+
                         </div>
                     </fieldset>
                 </span>
             </div>
         </div>
-        <script type="text/javascript" src="../../static/js/jquery-1.4.4.min.js"></script>
-        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../../static/js/jquery.ztree.all.min.js"></script>
+
+
         <script>
-            var zTreeObj;
-            var setting = {};
-            var zNodes = [
-                {name:"电路板", open:true, children:[
-                    {name:"AZ09系列", open:false, children:[
-                        {name:"EB38下板PNP Z=1T"},
-                        {name:"EB38上电路板 PP 10-30V"}
-                    ]},
-                    {name:"EB38系列", open:false, children:[
-                        {name:"EB38下板PNP Z=1T"},
-                        {name:"EB38上电路板 PP 10-30V 12eaqddqwd"}
-                    ]}
-                ]},
-                {name:"电路板", open:true, children:[
-                    {name:"AZ09系列", open:false, children:[
-                        {name:"EB38下板PNP Z=1T"},
-                        {name:"EB38上电路板 PP 10-30V"}
-                    ]},
-                    {name:"EB38系列", open:false, children:[
-                        {name:"EB38下板PNP Z=1T"},
-                        {name:"EB38上电路板 PP 10-30V 12eaqddqwd"}
-                    ]}
-                ]},
-                {name:"电路板", open:true, children:[
-                    {name:"AZ09系列", open:false, children:[
-                        {name:"EB38下板PNP Z=1T"},
-                        {name:"EB38上电路板 PP 10-30V"}
-                    ]},
-                    {name:"EB38系列", open:false, children:[
-                        {name:"EB38下板PNP Z=1T"},
-                        {name:"EB38上电路板 PP 10-30V 12eaqddqwd"}
-                    ]}
-                ]},
-                
-                
-                {name:"磁盘臂", open:false, children:[
-                    {name:"test2_1"}, {name:"test2_2"}
-                ]}
-            ];
-            $(document).ready(function(){
-                zTreeObj = $.fn.zTree.init($("#treelist"), setting, zNodes);
+            layui.use(['form','table'], function(){
+                var $=layui.jquery;
+                var table = layui.table;
+                var form=layui.form;        
+
+                window.member_del = function (obj, id) {
+                    var urltogo="http://127.0.0.1:8000/bom/product/"+id+"/";
+                    layer.confirm('确认要删除吗？', function(index) {
+                        $.ajax({
+                            url:urltogo,
+                            type:"DELETE",
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            success:function(msg){
+                                console.log(msg)
+
+                                pdatanum-=1
+                                
+                                $("#pdcount").text("共有数据："+pdatanum+"条")
+                                $(obj).parents("tr").remove();
+
+                                zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+id,null)[0])
+
+                                layer.msg('已删除!', {
+                                    icon: 1,
+                                    time: 1000
+                                });                                
+                            },
+                            error:function(error){
+                                console.log(error)
+                                layer.msg('删除失败！', {
+                                    icon: 1,
+                                    time: 1000
+                                });                                 
+                            }
+
+                        });
+                        return false;
+                    });
+                }
+
+                window.delAll = function () {
+                    var checkStatus=table.checkStatus('producttable');
+                    
+                    console.log(checkStatus)
+                    console.log("fuck");
+                    //var data = tableCheck.getData();
+                    var urltogo="http://127.0.0.1:8000/bom/product/";
+                    layer.confirm('确认要删除这些记录吗？', function(index) {
+                        console.log(checkStatus)
+                        $.ajax({
+                            url:urltogo,
+                            type:"DELETE",
+                            data:JSON.stringify({"data":checkStatus.data}),
+                            dataType:"json",
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            success:function(msg){
+                                console.log(msg)
+
+                                pdatanum-=checkStatus.data.length
+
+                                $("#pdcount").text("共有数据："+pdatanum+"条")
+
+                                $(".layui-form-checked").not('.header').parents('tr').remove();
+
+                                for(var i=0;i<checkStatus.data.length;i++){
+                                    zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+checkStatus.data[i].id,null)[0])
+                                }
+                                //zTreeObj.removeNode(zTreeObj.getNodesByParam("id","product_"+id,null)[0])
+                                layer.msg('删除成功!', {
+                                    icon: 1
+                                });
+                            },
+                            error:function(error){
+                                console.log(error)
+                                layer.msg('删除失败!', {
+                                    icon: 1
+                                });
+                            }
+
+                        });
+                        return false;
+                    });
+                }    
+
+                window.bom_member_del=function(obj,id){
+                    var urltogo="http://127.0.0.1:8000/bom/productmaterial/"+id+"/";
+                    layer.confirm('确认要删除吗？', function(index) {
+                        $.ajax({
+                            url:urltogo,
+                            type:"DELETE",
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            success:function(msg){
+                                console.log(msg)
+
+                                mdatanum-=1
+
+                                $(obj).parents("tr").remove();
+                                $("#mdcount").text("共有数据："+mdatanum+"条")
+                                layer.msg('已删除!', {
+                                    icon: 1,
+                                    time: 1000
+                                });                                
+                            },
+                            error:function(error){
+                                console.log(error)
+                                layer.msg('删除失败！', {
+                                    icon: 1,
+                                    time: 1000
+                                });                                 
+                            }
+
+                        });
+                        return false;
+                    });
+                }
+
+                window.bom_delAll=function(){
+                    var checkStatus=table.checkStatus('materialtable');
+                    
+                    console.log(checkStatus)
+                    //var data = tableCheck.getData();
+                    var urltogo="http://127.0.0.1:8000/bom/productmaterial/";
+                    layer.confirm('确认要删除这些记录吗？', function(index) {
+                        console.log(checkStatus)
+                        $.ajax({
+                            url:urltogo,
+                            type:"DELETE",
+                            data:JSON.stringify({"data":checkStatus.data}),
+                            dataType:"json",
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            success:function(msg){
+                                console.log(msg)
+
+                                mdatanum-=checkStatus.data.length
+
+                                $("#mdcount").text("共有数据："+mdatanum+"条")
+
+                                $(".layui-form-checked").not('.header').parents('tr').remove();
+                                layer.msg('删除成功!', {
+                                    icon: 1
+                                });
+                            },
+                            error:function(error){
+                                console.log(error)
+                                layer.msg('删除失败!', {
+                                    icon: 1
+                                });
+                            }
+
+                        });
+                        return false;
+                    });
+                }        
+
             });
         </script>
-        <style>
-            .right-panel {
-                padding-left: 10px;
+        <script>
+
+            function changecureditp(id){
+                cureditp=id;
+                //alert(cureditp)
             }
-            #treelist {
-                max-width: 300px;
-                max-height: 700px;
-                min-height: 550px;
-                overflow: auto;
+
+            function changecureditm(id){
+                cureditm=id;
+                //alert(cureditm)
             }
-        </style>
+        </script>
+        <script type="text/html" id="ped">
+            <a title="编辑" onclick="changecureditp({{d.id}}),WeAdminEdit('货品编辑','./ProductDetail.html', 1, 600, 400)" href="javascript:;">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+                <i class="fas fa-trash-alt"></i>
+            </a>
+            
+            <!--<a title="导出BOM" href="javascript:;">
+                <i class="fas fa-share"></i>
+            </a>-->
+        </script>
+        <script type="text/html" id="med">
+            <a title="编辑" onclick="changecureditm({{d.id}}),WeAdminEdit('BOM编辑','./ParetsDetail.html', 1, 600, 400)" href="javascript:;">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a title="删除" onclick="bom_member_del(this,{{d.id}})" href="javascript:;">
+                <i class="fas fa-trash-alt"></i>
+            </a>
+
+        </script>
+
+
     </body>
 </html>

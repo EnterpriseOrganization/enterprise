@@ -38,82 +38,25 @@
                         </select>
                     </div>
                     <div class="layui-inline">
-                        <select name="city" lay-verify="" lay-search>
-                            <option value="001" selected>物料编号</option>
-                            <option value="010">BASD12342DS3</option>
-                            <option value="021">BASD12342DS3</option>
-                            <option value="0571">BASD12342DS3</option>
-                        </select>
+                        <input type="text" name="title" required lay-verify="required"
+                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
-                        <select name="city" lay-verify="" lay-search>
-                            <option value="001" selected>物料名称</option>
-                            <option value="010">0603电阻1k</option>
-                            <option value="021">0603电阻1k</option>
-                            <option value="0571">0603电阻1k</option>
-                        </select>
+                        <input type="text" name="title" required lay-verify="required"
+                            placeholder="请输入物料名称" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="开始时间" name="start" id="start">
+                        <input class="layui-input" placeholder="入库时间" name="start" id="start">
                     </div>
                     <div class="layui-inline">
-                        <input class="layui-input" placeholder="截止时间" name="end" id="end">
+                        <input class="layui-input" placeholder="出库时间" name="end" id="end">
                     </div>
-                    <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                    <button class="layui-btn" lay-submit="" lay-filter="sreach" onclick="test()"><i class="layui-icon">&#xe615;</i></button>
                 </form>
             </div>
 
-            <table class="layui-table">
-                <thead>
-                    <tr>
-                        <th>序号</th>
-                        <th>出库/入库</th>
-                        <th>物料编号</th>
-                        <th>物料名称</th>
-                        <th>数量</th>
-                        <th>时间</th>
-                        <th>审核人</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-id="1">
-                        <td>1</td>
-                        <td>
-                            <span class="layui-btn layui-btn-normal layui-btn-xs">
-                                入库
-                            </span>
-                        </td>
-                        <td>QWER1234ASDC3</td>
-                        <td>0603电阻(1K)</td>
-                        <td>2000</td>
-                        <td>2017-08-17 18:22</td>
-                        <td>吴彦祖</td>
-                    </tr>
-                    <tr data-id="2">
-                        <td>2</td>
-                        <td>
-                            <span class="layui-btn layui-btn-danger layui-btn-xs">
-                                出库
-                            </span>
-                        </td>
-                        <td>QWER1234ASDC3</td>
-                        <td>0603电阻(1K)</td>
-                        <td>2000</td>
-                        <td>2017-08-17 18:22</td>
-                        <td>吴彦祖</td>
-                    </tr>
-                </tbody>
+            <table class="layui-table" id="store-record">
             </table>
-            <div class="page">
-                <div>
-                    <a class="prev" href="">&lt;&lt;</a>
-                    <a class="num" href="">1</a>
-                    <span class="current">2</span>
-                    <a class="num" href="">3</a>
-                    <a class="num" href="">489</a>
-                    <a class="next" href="">&gt;&gt;</a>
-                </div>
-            </div>
 
         </div>
         <script>
@@ -186,5 +129,71 @@
             
         </script>
     </body>
+    <script src="./interaction-warehouse.js"></script>
+    
+    <script>
+        function test() {
+            const data = {}
+            const result = getInventory(data)
+            alert(result)
+        }
+
+        layui.use('table', function(){
+            var table = layui.table;
+
+            //第一个实例
+            table.render({
+                elem: '#store-record'
+                ,height: 315
+                ,width: 1000
+                // ,url: '' //数据接口
+                ,page: true //开启分页
+                ,cols: [[ //表头
+                    { checkbox: true}
+                    ,{field: 'oper', title: '出库/入库', width:100}
+                    ,{field: 'id', title: '物料编号', width:200, sort: true}
+                    ,{field: 'name', title: '物料名称', width:200}
+                    ,{field: 'num', title: '数量', width:150}
+                    ,{field: 'time', title: '时间', width:200} 
+                    ,{field: 'audit', title: '审核人', width: 100}
+                ]],
+                data:[
+                {
+                        "oper": "出库",
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "audit" : "华仔"
+                },
+                {
+                        "oper": "出库",
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "audit" : "华仔"
+                },
+                {
+                        "oper": "出库",
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "audit" : "华仔"
+                },
+                {
+                        "oper": "出库",
+                        "id" : "E34J231JAK342",
+                        "name" : "0603电阻(1K)",
+                        "num" : "10000",
+                        "time" : "2017-08-17 18:22",
+                        "audit" : "华仔"
+                }
+                ]
+            });
+
+        });
+    </script>
 
 </html>
