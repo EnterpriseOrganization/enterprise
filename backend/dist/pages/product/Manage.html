@@ -28,8 +28,15 @@
     </div>
 
     <div class="weadmin-body">
-        <!-- 将第一个table换成你的table -->
-        <table class="layui-table" id="assign-table">
+        <div class="layui-row">
+            搜索订单ID：
+            <div class="layui-form layui-input-inline">
+                <select class="select-class" lay-search="" id="order-id"></select>
+            </div>
+            <button id="button" class="layui-btn" data-type="reload">搜索</button>
+        </div>
+        <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter"></table>
+        <table class="layui-table" id="assign-table" style="margin-top: 50px;">
             <thead>
                 <tr>
                     <th>订单ID</th>
@@ -121,60 +128,93 @@
                 status = [];
                 value = [];
             }
+            $.ajax({ // 从后台拿到数据
+                type: 'GET',
+                url: 'http://localhost:8000/product/tasks',
+                dataType: 'json',
+                cache: false,
+                async: false,
+                success: function (data) {
+                    order_list_data = data['tasks'];
+
+                    let tmp_list = Array();
+                    for (var i = 0; i < order_list_data.length; i++) {
+                        tmp_list.push(order_list_data[i]['order_id']);
+                    }
+                    let tmp_set = new Set(tmp_list);
+
+                    $('#order-id').append(new Option('all', -1));
+                    for (var ele of tmp_set) {
+                        $('#order-id').append(new Option(ele, ele));
+                    }
+                    form.render();
+                }
+            });
 
             table.render({
                 elem: '#order-list-table',
                 // height: 180,
                 page: true,
                 data: order_list_data,
+                id: 'tableReload',
                 cols: [
                     [{
-                            field: 'orderID',
-                            title: '订单ID',
-                            // width: 150,
-                            // fixed: 'left'
-                        },
-                        {
-                            field: 'productID',
-                            title: '货品ID',
-                            // width: 150
-                        },
-                        {
-                            field: 'productName',
-                            title: '货品名称',
-                            // width: 150
-                        },
-                        {
-                            field: 'productNumber',
-                            title: '货品数量',
-                            // width: 150
-                        },
-                        {
-                            field: 'createTime',
-                            title: '生成日期',
-                            // width: 120,
-                            sort: true
-                        },
-                        {
-                            field: 'deadline',
-                            title: '截止日期',
-                            // width: 120,
-                            sort: true
-                        },
-                        {
-                            field: 'assignStatus',
-                            title: '分配状态',
-                            // width: 100,
-                            templet: '#assignStatusTpl'
-                        },
-                        {
-                            field: 'operation',
-                            title: '操作',
-                            // fixed: 'right',
-                            toolbar: '#select-order-button-template'
-                        }
+                        field: 'order_id',
+                        sort: true,
+                        title: '订单ID',
+                    },
+                    {
+                        field: 'product_id',
+                        sort: true,
+                        title: '货品ID',
+                    },
+                    {
+                        field: 'product_name',
+                        title: '货品名称',
+                    },
+                    {
+                        field: 'amount',
+                        title: '货品数量',
+                    },
+                    {
+                        field: 'status',
+                        title: '分配状态',
+                        templet: '#assign-status-tpl'
+                    },
+                    {
+                        field: 'operation',
+                        title: '操作',
+                        toolbar: '#select-order-button-template'
+                    }
                     ]
                 ]
+            });
+
+            var $ = layui.$, active = {
+                reload: function () {
+                    const order_id_input = $('#order-id').val();
+                    //执行重载
+                    if (order_id_input !== '-1') {
+                        let tmp_list = new Array();
+                        for (var i = 0; i < order_list_data.length; i++) {
+                            if (order_list_data[i]['order_id'] == order_id_input) {
+                                tmp_list.push(order_list_data[i]);
+                            }
+                        }
+                        table.reload('tableReload', {
+                            data: tmp_list
+                        });
+                    } else {
+                        table.reload('tableReload', {
+                            data: order_list_data
+                        });
+                    }
+                }
+            };
+
+            $('#button').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
             });
 
             table.on('tool(order-list-table-filter)', function (obj) {

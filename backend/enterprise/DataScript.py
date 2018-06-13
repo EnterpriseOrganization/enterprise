@@ -81,11 +81,11 @@ def generateSupplier():
         s.save()
 
 
-def generateInventorInformation():
+def generateInventoryInformation():
     ms = Material.objects.all()
     shelf = "AE{}3{}"
     for i in range(12):
-        ii = InventorInformation()
+        ii = InventoryInformation()
         ii.material = ms[i]
         ii.shelfnumber = shelf.format(i, i*10)
         ii.number = i*10

@@ -4,6 +4,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
 @require_GET
 def getAllTasks(request):
     """
@@ -32,6 +33,12 @@ def getAllTasks(request):
 
 
 @require_GET
+def getRealAllTasks(request):
+    l = ProduceTask.queryTasks()
+    return JsonResponse({"tasks": l})
+
+
+@require_GET
 def getOrderTasks(request):
     """
     返回指定order的所有生产任务
@@ -41,9 +48,28 @@ def getOrderTasks(request):
         "tasks": [{ taskDTO }]
     }
     """
+
     order_id = request.GET.get("order_id")
     if order_id != -1:
         tasks = ProduceTask.getTasksByOrderID(order_id)
+        return JsonResponse({"tasks": tasks})
+    else:
+        return JsonResponse({}, status=401)
+
+
+@require_GET
+def getWorkshopTasks(request):
+    """
+    返回指定order的所有生产任务
+    :param request: GET /product/tasks/byorder/<order_id>
+    :param order_id:
+    :return: {
+        "tasks": [{ taskDTO }]
+    }
+    """
+    workshop_id = request.GET.get("workshop_id")
+    if workshop_id != -1:
+        tasks = ProduceTask.getTasksByWorkshopID(workshop_id)
         return JsonResponse({"tasks": tasks})
     else:
         return JsonResponse({}, status=401)
@@ -88,7 +114,7 @@ def getWorkshops(request):
         }
     }
     """
-    workshops = ProduceTask.getWorkshops()
+    workshops = ProduceTask.getWorkshops(-1, True)
     return JsonResponse({"workshops": workshops})
 
 
@@ -104,7 +130,7 @@ def getWorkshopByProduct(request):
         }
     }
     """
-    product_id = request.GET.get("product_id")
+    product_id = request.GET.get("product_id", -1)
     workshops = ProduceTask.getWorkshops(product_id)
     return JsonResponse({"workshops": workshops})
 
@@ -156,7 +182,7 @@ def createTasks(request):
 
 def checkUpdateInfo(form):
     #if form["material_checker"] == None or form["material_getter"] == None :
-        #return False
+    #return False
     return True
 
 
@@ -204,9 +230,7 @@ def updateTaskDone(request):
     params = json.loads(body_unicode)
     task_id = params["task_id"]
     if task_id:
-        params = {
-            "status": 2
-        }
+        params = {"status": 2}
         task = ProduceTask.updateTask(task_id, params)
         return JsonResponse({"task": task})
     else:
