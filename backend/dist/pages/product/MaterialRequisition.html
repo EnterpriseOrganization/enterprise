@@ -81,6 +81,7 @@
                     ,height: 315
                     ,page: true
                     ,data: assign_data
+                    ,id: 'meterialTableReload'
                     ,cols: [[
                         {field: 'task_id', title: '分配ID'},
                         {field: 'order_id', title: '订单ID'},
@@ -180,7 +181,24 @@
                     }
                 });
                 form.on('submit(material_requisition_search)', function(data) {
-                    layer.msg(JSON.stringify(data.field));
+                    var dataField = JSON.stringify(data.field);
+                    //layer.msg(JSON.stringify(data.field));
+                    $.ajax ({
+                        type: 'GET',
+                        url: 'http://localhost:8000/product/tasks/undone',
+                        dataType: 'json',
+                        data: { 'order_id': dataField.orderid, 'workshop_id': dataField.workshopid },
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            // TODO： 返回的assign_data没有经过筛选
+                            assign_data = data['tasks'];
+                            console.log(assign_data);
+                        }
+                    });
+                    meterial_req_table.reload('meterialTableReload', {
+                        data: assign_data
+                    });
                     return false;
                 });
             });
