@@ -21,20 +21,7 @@
                 <i class="layui-icon" style="line-height:30px">ဂ</i>
             </a>
         </div>
-        <div class="weadmin-body">
-            <div class="layui-row">
-                <form class="layui-form layui-col-md12 we-search">
-                    <div class="layui-inline">
-                        <input type="text" name="username" placeholder="订单ID" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="username" placeholder="车间ID" autocomplete="off" class="layui-input">
-                    </div>
-                    <button class="layui-btn" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                </form>
-            </div>
-            <table id="meterial-req-table" lay-filter="meterial-req-table-filter"></table>
-        </div>
+        <table id="meterial-req-table" lay-filter="meterial-req-table-filter"></table>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
@@ -65,34 +52,29 @@
                 var meterial_req_table = layui.table;
                 var $ = layui.jquery;
                 var assign_data;
-                $.ajax ({
-                    type: 'GET',
-                    url: 'http://localhost:8000/product/tasks/undone',
-                    dataType: 'json',
-                    cache: false,
-                    async: false,
-                    success: function (data) {
-                        assign_data = data['tasks'];
-                    }
-                });
+                // TODO: 从后端获取生产记录解析到produce_data中
+                assign_data = [{'assignID': 0, 'outRepresent': '', 'inRepresent': '', 'getTime': ""},
+                        {'assignID': 1, 'outRepresent': 'Lily', 'inRepresent': '', 'getTime': 20180102},
+                        {'assignID': 2, 'outRepresent': '', 'inRepresent': 'Lily', 'getTime': 20180102},
+                        {'assignID': 3, 'outRepresent': '', 'inRepresent': '', 'getTime': ""}
+                        ];
                 meterial_req_table.render({
                     elem: '#meterial-req-table'
-                    ,height: 315
+                    ,height: 200
                     ,page: true
                     ,data: assign_data
                     ,cols: [[
-                        {field: 'task_id', title: '分配ID'},
-                        {field: 'order_id', title: '订单ID'},
-                        {field: 'workshop_id', title: '车间ID'},
-                        {field: 'product_id', title: '货品ID'},
-                        {field: 'product_name', title: '货品名称'},
-                        {field: 'amount', title: '货品数量'},
-                        {field: 'begin_date', title: '记录生成时间', sort: true},
-                        {field: 'material_checker', title: '出库负责人', templet: '#material_checkerTpl'},
-                        {field: 'material_getter', title: '领料负责人', templet: '#material_getterTpl'},
-                        {field: 'material_distribute_date', title: '领料时间', sort: true},
-                        {field: 'status', title: '操作', toolbar: '#get-meterial'},
-                        {field: 'detail', title: '详情', toolbar: '#show-detail'},
+                        {field: 'assignID', title: '分配ID', width:100, fixed: 'left'},
+                        {field: 'orderID', title: '订单ID', width:100},
+                        {field: 'groupID', title: '车间ID', width:100},
+                        {field: 'productName', title: '货品名称'},
+                        {field: 'productNumber', title: '货品数量', width:100},
+                        {field: 'generateTime', title: '记录生成时间', width:120, sort: true},
+                        {field: 'outRepresent', title: '出库负责人', width:100, templet: '#outRepresentTpl'},
+                        {field: 'inRepresent', title: '领料负责人', width:100, templet: '#inRepresentTpl'},
+                        {field: 'getTime', title: '领料时间', width:100, sort: true},
+                        {field: 'status', title: '操作', width:100, toolbar: '#get-meterial'},
+                        {field: 'detail', title: '详情', width:100, fixed: 'right', toolbar: '#show-detail'},
                     ]]
                 });
                 meterial_req_table.on('tool(meterial-req-table-filter)', function(obj) {
@@ -100,43 +82,14 @@
                     var layEvent = obj.event;
                     var tr = obj.tr;
                     if(layEvent === 'detail') {
-                        $.ajax({
-                            type: 'GET',
-                            url: 'http://localhost:8000/product/task/material-list',
-                            dataType: 'json',
-                            data: { 'product_id': data.product_id, 'product_num': data.amount },
-                            cache: false,
-                            async: false,
-                            success: function (data) {
-                                var w = ($(window).width() * 0.9);;
-                                var h = ($(window).height() - 50);
-                                layer.open({
-                                    area: [w + 'px', h + 'px'],
-                                    fix: false, //不固定
-                                    maxmin: true,
-                                    shadeClose: true,
-                                    shade: 0.4,
-                                    type: 1,
-                                    title: '领料单',
-                                    content: '<table id="req-detail-table" lay-filter="req-detail-table-filter"></table>'
-                                });
-                                var req_detail_table = layui.table;
-                                req_detail_table.render({
-                                    elem: "#req-detail-table"
-                                    ,height: 315
-                                    ,page: true
-                                    ,data: data["material_requisition"]
-                                    ,cols: [[
-                                        {field: "material_id", title: "物料ID"},
-                                        {field: "material_name", title: "物料名称"},
-                                        {field: "material_num", title: "物料数量"},
-                                    ]]
-                                });
-                            },
-                            error: (a) => {
-                                console.log("error: ", a);
-                            }
+                        var meterial_req_data = "";
+                        // TODO: 通过 data.assignID 向后端发送请求 获取领料单数据 存储到meterial_req_data中，可添加样式
+                        // meterial_req_data = '<a class="layui-bg-red">hello</a>';
+                        layer.open({
+                            title: '领料单',
+                            content: meterial_req_data
                         });
+
                     } else if (layEvent === 'getMeterial') {
                         var index = tr[0].rowIndex;
                         var in_present_dom = $(".in-represent:eq(" + index + ")");
@@ -156,24 +109,13 @@
                             button_dom.text("已领料");
                             var currentTime = new Date().Format("yyyy-MM-dd");
                             obj.update({
-                                material_distribute_date: currentTime
+                                getTime: currentTime
                             });
-                            $.ajax({
-                                type: 'POST',
-                                url: 'http://localhost:8000/product/task/material-allocated',
-                                dataType: 'json',
-                                data: JSON.stringify({ 'task_id': data.task_id, 'info': {'material_getter': in_present_value, 'material_checker': out_present_value}}),
-                                cache: false,
-                                async: false,
-                                success: function (data) {
-                                    layer.open({
-                                        title: '成功',
-                                        content: '领料操作成功'
-                                    });
-                                },
-                                error: (a) => {
-                                    console.log("error: ", a);
-                                }
+                            // TODO: 将in_present_value， out_present_value mytime 领料状态 更新到后端数据库
+                            //       可通过assignID作为索引，通过data.assignID获取
+                            layer.open({
+                                title: '成功',
+                                content: '领料操作成功'
                             });
                         }
                     }
@@ -182,7 +124,7 @@
         </script>
         <script  type="text/html" id="get-meterial">
             <!-- TODO: 加上时间的判断 -->
-            {{# if (d.material_checker != "" || d.material_getter != "") { }}
+            {{# if (d.outRepresent != "" || d.inRepresent != "") { }}
             <button class="layui-btn layui-btn-radius layui-btn-sm get-status-button">已领料</button>
             {{# } else { }}
             <button class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm get-status-button" lay-event="getMeterial">确认领料</button>
@@ -191,18 +133,18 @@
         <script  type="text/html" id="show-detail">
             <button class="layui-btn layui-btn-radius layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
         </script>
-        <script  type="text/html" id="material_checkerTpl">
+        <script  type="text/html" id="outRepresentTpl">
             <!-- TODO: 加上时间的判断 -->
-            {{# if (d.material_checker != ""|| d.material_getter != "") { }}
-                <div class="out-represent">{{d.material_checker}}</div>
+            {{# if (d.outRepresent != ""|| d.inRepresent != "") { }}
+                <div class="out-represent">{{d.outRepresent}}</div>
             {{# } else { }}
                 <input type="text" class="layui-input out-represent"/>
             {{# } }}
         </script>
-        <script  type="text/html" id="material_getterTpl">
+        <script  type="text/html" id="inRepresentTpl">
             <!-- TODO: 加上时间的判断 -->
-            {{# if (d.material_checker != "" || d.material_getter != "") { }}
-                <div class="in-represent">{{d.material_getter}}</div>
+            {{# if (d.outRepresent != "" || d.inRepresent != "") { }}
+                <div class="in-represent">{{d.inRepresent}}</div>
             {{# } else { }}
                 <input type="text" class="layui-input in-represent"/>
             {{# } }}

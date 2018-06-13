@@ -1,149 +1,452 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="UTF-8">
-        <title>订单列表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-        <link rel="stylesheet" href="../../static/css/font.css">
-        <link rel="stylesheet" href="../../static/css/weadmin.css">
-        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
-        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>订单列表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script>
+        var tableIns
+        var mdata = null
+    </script>
+</head>
 
-    <body>
-        <div class="weadmin-nav">
-            <span class="layui-breadcrumb">
-                <a href="">首页</a>
-                <a href="">订单管理</a>
-                <a><cite>订单列表</cite></a>
-            </span>
-            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-                <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+<body>
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">订单管理</a>
+            <a>
+                <cite>订单列表</cite>
+            </a>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i>
+        </a>
+    </div>
+    <div class="weadmin-body">
+        <div class="layui-row" style="display: flex; justify-content:flex-start;">
+            <div class="layui-inline">
+                <select id="order_status" name="order_static" lay-verify="" class="layui-select" style="width:150px;">
+                    <option value="-1">订单状态</option>
+                    <option value="1">已完成</option>
+                    <option value="0">未完成</option>
+                </select>
+
+            </div>
+            <div class="layui-inline">
+                <input class="layui-input" placeholder="开始时间" name="start" id="begin_time">
+            </div>
+            <div class="layui-inline">
+                <input class="layui-input" placeholder="截止时间" name="end" id="end_time">
+            </div>
+            <div class="layui-inline">
+                <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input" id="indentor_name">
+            </div>
+            <button class="layui-btn layui-btn-normal" onclick="search()">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
-        <div class="weadmin-body">
-            <div class="layui-row">
-                <form class="layui-form layui-col-md12 we-search">
-                    <div class="layui-inline">
-                        <select name="city" lay-verify="">
-                            <option value="">订单状态</option>
-                            <option value="010">已完成</option>
-                            <option value="021">未完成</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="开始时间" name="start" id="start">
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="截止时间" name="end" id="end">
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="username" placeholder="订货商" autocomplete="off" class="layui-input">
-                    </div>
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                </form>
-            </div>
-            <div class="weadmin-block">
-                <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="fas fa-trash"></i> 批量删除</button>
-                <button class="layui-btn layui-btn-warm" onclick=""><i class="fas fa-check"></i> 标记为完成</button>
-                <button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')"><i class="fas fa-plus"></i> 添加</button>
-                <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
-                <span class="fr" style="line-height:40px">共有数据：88 条</span>
-            </div>
+        <div class="weadmin-block">
+            <button class="layui-btn layui-btn-danger" onclick="multiDelete()">
+                <i class="fas fa-trash"></i> 批量删除</button>
+            <button class="layui-btn layui-btn-warm" onclick="multiComplete()">
+                <i class="fas fa-check"></i> 标记为完成</button>
+            <button class="layui-btn" onclick="WeAdminShow('添加订单','./OrderAdd.html')">
+                <i class="fas fa-plus"></i> 添加</button>
+        </div>
 
-            <table class="layui-hide" id="orderList" style="width:auto;"></table>
 
-            <script id="statusTpl">
-                <span class="layui-btn layui-btn-danger layui-btn-xs">未完成</span>
-            </script>
-            <script type="text/html" id="operateTpl">
-                <a title="编辑" onclick="WeAdminEdit('修改订单','./OrderModify.html')" href="javascript:;">
+        <table class="layui-hide" id="orderList" lay-filter="orderInfo"></table>
+        <script type="text/html" id="operateTpl">
+                <a title="编辑" lay-event="edit" href="javascript:;">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                <a title="删除" lay-event="delete" href="javascript:;">
                     <i class="fas fa-trash" activated></i>
                 </a>
-                <a title="完成" href="javascript:;">
+                <a title="完成" lay-event="complete" href="javascript:;">
                     <i class="fas fa-check" activated></i>
                 </a>
             </script>
-            <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-            <script src="../../static/js/OrderList.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
 
-            
 
-        </div>
-        <script>
-            layui.extend({
-                admin: '{/}../../static/js/admin'
+
+
+    </div>
+    <script>
+        layui.extend({
+            admin: '{/}../../static/js/admin'
+        });
+        layui.use(['laydate', 'jquery', 'table', 'form', 'admin'], function () {
+            var laydate = layui.laydate,
+                $ = layui.jquery,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin
+
+            tableIns = table.render({
+                elem: '#orderList',
+                cellMinWidth: 100,
+                cols: [
+                    [{
+                        type: 'checkbox'
+                    }, {
+                        field: 'id', title: '订单编号', sort: true, width: 180
+                    }, {
+                        field: 'price', title: '订单金额', sort: true
+                    }, {
+                        field: 'start_date', title: '下单', sort: true, width: 150
+                    }, {
+                        field: 'end_date', title: '交付日期', sort: true, width: 150
+                    }, {
+                        field: 'indentor', title: '订货商'
+                    }, {
+                        field: 'status', title: '订单状态', sort: true
+                    }, {
+                        field: 'operate', title: '操作', toolbar: '#operateTpl', unresize: true
+                    }]
+                ],
+                data: mdata,
+                event: true,
+                page: true
             });
-            layui.use(['laydate','jquery','admin'], function() {
-                var laydate = layui.laydate,
-                    $ = layui.jquery,
-                    admin = layui.admin;
-                //执行一个laydate实例
-                laydate.render({
-                    elem: '#start' //指定元素
-                });
-                //执行一个laydate实例
-                laydate.render({
-                    elem: '#end' //指定元素
-                });
-                
-                /*用户-停用*/
-                function member_stop(obj, id) {
-                    layer.confirm('确认要停用吗？', function(index) {
-                        if($(obj).attr('title') == '启用') {
-                            //发异步把用户状态进行更改
-                            $(obj).attr('title', '停用')
-                            $(obj).find('i').html('&#xe62f;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                            layer.msg('已停用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-    
-                        } else {
-                            $(obj).attr('title', '启用')
-                            $(obj).find('i').html('&#xe601;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                            layer.msg('已启用!', {
-                                icon: 5,
-                                time: 1000
-                            });
+            var pdata
+            if (true) {
+                //初次渲染table
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/order/get-all-order",
+                    cache: false,
+                    async: false,
+                    contenType: "application/json",
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (data) {
+                        pdata = data;
+                        pdata = JSON.parse(pdata)
+                        mdata = []
+                        for (var i in pdata) {
+                            var status
+                            if (pdata[i].fields.status) status = "已完成"
+                            else status = "未完成"
+                            mdata[i] = {
+                                "id": pdata[i].pk,
+                                "price": pdata[i].fields.totalprice,
+                                "start_date": pdata[i].fields.date.substr(0, 10),
+                                "end_date": pdata[i].fields.deliverydate.substr(0, 10),
+                                "indentor": pdata[i].fields.indentor,
+                                "status": status
+                            }
                         }
-                    });
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    },
+                    error: function (err) {
+                        layer.confirm("获取订单列表失败，请重试", {
+                            icon : 6
+                        })
+                    }
+                })
+            }
+
+            $(function () {
+                form.render();
+            });
+            function getListInfo() {
+                return pdata;
+            }
+            //监听 批量删除按钮
+            window.multiDelete = function () {
+                var checkStatus = table.checkStatus('orderList')
+                var post_json = []
+                var check_json = checkStatus.data
+                for (var i in check_json) {
+                    post_json[i] = {
+                        "id": check_json[i].id
+                    }
                 }
-    
-                /*用户-删除*/
-                function member_del(obj, id) {
-                    layer.confirm('确认要删除吗？', function(index) {
-                        //发异步删除数据
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
-                    });
+                layer.confirm('确认要删除这些记录吗？', function (index) {
+                    multiOption(post_json, "delete-orders")
+                    getTableInfo()
+                    return false;
+                });
+            }
+            window.multiComplete = function () {
+                var checkStatus = table.checkStatus('orderList')
+                var post_json = []
+                var check_json = checkStatus.data
+                for (var i in check_json) {
+                    post_json[i] = {
+                        "id": check_json[i].id
+                    }
                 }
-    
-                function delAll(argument) {
-                    var data = tableCheck.getData();
-                    layer.confirm('确认要删除吗？' + data, function(index) {
-                        //捉到所有被选中的，发异步进行删除
-                        layer.msg('删除成功', {
-                            icon: 1
+                layer.confirm('确认要完成这些记录吗？', function (index) {
+                    multiOption(post_json, "complete-orders")
+                    getTableInfo()
+                    return false;
+                });
+            }
+
+            //批量删除和批量完成时，向后端发送数据
+            //str = complete-orders || delete-orders
+            function multiOption(post_json, str) {
+                var req = str
+                $.ajax({
+                    url: "http://127.0.0.1:8000/order/" + req,
+                    type: "POST",
+                    cache: false,
+                    async: false,
+                    contenType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(post_json),
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (data) {
+                        var msg, icon_num
+                        if(req == "complete-orders"){
+                            if(data.result == 1) {
+                                msg = "所选订单已标记为完成"
+                                icon_num = 6
+                            } else {
+                                msg = "无用户权限"
+                                icon_num = 5
+                            }
+                        } else {
+                            if(data.result == 1){
+                                msg = "所选订单删除成功"
+                                icon_num = 6
+                            } else {
+                                msg = "无用户权限"
+                                icon_num = 5
+                            }
+                        }
+                        layer.msg(msg , {
+                            icon: icon_num
                         });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
-                    });
+                    },
+                    error: function (error) {
+                        console.log(err)
+                        layer.msg('操作失败，请重试!', {
+                            icon: 5
+                        });
+                    }
+                });
+            }
+
+            //监听table中每行右侧的操作按钮
+            //      edit, delete, complete
+            table.on('tool(orderInfo)', function (obj) {
+                var data = obj.data //获得当前行数据
+                var layEvent = obj.event
+                var order_id = data.id
+
+                switch (layEvent) {
+                    case "edit":
+                        WeAdminEdit('修改订单', './OrderModify.html', order_id)
+                        break;
+                    case "delete":
+                        layer.confirm('确认要删除这条记录吗？', function (index) {
+                            sendPost(order_id, 'delete-order')
+                            getTableInfo()
+                            return false;
+                        });
+                        break;
+                    case "complete":
+                        layer.confirm('确认要修改这条记录吗？', function (index) {
+                           sendPost(order_id, 'update-one-order')
+                            getTableInfo()
+                            return false;
+                        });
+                        break;
                 }
             });
-            
-        </script>
-    </body>
+
+            //删除或添加数据完成后，取回数据并重新reload table
+            function getTableInfo() {
+                var req = 'get-all-order'
+                var pdata
+                var kdata = []
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/order/" + req,
+                    cache: false,
+                    async: false,
+                    contenType: "application/json",
+                    dataType: "json", xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function (data) {
+                        pdata = data;
+                        pdata = JSON.parse(pdata)
+                        for (var i in pdata) {
+                            var status
+                            if (pdata[i].fields.status) status = "已完成"
+                            else status = "未完成"
+                            kdata[i] = {
+                                "id": pdata[i].pk,
+                                "price": pdata[i].fields.totalprice,
+                                "start_date": pdata[i].fields.date.substr(0, 10),
+                                "end_date": pdata[i].fields.deliverydate.substr(0, 10),
+                                "indentor": pdata[i].fields.indentor,
+                                "status": status
+                            }
+                        }
+                        mdata = kdata
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        layer.msg("更新列表失败，请刷新页面！", {
+                            icon: 5
+                        })
+                    }
+                })
+            }
+
+            //向后端发送单条删除或标记为完成数据
+            function sendPost(order_id, str) {
+                var pdata
+                var post_data = {
+                    'order': order_id
+                }
+                var req = str
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/order/" + req,
+                    cache: false,
+                    async: false,
+                    contenType: "application/json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: JSON.stringify(post_data),
+                    success: function (data) {
+                        var msg, icon_num
+                        if (req == "delete-order") {
+                            if(data.result == 1) {
+                                msg = "订单删除成功"
+                                icon_num = 6
+                            } else if (data.result == 2) {
+                                msg = "无用户权限"
+                                icon_num = 5
+                            } else {
+                                msg = "找不到该订单"
+                                icon_num = 5
+                            }
+                        } else {
+                            if(data.result == 1) {
+                                msg = "已标记为完成"
+                                icon_num = 6
+                            } else {
+                                msg = "无用户权限"
+                                icon_num = 5
+                            } 
+                        }
+                        layer.msg(msg, {
+                            icon: icon_num
+                        })
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        var msg
+                        if (req == "delete-order") {
+                            msg = "订单删除失败"
+                        } else {
+                            msg = "无法标记为完成，请重试"
+                        }
+                        layer.msg(msg, {
+                            icon: 5
+                        })
+                    }
+                })
+            }
+
+            //监听搜索按钮 按照条件筛选，取回数据后reload table
+            window.search = function () {
+                var status = $("#order_status").val()
+                if (status == -1) status = ""
+                var begin_time = $("#begin_time").val()
+                var end_time = $("#end_time").val()
+                var indentor_name = $("#indentor_name").val()
+                var post_json = {
+                    "indentor": indentor_name,
+                    "date": begin_time,
+                    "deliverydate": end_time,
+                    "status": status
+                }
+                var pdata
+                var mdata = []
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/order/get-specific-order",
+                    cache: false,
+                    async: false,
+                    contentType: "application/json",
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: JSON.stringify(post_json),
+                    success: function (data) {
+                        pdata = data
+                        pdata = JSON.parse(pdata);
+                        for (var i in pdata) {
+                            var status;
+                            if (pdata[i].fields.status) status = "已完成";
+                            else status = "未完成";
+                            mdata[i] = {
+                                "id": pdata[i].pk,
+                                "price": pdata[i].fields.totalprice,
+                                "start_date": pdata[i].fields.date.substr(0, 10),
+                                "end_date": pdata[i].fields.deliverydate.substr(0, 10),
+                                "indentor": pdata[i].fields.indentor,
+                                "status": status
+                            }
+                        }
+                        tableIns.reload({
+                            data: mdata,
+                            page:{
+                                curr:1
+                            }
+                        })
+                        layer.msg("查找成功",  {
+                            icon: 6
+                        })
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        layer.msg("查找失败，请重试", {
+                            icon:5
+                        })
+                    }
+                })
+            }
+
+
+        });
+
+    </script>
+</body>
 
 </html>
