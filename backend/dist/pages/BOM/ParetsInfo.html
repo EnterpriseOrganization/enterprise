@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="../../static/css/font.css">
         <link rel="stylesheet" href="../../static/css/weadmin.css">
         <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+        <script type="text/javascript" src="../../static/js/jquery-1.4.4.min.js"></script>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
         <script>
@@ -89,7 +90,7 @@
                         });
 
                         mdatanum=mdata.length
-                        $("#mdcount").text("共有数据："+mdatanum+"条")
+                        //$("#mdcount").text("共有数据："+mdatanum+"条")
                     },
                     error:function(error){
                         console.log(error)
@@ -123,7 +124,7 @@
                             });
 
                             mdatanum=mdata.length
-                            $("#mdcount").text("共有数据："+mdata.length+"条")
+                            //$("#mdcount").text("共有数据："+mdata.length+"条")
 
                         },
                         error:function(error){
@@ -144,7 +145,7 @@
         <a href="">首页</a>
         <a href="">BOM信息管理</a>
         <a>
-          <cite>物料管理</cite></a>
+          <cite>物料信息</cite></a>
       </span>
             <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
@@ -152,7 +153,6 @@
         <div class="weadmin-body">
             <div class="layui-row">
                 <form class="layui-form layui-col-md12 we-search" lay-filter="materialsearch">
-                    <i class="fas fa-filter"> </i>
                     <div class="layui-inline">
                         <input class="layui-input" placeholder="物料名称" name="materialname" >
                     </div>
@@ -176,7 +176,7 @@
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
                 <button class="layui-btn" onclick="WeAdminShow('创建物料','./CreateParets.html',550,405)"><i class="fas fa-plus"></i> 创建物料</button>
                 <button class="layui-btn" onclick=""><i class="fas fa-share"></i> 全部导出</button>
-                <span class="fr" style="line-height:40px" id="mdcount"></span>
+                <!--<span class="fr" style="line-height:40px" id="mdcount"></span>-->
             </div>
 
             <table id="materialtable" lay-filter="test"></table>
@@ -202,19 +202,31 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                mdatanum-=1
+                                for(var i=0;i<mdata.length;i++){
+                                    if(mdata[i].id==id){
+                                        mdata.splice(i,1);
+                                        break;
+                                    }
+                                }
 
-                                $(obj).parents("tr").remove();
-                                $("#mdcount").text("共有数据："+mdatanum+"条")
+                                mdatanum=mdata.length
+
+                                //$(obj).parents("tr").remove();
+                                //$("#mdcount").text("共有数据："+mdatanum+"条")
+
+                                tableIns.reload({
+                                    data:mdata
+                                });
+
                                 layer.msg('已删除!', {
-                                    icon: 1,
+                                    icon: 6,
                                     time: 1000
                                 });                                
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败！', {
-                                    icon: 1,
+                                    icon: 5,
                                     time: 1000
                                 });                                 
                             }
@@ -244,19 +256,45 @@
                             success:function(msg){
                                 console.log(msg)
 
-                                mdatanum-=checkStatus.data.length
+                                var idtodel=[]
+                                for(var i=0;i<checkStatus.data.length;i++){
+                                    idtodel.push(checkStatus.data[i].id);
+                                }
 
-                                $("#mdcount").text("共有数据："+mdatanum+"条")
+                                var tempmdata=[]
+                                for(var i=0;i<mdata.length;i++){
+                                    if(idtodel.indexOf(mdata[i].id)>=0){
+                                        console.log("asdfsad")
+                                        console.log(idtodel)
+                                        continue;
+                                    }
+                                    else{
+                                        tempmdata.push(mdata[i]);
+                                    }
+                                }
 
-                                $(".layui-form-checked").not('.header').parents('tr').remove();
+                                mdata=tempmdata;
+
+                                mdatanum=mdata.length;
+
+                                //$("#mdcount").text("共有数据："+mdatanum+"条")
+
+                                //$(".layui-form-checked").not('.header').parents('tr').remove();
+
+                                tableIns.reload({
+                                    data:mdata
+                                });
+                                
                                 layer.msg('删除成功!', {
-                                    icon: 1
+                                    icon: 6,
+                                    time: 1000
                                 });
                             },
                             error:function(error){
                                 console.log(error)
                                 layer.msg('删除失败!', {
-                                    icon: 1
+                                    icon: 5,
+                                    time: 1000
                                 });
                             }
 
