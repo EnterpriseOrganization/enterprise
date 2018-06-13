@@ -29,11 +29,12 @@
 
     <div class="weadmin-body">
         <div class="layui-row">
-            搜索订单ID：
             <div class="layui-form layui-input-inline">
                 <select class="select-class" lay-search="" id="order-id"></select>
             </div>
-            <button id="button" class="layui-btn" data-type="reload">搜索</button>
+            <button id="button" class="layui-btn" data-type="reload">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
         <table class="layui-table" id="order-list-table" lay-filter="order-list-table-filter"></table>
         <table class="layui-table" id="assign-table" style="margin-top: 50px;">
