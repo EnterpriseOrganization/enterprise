@@ -14,29 +14,33 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style type="text/css">
+            .label1 {padding: 0.2cm;font-weight:bold}
+            .label2 {padding: 0.2cm}
+        </style>
     </head>
 
     <body>
         <div class="weadmin-body">
             <form class="layui-form">
                 <div class="layui-form-item">
-                    <label for="L_username" class="layui-form-label">
+                    <label for="L_username"  style="width:100px;float:left;" class="label1">
                         物料名称
                     </label>
-                    <label for="L_username" class="layui-form-label">
+                    <label for="L_username"  style="width:100px;float:left;" class="label2">
                         ASD41324
                     </label>
                 </div>
                 <div class="layui-form-item">
-                    <label for="L_username" class="layui-form-label">
+                    <label for="L_username"  style="width:100px;float:left;" class="label1">
                         需求数量
                     </label>
-                    <label for="L_username" class="layui-form-label">
+                    <label for="L_username"  style="width:100px;float:left;" class="label2">
                         300/1000
                     </label>
                 </div>
                 <div class="layui-form-item">
-                    <label for="L_username" class="layui-form-label">
+                    <label for="L_username"   style="width:100px;float:left;" class="label1">
                         增加缺货
                     </label>
                     <div class="layui-input-inline">
@@ -51,7 +55,9 @@
                 <div class="layui-form-item">
                     <label for="L_repass" class="layui-form-label">
                   </label>
-                    <button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+                    <div class="layui-form-item">
+                        <button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+                    </div>
                     <input type="hidden" name="dataId" id="dataId" value="" />
                 </div>
             </form>

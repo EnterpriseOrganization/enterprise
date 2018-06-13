@@ -9,13 +9,17 @@
     <link rel="stylesheet" href="../../static/css/font.css">
     <link rel="stylesheet" href="../../static/css/weadmin.css">
     <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+      <style type="text/css">
+            .label1 {padding: 0.2cm;font-weight:bold}
+            .label2 {padding: 0.2cm}
+      </style>
   </head>
 
   <body>
     <div class="weadmin-body">
         <form class="layui-form">
           <div class="layui-form-item">
-              <label class="layui-form-label">
+              <label  style="width:100px;float:left;" class="label1">
                   <span class="we-red">*</span>供应商名
               </label>
               <div class="layui-input-inline">
@@ -24,7 +28,7 @@
               </div>
           </div>
           <div class="layui-form-item">
-              <label class="layui-form-label">
+              <label   style="width:100px;float:left;" class="label1">
                   <span class="we-red">*</span>供应电话
               </label>
               <div class="layui-input-inline">
@@ -33,7 +37,7 @@
               </div>
           </div>
           <div class="layui-form-item">
-              <label class="layui-form-label">
+              <label  style="width:100px;float:left;" class="label1">
                   <span class="we-red">*</span>供应商地址
               </label>
               <div class="layui-input-inline">
@@ -43,7 +47,9 @@
           </div>
           <div class="layui-form-item">
               <label class="layui-form-label"></label>
-              <button  class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+              <div class="layui-form-item">
+                <button  class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+              </div>
           </div>
       </form>
     </div>
