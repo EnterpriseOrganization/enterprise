@@ -1,72 +1,77 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>历史生产记录-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="stylesheet" href="../../static/css/font.css">
-    <link rel="stylesheet" href="../../static/css/weadmin.css">
-    <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
-</head>
-
-<body>
-    <div class="weadmin-nav">
-        <span class="layui-breadcrumb">
-            <a href="">首页</a>
-            <a href="">生产管理</a>
-            <a>
-                <cite>历史生产记录</cite>
+    <head>
+        <meta charset="UTF-8">
+        <title>历史生产记录-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../static/css/font.css">
+        <link rel="stylesheet" href="../../static/css/weadmin.css">
+        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+    </head>
+    <body>
+        <div class="weadmin-nav">
+            <span class="layui-breadcrumb">
+                <a href="">首页</a>
+                <a href="">生产管理</a>
+                <a><cite>历史生产记录</cite></a>
+            </span>
+            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+                <i class="layui-icon" style="line-height:30px">ဂ</i>
             </a>
-        </span>
-        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
-            title="刷新">
-            <i class="layui-icon" style="line-height:30px">ဂ</i>
-        </a>
-    </div>
-    <div class="weadmin-body">
-        <table class="layui-table" id="produce-table" lay-filter="produce-table-filter"></table>
-    </div>
-    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-    <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
-    <script>
-        layui.config({
-            base: '../../static/js/'
-            , version: '101100'
-        }).use('admin');
-        layui.use(['table', 'jquery'], function () {
-            var product_table = layui.table;
-            var $ = layui.jquery;
-            var produce_data;
-            $.ajax({
-                type: 'GET',
-                url: 'http://localhost:8000/product/tasks/history',
-                dataType: 'json',
-                cache: false,
-                async: false,
-                success: function (data) {
-                    produce_data = data['tasks'];
-                }
+        </div>
+        <div class="weadmin-body">
+            <div class="layui-row">
+                <form class="layui-form layui-col-md12 we-search">
+                    <div class="layui-inline">
+                        <input type="text" name="orderid" placeholder="订单ID" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" name="workshopid" placeholder="车间ID" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn" lay-submit="" lay-filter="produce_history_search"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <table id="produce-table" lay-filter="produce-table-filter"></table>
+        </div>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            layui.config({
+                base: '../../static/js/'
+                ,version: '101100'
+            }).use('admin');
+            layui.use(['table', 'jquery'], function(){
+                var product_table = layui.table;
+                var $ = layui.jquery;
+                var produce_data;
+                $.ajax ({
+                    type: 'GET',
+                    url: 'http://localhost:8000/product/tasks/history',
+                    dataType: 'json',
+                    cache: false,
+                    async: false,
+                    success: function (data) {
+                        produce_data = data['tasks'];
+                    }
+                });
+                product_table.render({
+                    elem: '#produce-table'
+                    ,height: 315
+                    ,page: true
+                    ,data: produce_data
+                    ,cols: [[
+                        {field: 'order_id', title: '订单ID', width:170, fixed: 'left'},
+                        {field: 'workshop_id', title: '车间ID', width:170},
+                        {field: 'product_id', title: '货品ID', width:170},
+                        {field: 'product_name', title: '货品名称', width:170},
+                        {field: 'amount', title: '货品数量'},
+                        {field: 'deadline', title: '截止时间', width:170},
+                        {field: 'archive_date', title: '完成时间', width:170, fixed: 'right'},
+                    ]]
+                });
             });
-            product_table.render({
-                elem: '#produce-table'
-                , height: 400
-                , page: true
-                , data: produce_data
-                , cols: [[
-                    { field: 'order_id', title: '订单ID', width: 170, fixed: 'left' },
-                    { field: 'workshop_id', title: '车间ID', width: 170 },
-                    { field: 'product_id', title: '货品ID', width: 170 },
-                    { field: 'product_name', title: '货品名称', width: 170 },
-                    { field: 'amount', title: '货品数量' },
-                    { field: 'deadline', title: '截止时间', width: 170 },
-                    { field: 'archive_date', title: '完成时间', width: 170, fixed: 'right' },
-                ]]
-            });
-        });
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>

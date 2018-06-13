@@ -142,6 +142,19 @@
                         },
                         success:function(msg){
                             console.log(msg)
+                            
+                            var mti=parent.mtableIns;
+                            for(var i=0;i<parent.mdata.length;i++){
+                                if(parent.mdata[i].id==msg.id){
+                                    parent.mdata[i]=msg;
+                                    break;
+                                }
+                            }
+
+                            mti.reload({
+                                data:parent.mdata
+                            });
+
                             layer.alert("修改成功",{
                                 icon:6
                             },function(){
@@ -152,7 +165,7 @@
                         error:function(error){
                             console.log(error)
                             layer.alert("修改失败",{
-                                icon:6
+                                icon:5
                             });
                         }
 
