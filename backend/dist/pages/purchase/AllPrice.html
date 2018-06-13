@@ -125,9 +125,6 @@
     </script>
 
     <script type="text/javascript">
-        layui.extend({
-            admin: '{/}../../static/js/admin'
-        });
          var tableins;
         layui.use(['form', 'jquery', 'util', 'admin', 'layer', 'table'], function () {
             var form = layui.form,
@@ -180,7 +177,6 @@
 
             //监听新增价格
             form.on('submit(add_price)', function (data) {
-                console.log('add price!!');
                 layer.open({
                          type: 2 //此处以iframe举例
                          ,title: '添加物料报价'
@@ -204,8 +200,6 @@
                     cache: false,
                     async: false,
                     success: function (data) {
-                        console.log('load data 200!');
-                        console.log(data);
                         pricedata = data['result'];
                     }
                     });
@@ -233,25 +227,25 @@
                     var supl_name = document.getElementById("supl_name").value.trim();
                     $.ajax ({
                         url: 'http://localhost:8000/purchase/quotation_query',
-                    type: 'post',
-                    dataType:'json',
-                    data: {
-                        quotation_id: mat_id,
-                        material_name: mat_name,
-                        supplier_name: supl_name,
-                    },
-                    xhrFields:{
+                        type: 'post',
+                        dataType:'json',
+                        data: {
+                            material_id: mat_id,
+                            material_name: mat_name,
+                            supplier_name: supl_name,
+                        },
+                        xhrFields:{
                             withCredentials:true
-                    },
-                    success: function(data){
-                        if(data.msg == 200)
-                            {
-                                var searchresult = data['result'];
-                                // alert(JSON.stringify(searchresult));
-                                tableins.reload({
-                                    data:searchresult
-                                });
-                            }
+                        },
+                        success: function(data){
+                            if(data.msg == 200)
+                                {
+                                    var searchresult = data['result'];
+                                    // alert(JSON.stringify(searchresult));
+                                    tableins.reload({
+                                        data:searchresult
+                                    });
+                                }
                             else{
                                 alert(msg);
                             }
