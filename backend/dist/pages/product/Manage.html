@@ -113,6 +113,7 @@
             table.render({
                 elem: '#order-list-table',
                 page: true,
+                height: 315,
                 data: order_list_data,
                 id: 'tableReload',
                 cols: [
@@ -275,8 +276,9 @@
                     '<td><button class="layui-btn layui-btn-sm" onclick="removeTr(' + num +
                     ')"><i class="layui-icon">&#xe640;</i></button>' + '</td>' +
                     '</tr>';
+
                 const elements = $("#assign-table").children().length; // 表示id为“mtTable”的标签下的子标签的个数
-                $("#assign-table").children().eq(elements - 1).after(tableHtml); // 在表头之后添加空白行
+                $("#assign-table").children().eq(elements - 1).append(tableHtml); // 在表头之后添加空白行
 
                 $('#workshop-name' + num).append(new Option('', -1));
                 // 添加options
