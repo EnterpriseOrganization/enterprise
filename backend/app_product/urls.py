@@ -4,6 +4,7 @@ from app_product.Views import ProduceTaskView, MaterialListView
 
 urlpatterns = [
     url(r'tasks$', ProduceTaskView.getAllTasks),
+    url(r'tasks/real$', ProduceTaskView.getRealAllTasks),
     url(r'tasks/byorder$', ProduceTaskView.getOrderTasks),
     url(r'tasks/history$', ProduceTaskView.getHistoryTasks),
     url(r'tasks/undone$', ProduceTaskView.getUndoneTasks),
