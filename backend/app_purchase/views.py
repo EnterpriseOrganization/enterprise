@@ -35,7 +35,6 @@ def get_quotation_list(request):
 				'supplier_name':sm.supplier.name,
 			}
 			result.append(res)
-
 		return JsonResponse({'msg': 200, 'result': result})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
@@ -83,7 +82,7 @@ def get_quotation_detail(request):
 	"""
 	获取供应商报价详细信息
 	:param request: quotation_id
-	:return: 
+	:return:
 	"""
 	if request.method == 'POST':
 		params = request.POST
@@ -154,7 +153,7 @@ def quotation_query(request):
 		where_args = {}
 		# 都有什么条件
 		if material_id:
-			where_args['material__id'] = material_id
+    			where_args['material__id'] = material_id
 		if supplier_name:
 			where_args['supplier__name'] = supplier_name
 		if material_name:
@@ -395,7 +394,7 @@ def add_purchase(request):
 				else:
 					return JsonResponse({'msg': 'Incomplete parameters'})
 		else:
-			return JsonResponse({'msg':'parameter error'})
+    			return JsonResponse({'msg':'parameter error'})
 	else:
 		return JsonResponse({'msg': 'Please use POST', 'result': 'null'})
 	"""
