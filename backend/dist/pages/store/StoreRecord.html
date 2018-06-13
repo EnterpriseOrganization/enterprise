@@ -29,32 +29,28 @@
         </div>
         <div class="weadmin-body">
             <div class="layui-row">
-                <form class="layui-form layui-col-md12 we-search">
-                    <div class="layui-inline">
-                        <select name="city" lay-verify="">
-                            <option value="">出库/入库</option>
-                            <option value="010">入库</option>
-                            <option value="021">出库</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料名称" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="入库时间" name="start" id="start">
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="出库时间" name="end" id="end">
-                    </div>
-                    <button class="layui-btn" lay-submit="" lay-filter="sreach" onclick="test()"><i class="layui-icon">&#xe615;</i></button>
-                </form>
+                <i class="layui-icon layui-icon-note"></i><a> 查询出/入库日志: </a>
+                <div class="layui-inline">
+                    <select name="city" lay-verify="" id="type" class="layui-select">
+                        <option value="">选择查询种类</option>
+                        <option value="010">入库</option>
+                        <option value="021">出库</option>
+                    </select>
+                </div>
+                <div class="layui-inline">
+                    <input type="text" name="title" required lay-verify="required"
+                        placeholder="请输入物料名称" autocomplete="off" class="layui-input" id="name">
+                </div>
+                <div class="layui-inline">
+                    <input type="text" name="title" required lay-verify="required"
+                        placeholder="请输入接收人或执行人" autocomplete="off" class="layui-input" id="receptor">
+                </div>
+                <div class="layui-inline">
+                    <input type="text" name="title" required lay-verify="required"
+                        placeholder="请输入验证人" autocomplete="off" class="layui-input" id="checker">
+                </div>
+                <button class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
             </div>
-
             <table class="layui-table" id="store-record">
             </table>
 
@@ -75,58 +71,8 @@
                 laydate.render({
                     elem: '#end' //指定元素
                 });
-                
-                /*用户-停用*/
-                function member_stop(obj, id) {
-                    layer.confirm('确认要停用吗？', function(index) {
-                        if($(obj).attr('title') == '启用') {
-                            //发异步把用户状态进行更改
-                            $(obj).attr('title', '停用')
-                            $(obj).find('i').html('&#xe62f;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                            layer.msg('已停用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-    
-                        } else {
-                            $(obj).attr('title', '启用')
-                            $(obj).find('i').html('&#xe601;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                            layer.msg('已启用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-                        }
-                    });
-                }
-    
-                /*用户-删除*/
-                function member_del(obj, id) {
-                    layer.confirm('确认要删除吗？', function(index) {
-                        //发异步删除数据
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
-                    });
-                }
-    
-                function delAll(argument) {
-                    var data = tableCheck.getData();
-                    layer.confirm('确认要删除吗？' + data, function(index) {
-                        //捉到所有被选中的，发异步进行删除
-                        layer.msg('删除成功', {
-                            icon: 1
-                        });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
-                    });
-                }
             });
-            
+
         </script>
     </body>
     <script src="./interaction-warehouse.js"></script>
@@ -140,9 +86,16 @@
 
         layui.use('table', function(){
             var table = layui.table;
+            var admin = layui.admin;
+            var $ = layui.jquery;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var layer = layui.layer;
+            var postdata;
+
 
             //第一个实例
-            table.render({
+            var  tablelns = table.render({
                 elem: '#store-record'
                 ,height: 315
                 ,width: 1000
@@ -150,48 +103,105 @@
                 ,page: true //开启分页
                 ,cols: [[ //表头
                     { checkbox: true}
-                    ,{field: 'oper', title: '出库/入库', width:100}
-                    ,{field: 'id', title: '物料编号', width:200, sort: true}
-                    ,{field: 'name', title: '物料名称', width:200}
-                    ,{field: 'num', title: '数量', width:150}
-                    ,{field: 'time', title: '时间', width:200} 
-                    ,{field: 'audit', title: '审核人', width: 100}
+                    ,{field: 'in_or_out', title: '出库/入库'}
+                    ,{field: 'id', title: '物料编号', sort: true}
+                    ,{field: 'name', title: '物料名称'}
+                    ,{field: 'number', title: '数量'}
+                    ,{field: 'time', title: '时间'} 
+                    ,{field: 'checker', title: '审核人'}
                 ]],
                 data:[
-                {
-                        "oper": "出库",
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "audit" : "华仔"
-                },
-                {
-                        "oper": "出库",
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "audit" : "华仔"
-                },
-                {
-                        "oper": "出库",
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "audit" : "华仔"
-                },
-                {
-                        "oper": "出库",
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "audit" : "华仔"
-                }
                 ]
             });
+            form.on('submit(search)', function() {
+                var type = $('#type').val();
+                console.log(type)
+                var receptor = $('#receptor').val();
+                var checker = $('#checker').val();
+                var material = $('#name').val();
+
+
+                if(type == "010") {
+                    var send_dic = {
+                        'type': 0,
+                        'material': material,
+                        'operator': receptor,
+                        'checker': checker
+                    }
+                    console.log(send_dic)
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/warehouse/get-inwarehouse-record",
+                        cache: false,
+                        async: false,
+                        contentType: "application/json",
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        data: JSON.stringify(send_dic),
+                        success: function(data) {
+                            console.log(data[0])
+                            postdata = []
+                            for(item in data){
+                                postdata.push(data[item])
+                            }
+    
+    
+                        },
+                        error: function (data) {
+                            layer.msg("失败", {
+                                icon:5
+                            })
+                        }
+                    })
+                } else if (type == "021") {
+                    var send_dic = {
+                        'type': 1,
+                        'material': material,
+                        'operator': receptor,
+                        'checker': checker
+                    }
+                    console.log(send_dic)
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/warehouse/get-outwarehouse-record",
+                        cache: false,
+                        async: false,
+                        contentType: "application/json",
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        data: JSON.stringify(send_dic),
+                        success: function(data) {
+                            console.log(data[0])
+                            postdata = []
+                            for(item in data){
+                                postdata.push(data[item])
+                            }
+    
+    
+                        },
+                        error: function (data) {
+                            layer.msg("失败", {
+                                icon:5
+                            })
+                        }
+                    })
+                }
+
+
+
+                //console.log(send_dic)
+                //tdata = getInventory(send_dic)
+                tablelns.reload({
+                    data: postdata
+                }
+                )
+            })
 
         });
     </script>

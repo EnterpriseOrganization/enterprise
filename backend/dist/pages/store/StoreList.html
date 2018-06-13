@@ -30,41 +30,33 @@
         </div>
         <div class="weadmin-body">            
             <div class="layui-row">
-                <form class="layui-form layui-col-md12 we-search">
-                    筛选 <i class="fas fa-filter"></i>
-                    <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料编号" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-inline">
-                        <input type="text" name="title" required lay-verify="required"
-                            placeholder="请输入物料名称" autocomplete="off" class="layui-input">   
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="入库时间" name="start" id="start">
-                    </div>
-                    <div class="layui-inline">
-                        <input class="layui-input" placeholder="截止时间" name="end" id="end">
-                    </div>
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
-                </form>
+                <i class="layui-icon layui-icon-note"></i><a> 查询库存: </a>
+                <div class="layui-inline">
+                    <input type="text" name="title" 
+                        placeholder="请输入物料名称" autocomplete="off" class="layui-input" id="name">
+                </div>
+                <div class="layui-inline">
+                    <input type="text" name="title" 
+                        placeholder="请输入查询的库存数量" autocomplete="off" class="layui-input" id="raw-num">   
+                </div>
+                <div class="layui-inline">
+                    <input type="text" name="title"
+                        placeholder="请输入查询的货架" autocomplete="off" class="layui-input" id="shelf">   
+                </div>
+                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search"><i class="fas fa-search"></i></button>
+                
             </div>
-
+            <div class="weadmin-block">
+            <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="WeAdminShow('新增入库信息','./inRecord.html')"><i class="layui-icon">&#xe654;入库信息添加</i></button>
+                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('新增出库信息','./outRecord.html')"><i class="layui-icon">&#xe654;出库信息添加</i></button>
+            </div>
             <!--<div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
                 <button class="layui-btn" onclick="WeAdminShow('添加订单','./add.html')"><i class="layui-icon"></i>添加</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
             </div>-->
-            <table class="layui-table" id="store-list">
+            <table class="layui-table" id="store-list" lay-filter="storeEvent">
             </table>
-            <script id="tools">
-                    <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
-                        <i class="fas fa-plus"></i>
-                    </a>
-                    <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
-                        <i class="fas fa-minus"></i>
-                    </a>
-            </script>
 
         </div>
         <script>
@@ -141,60 +133,130 @@
             .amount-input {
                 width: 70px;
             }
+            #add-item-row {
+                margin-top: 15px;
+            }
         </style>
     </body>
+    <script src="./interaction-warehouse.js"></script>
     <script>
-        layui.use('table', function(){
-            var table = layui.table;
 
+
+        layui.use(['form', 'admin', 'jquery', 'table', 'layer', 'laydate'], function(){
+            var table = layui.table;
+            var admin = layui.admin;
+            var $ = layui.jquery;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var layer = layui.layer;
+            var postdata;
+            
             //第一个实例
-            table.render({
+            var tablelns = table.render({
                 elem: '#store-list'
                 ,height: 315
                 ,width: 1000
                 // ,url: '' //数据接口
                 ,page: true //开启分页
                 ,cols: [[ //表头
-                    { checkbox: true}
-                    ,{field: 'id', title: '物料编号', width:200, sort: true}
-                    ,{field: 'name', title: '物料名称', width:150}
-                    ,{field: 'num', title: '数量', width:150}
-                    ,{field: 'time', title: '入库时间', width:200} 
-                    ,{field: 'status', title: '状态', width: 100}
-                    ,{title: '操作', width: 150, toolbar: '#tools' }
+                    { checkbox: true }
+                    ,{field: 'id', title: '物料编号',  sort: true}
+                    ,{field: 'name', title: '物料名称'}
+                    ,{field: 'shelfnumber', title: '货架号'}
+                    ,{field: 'number', title: '数量', event: 'changenum'}
+                    ,{field: 'newestinwarehousedate', title: '最新入库时间'}
                 ]],
                 data:[
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                },
-                {
-                        "id" : "E34J231JAK342",
-                        "name" : "0603电阻(1K)",
-                        "num" : "10000",
-                        "time" : "2017-08-17 18:22",
-                        "status" : "充足"
-                }
                 ]
             });
 
+            form.on('submit(search)', function() {
+                //layer.msg(document.getElementById("test").value)
+                // alert('over!')
+                var name = $('#name').val();
+                var number = $('#raw-num').val();
+                var shelfnumber = $('#shelf').val();
+
+                var send_dic = {
+                'material': name,
+                'number': number,
+                'shelfnumber': shelfnumber
+                }
+
+                console.log(send_dic)
+
+                $.ajax({
+                    type: "POST",
+                    url: "/warehouse/inventory",
+                    cache: false,
+                    async: false,
+                    contentType: "application/json",
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: JSON.stringify(send_dic),
+                    success: function(data) {
+                        postdata = []
+                        for(item in data){
+                            postdata.push(data[item])
+                        }
+
+
+                    },
+                    error: function (data) {
+                        layer.msg("失败", {
+                            icon:5
+                        })
+                    }
+                })
+
+                tablelns.reload({
+                    data: postdata
+                }
+                )
+            });
+
+            table.on('tool(storeEvent)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'changenum') {
+                    layer.prompt({
+                        formType: 3
+                        , title: '修改 ID 为 [' + data.id + '] 的数量'
+                        , value: data.number
+                    }, function (value, index) {
+                        layer.close(index);
+
+                        //这里一般是发送修改的Ajax请求
+
+                        //同步更新表格和缓存对应的值
+                        obj.update({
+                            number: value
+                        });
+                    });
+                }
+            });
+
         });
+
+        function add_item() {
+
+            var id = document.getElementById("new-id").value
+            var name = document.getElementById("new-name").value
+            var date = document.getElementById("add-date").value
+            var num = document.getElementById("new-num").value
+            var add_dic = new Array()
+            add_dic['id'] = id
+            add_dic['name'] = name
+            add_dic['num'] = num
+            add_dic['date'] = date
+
+            console.log(add_dic)
+        }
     </script>
 </html>
+
+
+<!-- form.on('submit(search)', function() {
+
+}); -->
