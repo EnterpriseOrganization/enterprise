@@ -181,8 +181,7 @@
                     }
                 });
                 form.on('submit(material_requisition_search)', function(data) {
-                    var dataField = JSON.stringify(data.field);
-                    //layer.msg(JSON.stringify(data.field));
+                    var dataField = data.field;
                     $.ajax ({
                         type: 'GET',
                         url: 'http://localhost:8000/product/tasks/undone',
@@ -191,7 +190,6 @@
                         cache: false,
                         async: false,
                         success: function (data) {
-                            // TODO： 返回的assign_data没有经过筛选
                             assign_data = data['tasks'];
                             console.log(assign_data);
                         }
