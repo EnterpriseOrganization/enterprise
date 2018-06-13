@@ -26,7 +26,6 @@ async function getInventory(data){
         return res.json();
     })
     .then(function (res){
-        console.log(res)
         return res;
     })
     return response;
@@ -41,9 +40,12 @@ async function addInventory(data){
         },
         credentials:'include',
         body:JSON.stringify(data)
-    });
-    const answer = response.json()
-    return answer;
+    }).then(function(res){
+        return res.json()
+    }).then(function(res){
+        return res;
+    })
+    return response;
 }
 async function modifyInventory(data){
     const response =await fetch('/warehouse/modify-inventory',{
@@ -55,9 +57,12 @@ async function modifyInventory(data){
         },
         credentials:'include',
         body:JSON.stringify(data)
-    });
-    const answer = response.json()
-    return answer;
+    }).then(function(res){
+        return res.json()
+    }).then(function(res){
+        return res;
+    })
+    return response;
 }
 async function deleteInventory(data){
     const response =await fetch('/warehouse/remove-inventory',{
@@ -69,7 +74,10 @@ async function deleteInventory(data){
         },
         credentials:'include',
         body:JSON.stringify(data)
-    });
-    const answer = response.json()
-    return answer;
+    }).then(function(res){
+        return res.json()
+    }).then(function(res){
+        return res;
+    })
+    return response;
 }

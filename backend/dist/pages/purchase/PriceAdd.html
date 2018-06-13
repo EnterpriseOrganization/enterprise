@@ -120,19 +120,19 @@
                         console.log(data.msg);
                         if(data.msg == 200){
                             console.log('200!!'); 
-
                             layer.confirm('添加成功！', {icon: 1, title:'提示'}, function(index){ 
-                              layer.close(index);
-                              var index2 = parent.layer.getFrameIndex(window.name);
-                        //关闭当前frame
-                               parent.layer.close(index2);
-                               var index3= parent.parent.layer.getFrameIndex(window.name);
-                               
-                              });
-
+                                   
+                                    var index2 = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index2);
+                                    layer.close(index);
+                                });
                         }else {
-                            console.log('500!!');
-                             layer.msg(data.msg);
+                            layer.confirm(data.msg, {icon: 1, title:'提示'}, function(index){ 
+                                    
+                                    var index2 = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index2);    
+                                    layer.close(index);
+                                });
                         }
                     }
                 });
