@@ -21,12 +21,12 @@ def wrapTaskDTO(task): # task should be querySet object
         "topic": task.topic,
         "status": task.status,
         "amount": task.number,
-        "archive_date": task.archivedate.strftime("%Y-%m-%d") if task.archivedate else "" ,
-        "deadline": task.deadline.strftime("%Y-%m-%d") if task.deadline else "",
-        "begin_date": task.begindate.strftime("%Y-%m-%d") if task.begindate else "",
+        "archive_date": task.archivedate if task.archivedate else "" ,
+        "deadline": task.deadline if task.deadline else "",
+        "begin_date": task.begindate if task.begindate else "",
         "material_getter": task.material_getter,
         "material_checker": task.material_checker,
-        "material_distribute_date": task.material_distributon_date.strftime("%Y-%m-%d") if task.material_distributon_date else "",
+        "material_distribute_date": task.material_distributon_date if task.material_distributon_date else "",
         "done_url": MyServer + "product/task/done?task_id={}".format(task.id),
         "update_getmaterial_url": MyServer + "product/task/material-allocated?task_id={}".format(task.id)
     }
