@@ -113,6 +113,16 @@
                         },
                         success:function(msg){
                             console.log(msg)
+                            var mti=parent.mtableIns;
+                            parent.mdata.push(msg);
+
+                            mti.reload({
+                                data:parent.mdata
+                            });
+
+                            parent.mdatanum=parent.mdata.length
+                            parent.$("#mdcount").text("共有数据："+parent.mdatanum+"条")
+
                             layer.alert("添加成功",{
                                 icon:6
                             },function(){
@@ -123,7 +133,7 @@
                         error:function(error){
                             console.log(error)
                             layer.alert("添加失败",{
-                                icon:6
+                                icon:5
                             });
                         }
 
