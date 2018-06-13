@@ -193,9 +193,14 @@ def update_quotation_price(request):
 				sm = SupplierMaterial.objects.get(id=quotation_id)
 			except SupplierMaterial.DoesNotExist:
 				return JsonResponse({'msg': 'this quotation does not exist'})
+			price = float(price)
 			sm.price = price
-			sm.save()
-			return JsonResponse({'msg': 200, 'result': 'ok'})
+			try:
+				sm.save()
+				return JsonResponse({'msg': 200, 'result': 'ok'})
+			except Exception as E:
+				print(E)
+				return JsonResponse({'msg':500, 'result':'未知错误'})
 		else:
 			return JsonResponse({'msg': 'update failed, Incomplete parameters'})
 	else:
@@ -213,6 +218,7 @@ def add_supplier(request):
 		supplier_name = params.get('supplier_name')
 		supplier_phone = params.get('supplier_phone')
 		supplier_address = params.get('supplier_address')
+		print(supplier_name)
 		if supplier_address and supplier_name and supplier_phone:
 			sp = Supplier(name=supplier_name, contact='no', phonenumber=supplier_phone, address=supplier_address)
 			sp.save()
@@ -316,6 +322,8 @@ def add_purchase(request):
 			# insert into db
 			price = get_min_price(material_id)
 			print(price)
+			if not price:
+    				return JsonResponse({'msg': '该商品暂未报价'})
 			supplier = Supplier.objects.get(id=supplier_id)
 			purchase = Purchase(purchaser=purchaser, checker=checker, supplier=supplier, totalprice=price)
 			try:

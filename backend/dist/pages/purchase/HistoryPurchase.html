@@ -30,9 +30,11 @@
                 <div class="layui-inline">
                     <input class="layui-input" placeholder="订单编号"  id="purchase_id">
                 </div>
+                <!--
                 <div class="layui-inline">
                     <input class="layui-input" placeholder="采购日期"  id="date">
                 </div>
+                -->
                 <div class="layui-inline">
                     <input class="layui-input" placeholder="采购人" id="purchaser">
                 </div>
@@ -107,38 +109,6 @@
                                     layer.closeAll();
                                 }
                             });
-                        /**
-                        $.ajax({
-                        url: 'http://localhost:8000/purchase/get_purchase_detail',
-                        type: 'post',
-                        dataType: 'json',
-                        data: {
-                            purchase_id: data.id
-                        },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        success: function (data) {
-                            console.log(data);
-                            console.log('okokokokokokoko!!');
-                            var code=data['msg'];
-                        if(code=='200')
-                        {
-                            var searchresult = data['result'];
-                            layer.open({
-                             type: 2 //此处以iframe举例
-                             ,title: '查看采购单详情'
-                             ,area: ['750px', '500px']
-                             ,content: 'HistoryPurchaseInfo.html?=' + data
-                             ,closeBtn: 1
-                             ,btn: function(){
-                             layer.closeAll();
-                             }
-                         });
-                        }
-                        }
-                        });
-                        **/
                         }
 
                     });
@@ -148,7 +118,7 @@
                 form.on('submit(search)', function (data) {
                     //var time = new Date();
                     var purchaseid = document.getElementById("purchase_id").value;
-                    var purchasedate = document.getElementById("date").value;
+                    //var purchasedate = document.getElementById("date").value;
                     var purchaser = document.getElementById("purchaser").value;
                     $.ajax ({
                         url: 'http://localhost:8000/purchase/purchase_query',
@@ -162,7 +132,6 @@
                         data:{
                             purchase_id: purchaseid,
                             purchaser: purchaser,
-                            date: purchasedate
                         },
                         success: function (data) {
                             //console.log('hhhhhh');
@@ -170,7 +139,6 @@
                             if(msg=='200')
                             {
                                 var searchresult = data['result'];
-                                // alert(JSON.stringify(searchresult));
                                 tableins.reload({
                                     data:searchresult
                                 });
@@ -187,8 +155,6 @@
                 });
 
         });
-             </script>
-
+    </script>
   </body>
-
 </html>

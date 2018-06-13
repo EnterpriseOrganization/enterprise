@@ -156,28 +156,29 @@
                         "material_id":selectedText1,
                     }
                     $.ajax({
-                          url: 'http://localhost:8000/purchase/add_purchase',
-                          type: 'post',
-                          dataType:'json',
-                          data: Data,
-                          xhrFields:{
-                              withCredentials:true
-                          },
-                          success: function(data){
-                              //console.log('balabalalelvofmvimid!');
-                              if(data.msg == 200){
+                        url: 'http://localhost:8000/purchase/add_purchase',
+                        type: 'post',
+                        dataType:'json',
+                        data: Data,
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        success: function(data){
+                            //console.log('balabalalelvofmvimid!');
+                            if(data.msg == 200){
                                 layer.confirm('添加成功！', {icon: 1, title:'提示'}, function(index){ 
-                                 layer.close(index);
-                                 var index2 = parent.layer.getFrameIndex(window.name);
-                                 parent.layer.close(index2);
-                              
-                              });
-                              }else{
-                                  layer.alert("add failed", {
-                                    icon: 6
+                                    layer.close(index);
+                                    var index2 = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index2);    
                                 });
-                              }
-                          }
+                            }else{
+                                layer.confirm(data.msg, {icon: 1, title:'提示'}, function(index){ 
+                                    layer.close(index);
+                                    var index2 = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index2);    
+                                });
+                            }
+                        }
                     });
                     
                     return false;

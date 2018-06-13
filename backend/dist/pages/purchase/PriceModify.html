@@ -90,10 +90,13 @@
                                     window.parent.location.reload(); //刷新父页面
                                     var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                                     parent.layer.close(index);  // 关闭layer
-                                }else if(data.msg == 500){
-                                    console.log('Modify price 500!!');
                                 }else{
-                                    console.log('Modify price other!');
+                                    layer.confirm('修改失败！', {icon: 1, title:'提示'}, function(index){ 
+                                        layer.close(index);
+                                        var index2 = parent.layer.getFrameIndex(window.name);
+                                        //关闭当前frame
+                                        parent.layer.close(index2);
+                                    });
                                 }
                             }
                         });
