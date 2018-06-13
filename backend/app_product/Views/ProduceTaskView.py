@@ -97,9 +97,19 @@ def getUndoneTasks(request):
         "tasks": [taskDTO]
     }
     """
-    tasks = ProduceTask.getTasksByTaskStatus(1, 1)
+    workshop_id = request.GET.get("workshop_id")
+    order_id = request.GET.get("order_id")
+    if not workshop_id and not order_id: # 啥条件都没有就直接搜索所有的
+        tasks = ProduceTask.getTasksByTaskStatus(0, 1)
+    elif workshop_id and not order_id: # 按车间搜索
+        tasks = ProduceTask.getTasksByWorkshopID(workshop_id, 0, 1)
+    elif order_id and not workshop_id: # 订单搜索
+        tasks = ProduceTask.getTasksByOrderID(order_id, 0, 1)
+    else: # 同时搜索
+        a = ProduceTask.getTasksByWorkshopID(workshop_id, 0, 1)
+        b = ProduceTask.getTasksByOrderID(order_id, 0, 1)
+        tasks = [t for t in a if t in b] # 求交集
     return JsonResponse({"tasks": tasks})
-
 
 @require_GET
 def getWorkshops(request):
@@ -209,7 +219,6 @@ def updateTaskMaterialGet(request):
     if task_id != -1 and checkUpdateInfo(info):
         info["status"] = 1
         task = ProduceTask.updateTask(task_id, info)
-        print("final", task)
         return JsonResponse({"task": task})
     else:
         return JsonResponse({}, status=401)

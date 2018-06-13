@@ -85,7 +85,7 @@ class ProduceTaskBasic(models.Model):
     # id = models.AutoField(primary_key=True)
     personincharge = models.CharField(db_column='personInCharge', max_length=45, blank=True, null=True)  # Field name made lowercase.
     topic = models.CharField(max_length=45, blank=True, null=True)
-    status = models.IntegerField(default=0, validators=[TaskStatusValidator]) # 0：已分配,待领料 1： 已领料,待生产 2: 生产完成
+    status = models.IntegerField(default=0, validators=[TaskStatusValidator]) # 0：已分配,待领料 1：已领料,待生产 2: 生产完成
     # producestatus = models.IntegerField(db_column='produceStatus', blank=True, null=True, default=0)  # Field name made lowercase.
     archivedate = models.DateField(db_column='accurateDate', blank=True, null=True)  # Field name made lowercase.
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='workshopID', blank=True, null=True)  # Field name made lowercase.
