@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>领料单-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-        <link rel="stylesheet" href="../../static/css/font.css">
-        <link rel="stylesheet" href="../../static/css/weadmin.css">
-        <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
-    </head>
-    <body>
-        <div class="weadmin-nav">
-            <span class="layui-breadcrumb">
-                <a href="">首页</a>
-                <a href="">生产管理</a>
-                <a><cite>领料单</cite></a>
-            </span>
-            <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-                <i class="layui-icon" style="line-height:30px">ဂ</i>
+
+<head>
+    <meta charset="UTF-8">
+    <title>领料单-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome-all.css">
+</head>
+
+<body>
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">生产管理</a>
+            <a>
+                <cite>领料单</cite>
             </a>
-        </div>
-        <table id="meterial-req-table" lay-filter="meterial-req-table-filter"></table>
-        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-        <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
-        <script>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i>
+        </a>
+    </div>
+    <div class="weadmin-body">
+        <table class="layui-table" id="meterial-req-table" lay-filter="meterial-req-table-filter"></table>
+    </div>
+    <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+    <script>
         Date.prototype.Format = function (fmt) { //author: meizz
             var o = {
                 "M+": this.getMonth() + 1, //月份
@@ -42,112 +49,152 @@
                     fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
             return fmt;
         }
-        </script>
-        <script>
-            layui.config({
-                base: '../../static/js/'
-                ,version: '101100'
-            }).use('admin');
-            layui.use(['table', 'jquery'], function(){
-                var meterial_req_table = layui.table;
-                var $ = layui.jquery;
-                var assign_data;
-                // TODO: 从后端获取生产记录解析到produce_data中
-                assign_data = [{'assignID': 0, 'outRepresent': '', 'inRepresent': '', 'getTime': ""},
-                        {'assignID': 1, 'outRepresent': 'Lily', 'inRepresent': '', 'getTime': 20180102},
-                        {'assignID': 2, 'outRepresent': '', 'inRepresent': 'Lily', 'getTime': 20180102},
-                        {'assignID': 3, 'outRepresent': '', 'inRepresent': '', 'getTime': ""}
-                        ];
-                meterial_req_table.render({
-                    elem: '#meterial-req-table'
-                    ,height: 200
-                    ,page: true
-                    ,data: assign_data
-                    ,cols: [[
-                        {field: 'assignID', title: '分配ID', width:100, fixed: 'left'},
-                        {field: 'orderID', title: '订单ID', width:100},
-                        {field: 'groupID', title: '车间ID', width:100},
-                        {field: 'productName', title: '货品名称'},
-                        {field: 'productNumber', title: '货品数量', width:100},
-                        {field: 'generateTime', title: '记录生成时间', width:120, sort: true},
-                        {field: 'outRepresent', title: '出库负责人', width:100, templet: '#outRepresentTpl'},
-                        {field: 'inRepresent', title: '领料负责人', width:100, templet: '#inRepresentTpl'},
-                        {field: 'getTime', title: '领料时间', width:100, sort: true},
-                        {field: 'status', title: '操作', width:100, toolbar: '#get-meterial'},
-                        {field: 'detail', title: '详情', width:100, fixed: 'right', toolbar: '#show-detail'},
-                    ]]
-                });
-                meterial_req_table.on('tool(meterial-req-table-filter)', function(obj) {
-                    var data = obj.data;
-                    var layEvent = obj.event;
-                    var tr = obj.tr;
-                    if(layEvent === 'detail') {
-                        var meterial_req_data = "";
-                        // TODO: 通过 data.assignID 向后端发送请求 获取领料单数据 存储到meterial_req_data中，可添加样式
-                        // meterial_req_data = '<a class="layui-bg-red">hello</a>';
-                        layer.open({
-                            title: '领料单',
-                            content: meterial_req_data
-                        });
-
-                    } else if (layEvent === 'getMeterial') {
-                        var index = tr[0].rowIndex;
-                        var in_present_dom = $(".in-represent:eq(" + index + ")");
-                        var out_present_dom = $(".out-represent:eq(" + index + ")");
-                        var button_dom = $(".get-status-button:eq(" + index + ")");
-                        var in_present_value = in_present_dom.val();
-                        var out_present_value = out_present_dom.val();
-                        if (in_present_value==="" || out_present_value==="") {
-                            layer.open({
-                                title: '警告',
-                                content: '负责人均不可为空'
-                            });
-                        } else {
-                            in_present_dom.parent().html('<div class="in-represent">' + in_present_value + '</div>')
-                            out_present_dom.parent().html('<div class="out-represent">' + out_present_value + '</div>')
-                            button_dom.removeClass("layui-btn-normal");
-                            button_dom.text("已领料");
-                            var currentTime = new Date().Format("yyyy-MM-dd");
-                            obj.update({
-                                getTime: currentTime
-                            });
-                            // TODO: 将in_present_value， out_present_value mytime 领料状态 更新到后端数据库
-                            //       可通过assignID作为索引，通过data.assignID获取
-                            layer.open({
-                                title: '成功',
-                                content: '领料操作成功'
-                            });
-                        }
-                    }
-                });
+    </script>
+    <script>
+        layui.config({
+            base: '../../static/js/'
+            , version: '101100'
+        }).use('admin');
+        layui.use(['table', 'jquery'], function () {
+            var meterial_req_table = layui.table;
+            var $ = layui.jquery;
+            var assign_data;
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8000/product/tasks/undone',
+                dataType: 'json',
+                cache: false,
+                async: false,
+                success: function (data) {
+                    assign_data = data['tasks'];
+                }
             });
-        </script>
-        <script  type="text/html" id="get-meterial">
+            meterial_req_table.render({
+                elem: '#meterial-req-table'
+                , height: 400
+                , page: true
+                , data: assign_data
+                , cols: [[
+                    { field: 'task_id', title: '分配ID' },
+                    { field: 'order_id', title: '订单ID' },
+                    { field: 'workshop_id', title: '车间ID' },
+                    { field: 'product_id', title: '货品ID' },
+                    { field: 'product_name', title: '货品名称' },
+                    { field: 'amount', title: '货品数量' },
+                    { field: 'begin_date', title: '记录生成时间', sort: true },
+                    { field: 'material_checker', title: '出库负责人', templet: '#material_checkerTpl' },
+                    { field: 'material_getter', title: '领料负责人', templet: '#material_getterTpl' },
+                    { field: 'material_distribute_date', title: '领料时间', sort: true },
+                    { field: 'status', title: '操作', toolbar: '#get-meterial' },
+                    { field: 'detail', title: '详情', toolbar: '#show-detail' },
+                ]]
+            });
+            meterial_req_table.on('tool(meterial-req-table-filter)', function (obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                var tr = obj.tr;
+                if (layEvent === 'detail') {
+                    $.ajax({
+                        type: 'GET',
+                        url: 'http://localhost:8000/product/task/material-list',
+                        dataType: 'json',
+                        data: { 'product_id': data.product_id, 'product_num': data.amount },
+                        cache: false,
+                        async: false,
+                        success: function (data) {
+                            layer.open({
+                                skin: 'layui-layer-lan',
+                                type: 1,
+                                title: '领料单',
+                                content: '<table id="req-detail-table" lay-filter="req-detail-table-filter"></table>'
+                            });
+                            var req_detail_table = layui.table;
+                            req_detail_table.render({
+                                elem: "#req-detail-table"
+                                , height: 200
+                                , page: false
+                                , data: data["material_requisition"]
+                                , cols: [[
+                                    { field: "material_id", title: "物料ID", width: 100 },
+                                    { field: "material_name", title: "物料名称", width: 100 },
+                                    { field: "material_num", title: "物料数量", width: 100 },
+                                ]]
+                            });
+                        },
+                        error: (a) => {
+                            console.log("error: ", a);
+                        }
+                    });
+                } else if (layEvent === 'getMeterial') {
+                    var index = tr[0].rowIndex;
+                    var in_present_dom = $(".in-represent:eq(" + index + ")");
+                    var out_present_dom = $(".out-represent:eq(" + index + ")");
+                    var button_dom = $(".get-status-button:eq(" + index + ")");
+                    var in_present_value = in_present_dom.val();
+                    var out_present_value = out_present_dom.val();
+                    if (in_present_value === "" || out_present_value === "") {
+                        layer.open({
+                            title: '警告',
+                            content: '负责人均不可为空'
+                        });
+                    } else {
+                        in_present_dom.parent().html('<div class="in-represent">' + in_present_value + '</div>')
+                        out_present_dom.parent().html('<div class="out-represent">' + out_present_value + '</div>')
+                        button_dom.removeClass("layui-btn-normal");
+                        button_dom.text("已领料");
+                        var currentTime = new Date().Format("yyyy-MM-dd");
+                        obj.update({
+                            material_distribute_date: currentTime
+                        });
+                        $.ajax({
+                            type: 'POST',
+                            url: 'http://localhost:8000/product/task/material-allocated',
+                            dataType: 'json',
+                            data: JSON.stringify({ 'task_id': data.task_id, 'info': { 'material_getter': in_present_value, 'material_checker': out_present_value } }),
+                            cache: false,
+                            async: false,
+                            success: function (data) {
+                                layer.open({
+                                    title: '成功',
+                                    content: '领料操作成功'
+                                });
+                            },
+                            error: (a) => {
+                                console.log("error: ", a);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+    <script type="text/html" id="get-meterial">
             <!-- TODO: 加上时间的判断 -->
-            {{# if (d.outRepresent != "" || d.inRepresent != "") { }}
+            {{# if (d.material_checker != "" || d.material_getter != "") { }}
             <button class="layui-btn layui-btn-radius layui-btn-sm get-status-button">已领料</button>
             {{# } else { }}
             <button class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm get-status-button" lay-event="getMeterial">确认领料</button>
             {{# } }}
         </script>
-        <script  type="text/html" id="show-detail">
+    <script type="text/html" id="show-detail">
             <button class="layui-btn layui-btn-radius layui-btn-warm layui-btn-sm" lay-event="detail">查看详情</button>
         </script>
-        <script  type="text/html" id="outRepresentTpl">
+    <script type="text/html" id="material_checkerTpl">
             <!-- TODO: 加上时间的判断 -->
-            {{# if (d.outRepresent != ""|| d.inRepresent != "") { }}
-                <div class="out-represent">{{d.outRepresent}}</div>
+            {{# if (d.material_checker != ""|| d.material_getter != "") { }}
+                <div class="out-represent">{{d.material_checker}}</div>
             {{# } else { }}
                 <input type="text" class="layui-input out-represent"/>
             {{# } }}
         </script>
-        <script  type="text/html" id="inRepresentTpl">
+    <script type="text/html" id="material_getterTpl">
             <!-- TODO: 加上时间的判断 -->
-            {{# if (d.outRepresent != "" || d.inRepresent != "") { }}
-                <div class="in-represent">{{d.inRepresent}}</div>
+            {{# if (d.material_checker != "" || d.material_getter != "") { }}
+                <div class="in-represent">{{d.material_getter}}</div>
             {{# } else { }}
                 <input type="text" class="layui-input in-represent"/>
             {{# } }}
         </script>
-    </body>
+</body>
+
 </html>
