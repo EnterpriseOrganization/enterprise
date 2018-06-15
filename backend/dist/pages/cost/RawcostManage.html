@@ -89,7 +89,7 @@
                 //初次渲染table
                 $.ajax({
                     type: "GET",
-                    url: "../../../cost/get-all-cost",
+                    url: "../../../../cost/get-all-cost",
                     success: function (data) {
                         pdata = data;
                         console.log(pdata)
@@ -126,7 +126,7 @@
                 var mdata = []  
                 $.ajax({
                     type: "POST",
-                    url: "../../../cost/get-cost-by-name",
+                    url: "../../../../cost/get-cost-by-name",
                     cache: false,
                     async: false,
                     contentType: "application/json",

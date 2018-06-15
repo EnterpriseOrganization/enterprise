@@ -18,7 +18,7 @@ function getAllCost(data){
     return response;
 }
 function getCostByName(data){
-    url = '../../../cost/get-cost-by-name'
+    url = '../../../../cost/get-cost-by-name'
     if(Object.keys(data).length > 0){
         url = url + '?';
         var count = 0;
