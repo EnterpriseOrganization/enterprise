@@ -1,3 +1,4 @@
+#coding:utf8
 from app_product.Views import ProduceTask
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET, require_POST
