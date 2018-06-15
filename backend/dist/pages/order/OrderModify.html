@@ -235,6 +235,7 @@
         firstRender(parent.order_id)
         //执行渲染函数
         function firstRender(id) {
+            $("#orderId").val(id)
             var order_detail = getOrderDetail(id)
             var total_price = 0
             var total_num = 0
@@ -468,6 +469,7 @@
             var order_info = {}
             order_info['order_data'] = order_data
             order_info['product'] = product
+            console.log(order_info)
             //将数据传回后台
             $.ajax({
                 type: "POST",

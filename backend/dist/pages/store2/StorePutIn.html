@@ -18,44 +18,46 @@
 
     <body>
         <div class="weadmin-body">
-            <div class="layui-form-item">
-                <label for="L_username" class="layui-form-label">
-                    物料名称
-                </label>
-                <label for="L_username" class="layui-form-label">
-                    0306电阻 1k
-                </label>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_username" class="layui-form-label">
-                    库存数量
-                </label>
-                <label for="L_username" class="layui-form-label">
-                    10000
-                </label>
-            </div>
-            <div class="layui-form-item">
+            <form class="layui-form">
+                <div class="layui-form-item">
                     <label for="L_username" class="layui-form-label">
-                        状态
+                        物料名称
                     </label>
                     <label for="L_username" class="layui-form-label">
-                        充足
+                        0306电阻 1k
                     </label>
                 </div>
-            <div class="layui-form-item">
-                <label for="L_username" class="layui-form-label">
-                    新增数量
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="L_username" name="username" lay-verify="required|number" autocomplete="off" class="layui-input">
+                <div class="layui-form-item">
+                    <label for="L_username" class="layui-form-label">
+                        库存数量
+                    </label>
+                    <label for="L_username" class="layui-form-label">
+                        10000
+                    </label>
                 </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_repass" class="layui-form-label">
-                </label>
-                <button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
-                <input type="hidden" name="dataId" id="dataId" value="" />
-            </div>
+                <div class="layui-form-item">
+                        <label for="L_username" class="layui-form-label">
+                            状态
+                        </label>
+                        <label for="L_username" class="layui-form-label">
+                            充足
+                        </label>
+                    </div>
+                <div class="layui-form-item">
+                    <label for="L_username" class="layui-form-label">
+                        新增数量
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="L_username" name="username" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="L_repass" class="layui-form-label">
+                  </label>
+                    <button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+                    <input type="hidden" name="dataId" id="dataId" value="" />
+                </div>
+            </form>
         </div>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript">

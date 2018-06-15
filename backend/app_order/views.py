@@ -1,3 +1,4 @@
+#coding:utf8
 # Create your views here.
 import json
 from decimal import *
@@ -239,6 +240,7 @@ def addOrder(request):
         # paymentway= req['paymentway']
     if request.method == 'POST':
         user=request.user
+        print(user)
         if(user.has_perm('modify_Order')):
             req_str = request.body.decode('utf-8')  # 加载json文件，将json转化为python的字典列表
             diction = json.loads(req_str)
