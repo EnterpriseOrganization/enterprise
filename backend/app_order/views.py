@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Create your views here.
 import json
 from decimal import *
@@ -8,24 +9,24 @@ from django.core import serializers
 from decimal import Decimal
 from django.db import models
 # by ymk
-# æµ‹è¯•ç”¨çš„ä¾‹å­
+# ²âÊÔÓÃµÄÀı×Ó
 def testExample(request):
     resp = {'errorcode': 100, 'detail': 'Get success'}
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 # by ymk
-# è·å–åˆ°æ‰€æœ‰çš„è®¢å•ä¿¡æ¯
+# »ñÈ¡µ½ËùÓĞµÄ¶©µ¥ĞÅÏ¢
 def getAllOrder(request):
     Response = serializers.serialize("json", Order.objects.all());
     return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
-# æ›´æ–°å•æ¡ä¿¡æ¯çš„çŠ¶æ€ï¼Œ0å˜1,1å˜0
+# ¸üĞÂµ¥ÌõĞÅÏ¢µÄ×´Ì¬£¬0±ä1,1±ä0
 def  updateOneOrder(request):
     user=request.user
     info="no permission"
     if(user.has_perm('modify_Order')):
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
         order_id=diction['order']
         o = Order.objects.filter(id = order_id)[0]
@@ -43,12 +44,12 @@ def  updateOneOrder(request):
     return HttpResponse(json.dumps(msg), content_type = "application/json")
 
 # by ymk
-# å°†é€‰æ‹©çš„è®¢å•ä¿¡æ¯å…¨éƒ¨æ”¹ä¸ºå®Œæˆ
+# ½«Ñ¡ÔñµÄ¶©µ¥ĞÅÏ¢È«²¿¸ÄÎªÍê³É
 def completeOrders(request):
     user=request.user
     info="no permission"
     if(user.has_perm('modify_Order')):
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
         for i in range(len(diction)):
             o_id = diction[i]['id']
@@ -64,18 +65,18 @@ def completeOrders(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by ymk
-# å°†é€‰æ‹©çš„è®¢å•ä¿¡æ¯å…¨éƒ¨åˆ é™¤ï¼Œä¼ å…¥çš„jsonåº”è¯¥æ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œæ•°ç»„ä¸­çš„æ¯ä¸€ä¸ªå…ƒç´ åº”è¯¥æ˜¯ id:1000000
+# ½«Ñ¡ÔñµÄ¶©µ¥ĞÅÏ¢È«²¿É¾³ı£¬´«ÈëµÄjsonÓ¦¸ÃÊÇÒ»¸öÊı×é£¬Êı×éÖĞµÄÃ¿Ò»¸öÔªËØÓ¦¸ÃÊÇ id:1000000
 def deleteOrders(request):
     user=request.user
     info="no permission"
     if(user.has_perm('modify_Order')):
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
         for i in range(len(diction)):
             id = diction[i]['id']
             o=Order.objects.get(id=int(id))
             OrderProduct.objects.filter(order=o).delete()
-            Order.objects.filter(id=int(id)).delete() #çº§è”åˆ é™¤
+            Order.objects.filter(id=int(id)).delete() #¼¶ÁªÉ¾³ı
         info="update orders successfully"
         result = 1
     else:
@@ -85,15 +86,15 @@ def deleteOrders(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by ymk
-# å¢åŠ ç”¨æˆ·æƒé™æ§åˆ¶
+# Ôö¼ÓÓÃ»§È¨ÏŞ¿ØÖÆ
 def updateOrderDetail(request):
     user=request.user
     if(user.has_perm('modify_Order')):
         info = ""
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
         print(diction)
-        # è·å–ç›¸å…³çš„keyå€¼
+        # »ñÈ¡Ïà¹ØµÄkeyÖµ
         order_id = diction['order_data']['id']
         date = diction['order_data']['date']
         indentor = diction['order_data']['indentor']
@@ -106,7 +107,7 @@ def updateOrderDetail(request):
         deliverydate = diction['order_data']['deliverydate']
         paymentway = diction['order_data']['paymentway']
         o = Order.objects.filter(id=order_id)[0]
-        #è·å–åˆ° orderå¯¹è±¡
+        #»ñÈ¡µ½ order¶ÔÏó
         o.date = date
         o.indentor = indentor
         o.receiver = receiver
@@ -117,13 +118,13 @@ def updateOrderDetail(request):
         o.status = status
         o.deliverydate = deliverydate
         o.paymentway = paymentway
-        # æé«˜ä¿®æ”¹æ•ˆç‡
+        # Ìá¸ßĞŞ¸ÄĞ§ÂÊ
         o.save()
         for dict_temp in range(len(diction['product'])):
-            id = diction['product'][dict_temp]['product']#è·å–productçš„id
-            product = Product.objects.get(id = id) #è·å–productå¯¹è±¡
-            number = diction['product'][dict_temp]['number']#è·å–æ•°é‡
-            price = product.price#è·å–å•ä»·
+            id = diction['product'][dict_temp]['product']#»ñÈ¡productµÄid
+            product = Product.objects.get(id = id) #»ñÈ¡product¶ÔÏó
+            number = diction['product'][dict_temp]['number']#»ñÈ¡ÊıÁ¿
+            price = product.price#»ñÈ¡µ¥¼Û
 
             op_temp = OrderProduct.objects.filter(order=o)
             op =op_temp.filter()
@@ -133,7 +134,7 @@ def updateOrderDetail(request):
                 info="update an order successfully"
                 result = 1
             else: 
-                # æŸ¥è¯¢æ˜¯å¦å­˜åœ¨ç›¸åº”çš„order_product
+                # ²éÑ¯ÊÇ·ñ´æÔÚÏàÓ¦µÄorder_product
                 op = OrderProduct(
                     order = o,
                     product = product,
@@ -151,52 +152,52 @@ def updateOrderDetail(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by ymk
-# è·å–å•æ¡è®¢å•çš„ä¿¡æ¯
+# »ñÈ¡µ¥Ìõ¶©µ¥µÄĞÅÏ¢
 def getOrderDetail(request):
-    req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
-    # req_str = '[{"id": 1000000000}]' æµ‹è¯•ç”¨
+    req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
+    # req_str = '[{"id": 1000000000}]' ²âÊÔÓÃ
     id_diction = json.loads(req_str)
     order_id = id_diction['order']
-    # è·å–orderçš„id
-    o_res = Order.objects.filter(id=order_id) # è·å–è®¢å•
+    # »ñÈ¡orderµÄid
+    o_res = Order.objects.filter(id=order_id) # »ñÈ¡¶©µ¥
     # o_res = serializers.serialize("json", o);
     product_list = OrderProduct.objects.filter(order=order_id).values('product','number')
-    # è·å–åˆ°è®¢å•ä¸‹çš„äº§å“id
-    res=[] #åˆ›å»ºåˆ—è¡¨
+    # »ñÈ¡µ½¶©µ¥ÏÂµÄ²úÆ·id
+    res=[] #´´½¨ÁĞ±í
     
-    # éå†äº§å“id
+    # ±éÀú²úÆ·id
     for pro in range(len(product_list)):
         productID=product_list[pro]['product']
         product_item=Product.objects.filter(id=productID).values('id','name','price')
-        # è·å–åˆ°äº§å“çš„åˆ—è¡¨å’Œå•ä»·
+        # »ñÈ¡µ½²úÆ·µÄÁĞ±íºÍµ¥¼Û
         # price = str(product_item[0]['price'].quantize(Decimal('0.0')))
         # product_item[0]['price'] = price
-        temp={} #åˆå¹¶å­—å…¸
+        temp={} #ºÏ²¢×Öµä
         temp.update(product_list[pro])
         temp.update(product_item[0])
-        res.append(temp) #å°†å­—å…¸æ·»åŠ å…¥åˆ—è¡¨
+        res.append(temp) #½«×ÖµäÌí¼ÓÈëÁĞ±í
         for item in res:
             item['price'] = float(item['price'])
-            #å°†decimalè½¬æ¢ä¸ºfloat
+            #½«decimal×ª»»Îªfloat
     
     Response = serializers.serialize("json", o_res);
     res_dict={"product":res,"order":Response}
     return HttpResponse(json.dumps(res_dict))
         
 # by ymk 
-# è·å–åˆ°ç‰¹å®šæ¡ä»¶ä¸‹çš„è®¢å•ä¿¡æ¯è¿”å›ï¼Œå‘é€çš„ä¿¡æ¯åº”è¯¥åŒ…æ‹¬ è®¢å•çŠ¶æ€ "status": 1,å¼€å§‹æ—¶é—´ï¼š"date": "2018-05-30T00:00:00Z",æˆªæ­¢æ—¶é—´"deliverydate": "2018-06-20T00:00:00Z"ï¼Œè®¢è´§å•†"indentor": "jack"
-# 0: å¾…ç”Ÿäº§ 1: ç”Ÿäº§ä¸­ 2:é…é€ä¸­ï¼ˆç”Ÿäº§å®Œæˆï¼‰ 3: é‡‡è´­ä¸­
+# »ñÈ¡µ½ÌØ¶¨Ìõ¼şÏÂµÄ¶©µ¥ĞÅÏ¢·µ»Ø£¬·¢ËÍµÄĞÅÏ¢Ó¦¸Ã°üÀ¨ ¶©µ¥×´Ì¬ "status": 1,¿ªÊ¼Ê±¼ä£º"date": "2018-05-30T00:00:00Z",½ØÖ¹Ê±¼ä"deliverydate": "2018-06-20T00:00:00Z"£¬¶©»õÉÌ"indentor": "jack"
+# 0: ´ıÉú²ú 1: Éú²úÖĞ 2:ÅäËÍÖĞ£¨Éú²úÍê³É£© 3: ²É¹ºÖĞ
 def getSpecificOrder(request):
-    req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
-    #req_str = '[{"status": "","date":"","deliverydate":"2018-06-20T00:00:00Z", "indentor": ""}]' #æµ‹è¯•ç”¨æ•°æ®
-    diction = json.loads(req_str) #è¿”å›çš„æ˜¯ä¸€ä¸ªå­—å…¸listé•¿åº¦ä¸º1 {'deliverydate': '2018-06-20T00:00:00Z', 'date': '2018-05-30T00:00:00Z', 'indentor': 'jack', 'status': 1}
-    o = Order.objects.all() #å…ˆè·å–æ‰€æœ‰çš„ä¿¡æ¯
+    req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
+    #req_str = '[{"status": "","date":"","deliverydate":"2018-06-20T00:00:00Z", "indentor": ""}]' #²âÊÔÓÃÊı¾İ
+    diction = json.loads(req_str) #·µ»ØµÄÊÇÒ»¸ö×Öµälist³¤¶ÈÎª1 {'deliverydate': '2018-06-20T00:00:00Z', 'date': '2018-05-30T00:00:00Z', 'indentor': 'jack', 'status': 1}
+    o = Order.objects.all() #ÏÈ»ñÈ¡ËùÓĞµÄĞÅÏ¢
     #print(diction)
     # print(diction['indentor'])
 
-    for key in diction:# ä¾æ¬¡éå†æŸ¥è¯¢
+    for key in diction:# ÒÀ´Î±éÀú²éÑ¯
         temp = o
-        diction[key] = diction[key].strip()#å»æ‰æ‰€æœ‰çš„ç©ºæ ¼
+        diction[key] = diction[key].strip()#È¥µôËùÓĞµÄ¿Õ¸ñ
         if(diction[key]!=""):
             if(key == 'status'):
                 temp = o.filter(status=diction[key])
@@ -207,24 +208,24 @@ def getSpecificOrder(request):
             elif(key == 'indentor'):
                 temp = o.filter(indentor=diction[key])
         o = temp
-    Response=serializers.serialize("json", o);#åºåˆ—åŒ–å¯¹è±¡
+    Response=serializers.serialize("json", o);#ĞòÁĞ»¯¶ÔÏó
     return HttpResponse(json.dumps(Response))	
 
 # by ymk
-# è·å–åˆ°æ‰€æœ‰çš„äº§å“ä¿¡æ¯
-# è¿”å›æ ·ä¾‹"[{"model": "enterprise.product", "pk": 1, "fields": {"name": "testPro1", "class_obj": 1, "price": "20"}}, {"model": "enterprise.product", "pk": 2, "fields": {"name": "testPro2", "class_obj": 1, "price": "32"}}]"
+# »ñÈ¡µ½ËùÓĞµÄ²úÆ·ĞÅÏ¢
+# ·µ»ØÑùÀı"[{"model": "enterprise.product", "pk": 1, "fields": {"name": "testPro1", "class_obj": 1, "price": "20"}}, {"model": "enterprise.product", "pk": 2, "fields": {"name": "testPro2", "class_obj": 1, "price": "32"}}]"
 def getAllProduct(request):
     Response = serializers.serialize("json", Product.objects.all());
     return HttpResponse(json.dumps(Response), content_type="application/json")
 
 # by ymk
-# è·å–postå¾—åˆ°çš„jsonæ–‡ä»¶ï¼Œç„¶åå°†ä¸€æ¡orderæ•°æ®æ·»åŠ åˆ°æ•°æ®åº“ï¼Œå¹¶è¿”å›æ˜¯å¦æ·»åŠ æˆåŠŸçš„ä¿¡æ¯
+# »ñÈ¡postµÃµ½µÄjsonÎÄ¼ş£¬È»ºó½«Ò»ÌõorderÊı¾İÌí¼Óµ½Êı¾İ¿â£¬²¢·µ»ØÊÇ·ñÌí¼Ó³É¹¦µÄĞÅÏ¢
 def addOrder(request):
     info = "add order msg"
     o_id = "null"
-    #ç”¨äºè¿”å›ä¿¡æ¯ï¼Œæ˜¯å¦å¢åŠ æˆåŠŸ
+    #ÓÃÓÚ·µ»ØĞÅÏ¢£¬ÊÇ·ñÔö¼Ó³É¹¦
     # data = '[{"date": "2018-05-30T00:00:00Z", "indentor": "jack", "receiver": "nancy", "checker": "brad", "recevieraddress": "hsd", "indentorphonenumber": "1511468", "totalprice": "80", "status": 1, "deliverydate": "2018-06-20T00:00:00Z", "paymentway": "wechat"}]'
-    # æµ‹è¯•ç”¨çš„æ•°æ®
+    # ²âÊÔÓÃµÄÊı¾İ
     # if request.method == 'POST':
         # req = json.loads(request.raw_post_data)
         # date = req['date']
@@ -241,10 +242,10 @@ def addOrder(request):
         user=request.user
         print(user)
         if(user.has_perm('modify_Order')):
-            req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+            req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
             diction = json.loads(req_str)
             print(diction)
-            # è·å–ç›¸å…³çš„keyå€¼
+            # »ñÈ¡Ïà¹ØµÄkeyÖµ
             date = diction['order_data']['date']
             indentor = diction['order_data']['indentor']
             receiver = diction['order_data']['receiver']
@@ -273,13 +274,13 @@ def addOrder(request):
                 print(e)
             # o.save()
             info = "add an order successfully"
-            order = Order.objects.last()# è·å–orderå¯¹è±¡
+            order = Order.objects.last()# »ñÈ¡order¶ÔÏó
             o_id =order.id
             for dict_temp in range(len(diction['product'])):
-                id = diction['product'][dict_temp]['product']#è·å–productçš„id
-                product = Product.objects.get(id = id) #è·å–productå¯¹è±¡
-                number = diction['product'][dict_temp]['number']#è·å–æ•°é‡
-                price = product.price#è·å–å•ä»·
+                id = diction['product'][dict_temp]['product']#»ñÈ¡productµÄid
+                product = Product.objects.get(id = id) #»ñÈ¡product¶ÔÏó
+                number = diction['product'][dict_temp]['number']#»ñÈ¡ÊıÁ¿
+                price = product.price#»ñÈ¡µ¥¼Û
                 try:
                     op = OrderProduct(
                         order = order,
@@ -302,15 +303,15 @@ def addOrder(request):
     msg={"info":info,"id":o_id, "result": result}
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
-# by ymk and ä¿®æ”¹ok
-# åˆ é™¤ä¸€æ¡è®¢å•è®°å½•
-# é€šè¿‡ä¸»é”®idå€¼æ¥åˆ é™¤
+# by ymk and ĞŞ¸Äok
+# É¾³ıÒ»Ìõ¶©µ¥¼ÇÂ¼
+# Í¨¹ıÖ÷¼üidÖµÀ´É¾³ı
 def deleteOrder(request):
     info = "Delete an Order"
     if request.method == 'POST':
         user=request.user
         if(user.has_perm('modify_Order')):
-            req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+            req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
             diction = json.loads(req_str)
             print(diction)
 
@@ -331,7 +332,7 @@ def deleteOrder(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by zlz
-# ä¿®æ”¹ä¸€æ¡è®¢å•è®°å½•
+# ĞŞ¸ÄÒ»Ìõ¶©µ¥¼ÇÂ¼
 def updateOrder(request):
     info = "Update an Order"
 
@@ -364,7 +365,7 @@ def updateOrder(request):
             o.status = status,
             o.deliverydate = deliverydate,
             o.paymentway = paymentway
-            # æé«˜ä¿®æ”¹æ•ˆç‡
+            # Ìá¸ßĞŞ¸ÄĞ§ÂÊ
             o.save()
             info = "update an order successfully"
             result  = 1
@@ -379,9 +380,9 @@ def updateOrder(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by zlz
-# åˆ é™¤ä¸€ä¸ªè®¢å•çš„æŸä¸ªäº§å“
-# å¦‚æœå‰ç«¯å­˜å‚¨ id çš„è¯ä½¿ç”¨ id å¾—åˆ°å”¯ä¸€è®°å½•
-# å¦åˆ™ä½¿ç”¨ productID å’Œ orderID ç¡®å®šå”¯ä¸€è®°å½•ï¼ˆå¦‚æœä¸¤è€…èƒ½ç¡®å®šä¸€æ¡è®°å½•ï¼‰
+# É¾³ıÒ»¸ö¶©µ¥µÄÄ³¸ö²úÆ·
+# Èç¹ûÇ°¶Ë´æ´¢ id µÄ»°Ê¹ÓÃ id µÃµ½Î¨Ò»¼ÇÂ¼
+# ·ñÔòÊ¹ÓÃ productID ºÍ orderID È·¶¨Î¨Ò»¼ÇÂ¼£¨Èç¹ûÁ½ÕßÄÜÈ·¶¨Ò»Ìõ¼ÇÂ¼£©
 def deleteOrderProduct(request):
     raw_post_data = '[{"id": 2, "orderID": 1000000000, "productID": 55}]'
     diction = json.loads(raw_post_data)
@@ -403,13 +404,13 @@ def deleteOrderProduct(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by zlz
-# åç«¯ä¿®æ”¹ä¸€ä¸ªè®¢å•æ‰€è®¢è´­çš„äº§å“æ•°é‡
-# ä¿®æ”¹äº§å“è®¢è´­æ•°é‡åå¯¹ç›¸åº”çš„è®¢å•çš„ totalprice è¿›è¡Œæ›´æ–°
+# ºó¶ËĞŞ¸ÄÒ»¸ö¶©µ¥Ëù¶©¹ºµÄ²úÆ·ÊıÁ¿
+# ĞŞ¸Ä²úÆ·¶©¹ºÊıÁ¿ºó¶ÔÏàÓ¦µÄ¶©µ¥µÄ totalprice ½øĞĞ¸üĞÂ
 def updateOrderProduct(request):
     info=""
     if request.method == 'POST':
         # raw_post_data = '[{"id": 2, "number": 5, "orderID": 1000000000, "productID": 55}]'
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
         id = diction[0]['id']
         number = diction[0]['number']
@@ -434,60 +435,60 @@ def updateOrderProduct(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by ymk
-# åç«¯è¿”å›ä¸€ä¸ªè®¢å•çš„æ‰€æœ‰äº§å“å‡½æ•° 
-# åç«¯è¿”å›ä¸€ä¸ªè®¢å•çš„æ‰€æœ‰äº§å“å‡½æ•° ,æ¥æ”¶ä¸€ä¸ªjsonæ–‡ä»¶ï¼Œè·å–åˆ°è®¢å•çš„idï¼Œæ˜¾ç¤ºå‡ºè¯¥è®¢å•ä¸­æ‰€æœ‰çš„äº§å“
-# è¿”å›çš„æ˜¯ å•ä»· è´§å“åå­— è´§å“id è´§å“æ•°é‡ æ€»ä»·åœ¨å‰ç«¯è®¡ç®—
-# è¿”å›æ ·ä¾‹ [{"name": "testPro1", "number": 5, "price": 20.0, "product": 1}, {"name": "testPro2", "number": 7, "price": 32.0, "product": 2}]
+# ºó¶Ë·µ»ØÒ»¸ö¶©µ¥µÄËùÓĞ²úÆ·º¯Êı 
+# ºó¶Ë·µ»ØÒ»¸ö¶©µ¥µÄËùÓĞ²úÆ·º¯Êı ,½ÓÊÕÒ»¸öjsonÎÄ¼ş£¬»ñÈ¡µ½¶©µ¥µÄid£¬ÏÔÊ¾³ö¸Ã¶©µ¥ÖĞËùÓĞµÄ²úÆ·
+# ·µ»ØµÄÊÇ µ¥¼Û »õÆ·Ãû×Ö »õÆ·id »õÆ·ÊıÁ¿ ×Ü¼ÛÔÚÇ°¶Ë¼ÆËã
+# ·µ»ØÑùÀı [{"name": "testPro1", "number": 5, "price": 20.0, "product": 1}, {"name": "testPro2", "number": 7, "price": 32.0, "product": 2}]
 def showOrderProduct(request):
-    # æµ‹è¯•ç”¨æ ·ä¾‹
+    # ²âÊÔÓÃÑùÀı
     # data = '[{"id" : 1000000000}]'
     if request.method == 'POST':
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
         order_id=id_diction[0]['id']
-        #è·å–åˆ°è®¢å•çš„id
+        #»ñÈ¡µ½¶©µ¥µÄid
         product_list =OrderProduct.objects.filter(order=order_id).values('product','number')
-        # è·å–åˆ°è®¢å•ä¸‹çš„äº§å“id
-        res=[] #åˆ›å»ºåˆ—è¡¨
-        # éå†äº§å“id
+        # »ñÈ¡µ½¶©µ¥ÏÂµÄ²úÆ·id
+        res=[] #´´½¨ÁĞ±í
+        # ±éÀú²úÆ·id
         for pro in range(len(product_list)):
             productID=product_list[pro]['product']
             product_item=Product.objects.filter(id=productID).values('name','price')
-            # è·å–åˆ°äº§å“çš„åˆ—è¡¨å’Œå•ä»·
+            # »ñÈ¡µ½²úÆ·µÄÁĞ±íºÍµ¥¼Û
             # price = str(product_item[0]['price'].quantize(Decimal('0.0')))
             # product_item[0]['price'] = price
-            temp={} #åˆå¹¶å­—å…¸
+            temp={} #ºÏ²¢×Öµä
 
             temp.update(product_list[pro])
             temp.update(product_item[0])
-            res.append(temp) #å°†å­—å…¸æ·»åŠ å…¥åˆ—è¡¨
+            res.append(temp) #½«×ÖµäÌí¼ÓÈëÁĞ±í
             for item in res:
                 item['price'] = float(item['price'])
-                #å°†decimalè½¬æ¢ä¸ºfloat
+                #½«decimal×ª»»Îªfloat
         return HttpResponse(json.dumps(res))
     else:
         return HttpResponse("get no json")
 
 # by ymk
-# æ·»åŠ ä¸€æ¡OrderProductè®°å½•ï¼Œæ¥å—ä»å‰ç«¯è¿”å›çš„jsonï¼Œè®¢å•çš„order_idï¼Œå•†å“åç§°ï¼Œå•ä»·ï¼Œæ•°é‡ï¼Œï¼ˆæ€»ä»·ï¼‰ï¼Ÿ
-# ä¼ å…¥çš„json æ¯ä¸€æ¡åº”è¯¥åŒ…å«çš„å†…å®¹ï¼šè®¢å•id orderï¼Œäº§å“åå­— name
+# Ìí¼ÓÒ»ÌõOrderProduct¼ÇÂ¼£¬½ÓÊÜ´ÓÇ°¶Ë·µ»ØµÄjson£¬¶©µ¥µÄorder_id£¬ÉÌÆ·Ãû³Æ£¬µ¥¼Û£¬ÊıÁ¿£¬£¨×Ü¼Û£©£¿
+# ´«ÈëµÄjson Ã¿Ò»ÌõÓ¦¸Ã°üº¬µÄÄÚÈİ£º¶©µ¥id order£¬²úÆ·Ãû×Ö name
 def addOrderProduct(request):
     info = "add OrderProduct msg"
     if request.method == 'POST':
-        req_str = request.body.decode('utf-8')  # åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
+        req_str = request.body.decode('utf-8')  # ¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
         diction = json.loads(req_str)
     # data='[{"order": 1000000000, "name": "testPro1", "number": 5, "price": 20},{"order": 1000000000, "name": "testPro2", "number": 7, "price": 32}]'
     # t=1
     # if t==1:
-    # 	diction = json.loads(data)#åŠ è½½jsonæ–‡ä»¶ï¼Œå°†jsonè½¬åŒ–ä¸ºpythonçš„å­—å…¸åˆ—è¡¨
-    # 	# æµ‹è¯•ç”¨
+    # 	diction = json.loads(data)#¼ÓÔØjsonÎÄ¼ş£¬½«json×ª»¯ÎªpythonµÄ×ÖµäÁĞ±í
+    # 	# ²âÊÔÓÃ
         for dict_temp in range(len(diction)):
-            order_id =diction[dict_temp]['order']#è·å–è¡¨å•id
-            order=Order.objects.get(id=order_id)# è·å–orderå¯¹è±¡
-            name =diction[dict_temp]['name']#è·å–productçš„åå­—
-            product=Product.objects.get(name=name) #è·å–productå¯¹è±¡
-            number=diction[dict_temp]['number']#è·å–æ•°é‡
-            price=diction[dict_temp]['price']#è·å–å•ä»·
+            order_id =diction[dict_temp]['order']#»ñÈ¡±íµ¥id
+            order=Order.objects.get(id=order_id)# »ñÈ¡order¶ÔÏó
+            name =diction[dict_temp]['name']#»ñÈ¡productµÄÃû×Ö
+            product=Product.objects.get(name=name) #»ñÈ¡product¶ÔÏó
+            number=diction[dict_temp]['number']#»ñÈ¡ÊıÁ¿
+            price=diction[dict_temp]['price']#»ñÈ¡µ¥¼Û
             op =OrderProduct(
                 order=order,
                 product=product,
@@ -503,7 +504,7 @@ def addOrderProduct(request):
     return HttpResponse(json.dumps(msg), content_type="application/json")
 
 # by ymk
-# æµ‹è¯•ç”¨
+# ²âÊÔÓÃ
 def getAllOrderProduct(request):
     Response=serializers.serialize("json", OrderProduct.objects.all());
     return HttpResponse(json.dumps(Response), content_type="application/json")

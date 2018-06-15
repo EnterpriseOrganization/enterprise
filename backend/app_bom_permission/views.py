@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.db.models import Q
 from functools import reduce 
@@ -472,7 +473,7 @@ def changePassword(request):
         user.save()
         return JsonResponse({'status': 200})
     else:
-        return JsonResponse({'status': 400, 'detail': "åŸå¯†ç é”™è¯¯"})
+        return JsonResponse({'status': 400, 'detail': "Ô­ÃÜÂë´íÎó"})
 
 
 def changeInfo(request):
@@ -489,9 +490,9 @@ def userLogout(request):
     user = request.user
     if user.is_authenticated():
         logout(request)
-        return JsonResponse({"status":200,"detail":"ç™»å‡ºæˆåŠŸ"})    
+        return JsonResponse({"status":200,"detail":"µÇ³ö³É¹¦"})    
     else:
-        return JsonResponse({"status":404,"detail":"æœªç™»å½•"})
+        return JsonResponse({"status":404,"detail":"Î´µÇÂ¼"})
 
 # def change_names(request):
 #     user = User.objects.get(username=request.POST['username'])

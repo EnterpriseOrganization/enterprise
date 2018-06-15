@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import url
 from . import views
 from . import address_select
@@ -5,34 +6,34 @@ from . import product_select
 from . import page_open
 
 urlpatterns = [
-    #Productè¡¨
-    url(r'^get-all-product$',views.getAllProduct),#è·å–æ‰€æœ‰çš„è´§å“ä¿¡æ¯
+    #Product±í
+    url(r'^get-all-product$',views.getAllProduct),#»ñÈ¡ËùÓĞµÄ»õÆ·ĞÅÏ¢
 
-	# Orderè¡¨
-    url(r'^test$', views.testExample), # æµ‹è¯•ç”¨çš„url
-    url(r'^get-all-order$', views.getAllOrder), # è·å–åˆ°æ‰€æœ‰çš„è®¢å•ä¿¡æ¯ï¼Œé€šè¿‡urlè®¿é—®ï¼Œè¿”å›jsonæ–‡ä»¶
-    url(r'^add-order$',views.addOrder), # æ·»åŠ ä¸€æ¡è®¢å•çš„ä¿¡æ¯ï¼Œé€šè¿‡postå‘é€jsonï¼Œæ¥æ”¶åå°†è¯¥è®¢å•ä¿¡æ¯æ’å…¥åˆ°æ¨¡å‹ä¸­ï¼Œè¿”å›ä¸€æ¡çŠ¶æ€è¯­å¥
-    url(r'^delete-order$',views.deleteOrder), # åˆ é™¤ä¸€æ¡è®¢å•çš„ä¿¡æ¯ï¼Œé€šè¿‡postå‘é€jsonï¼Œè§£æidåˆ é™¤ç›¸åº”çš„orderä¿¡æ¯ï¼Œè¿”å›ä¸€æ¡çŠ¶æ€è¯­å¥
-    url(r'^update-order$',views.updateOrder), # æ›´æ–°ä¸€æ¡è®¢å•çš„ä¿¡æ¯ï¼Œé€šè¿‡postå‘é€jsonï¼Œè§£æidåˆ é™¤ç›¸åº”çš„orderä¿¡æ¯ï¼Œå†æ·»åŠ ç›¸åº”ä¿¡æ¯ï¼Œè¿”å›ä¸€æ¡çŠ¶æ€è¯­å¥
-    url(r'^get-specific-order$',views.getSpecificOrder), # æŸ¥è¯¢ç‰¹å®šå…·ä½“çš„è®¢å•ä¿¡æ¯ï¼Œé€šè¿‡postå‘é€jsonï¼Œè·å–åˆ°æ¡ä»¶åæŸ¥è¯¢åˆ°ç›¸åº”çš„è®¢å•ä¿¡æ¯è¿”å›
-    url(r'^get-order-detail$',views.getOrderDetail), # æŸ¥è¯¢å•æ¡çš„ä¿¡æ¯ï¼Œå¹¶è¿”å›è®¢å•çš„ä¿¡æ¯ä»¥åŠè´§å“çš„ä¿¡æ¯
-    url(r'^update-order-detail$',views.updateOrderDetail), # æ›´æ–°å•æ¡çš„ä¿¡æ¯ï¼Œæ›´æ–°æˆåŠŸä¸å¦
-    url(r'^update-one-order$',views.updateOneOrder), # æ›´æ–°å•æ¡ä¿¡æ¯çš„çŠ¶æ€ï¼Œ0å˜1,1å˜0
-    url(r'^complete-orders$',views.completeOrders), # å°†é€‰æ‹©çš„è®¢å•ä¿¡æ¯å…¨éƒ¨æ”¹ä¸ºå®Œæˆ
-    url(r'^delete-orders$',views.deleteOrders), # å°†é€‰æ‹©çš„è®¢å•å…¨éƒ¨åˆ é™¤
-    # OrderProductè¡¨ï¼Œè¿™ä¸ªåŠŸèƒ½ä¸»è¦ç”¨æ¥æ˜¾ç¤ºè®¢å•çš„æ˜ç»†
-    url(r'^get-all-order-product$',views.getAllOrderProduct),# è·å–æ‰€æœ‰çš„è®¢å•è´§å“ä¿¡æ¯
-    url(r'^add-order-product$',views.addOrderProduct), # æ·»åŠ è®¢å•çš„è´§å“ä¿¡æ¯ï¼Œé€šè¿‡postå‘é€jsonï¼Œæ¥å—è®¢å•çš„æ‰€æœ‰è´§å“ä¿¡æ¯ï¼Œè¿”å›ä¸€æ¡çŠ¶æ€è¯­å¥
-    url(r'^show-all-order-product$', views.showOrderProduct), #åç«¯è¿”å›ä¸€ä¸ªè®¢å•çš„æ‰€æœ‰äº§å“å‡½æ•° ,æ¥æ”¶ä¸€ä¸ªjsonæ–‡ä»¶ï¼Œè·å–åˆ°è®¢å•çš„idï¼Œæ˜¾ç¤ºå‡ºè¯¥è®¢å•ä¸­æ‰€æœ‰çš„äº§å“
-    url(r'^delete-order-product$', views.deleteOrderProduct), # åˆ é™¤ä¸€ä¸ªè®¢å•çš„æŸä¸ªäº§å“
-    url(r'^update-order-product$', views.updateOrderProduct),  # # åç«¯ä¿®æ”¹ä¸€ä¸ªè®¢å•æ‰€è®¢è´­çš„äº§å“æ•°é‡
+	# Order±í
+    url(r'^test$', views.testExample), # ²âÊÔÓÃµÄurl
+    url(r'^get-all-order$', views.getAllOrder), # »ñÈ¡µ½ËùÓĞµÄ¶©µ¥ĞÅÏ¢£¬Í¨¹ıurl·ÃÎÊ£¬·µ»ØjsonÎÄ¼ş
+    url(r'^add-order$',views.addOrder), # Ìí¼ÓÒ»Ìõ¶©µ¥µÄĞÅÏ¢£¬Í¨¹ıpost·¢ËÍjson£¬½ÓÊÕºó½«¸Ã¶©µ¥ĞÅÏ¢²åÈëµ½Ä£ĞÍÖĞ£¬·µ»ØÒ»Ìõ×´Ì¬Óï¾ä
+    url(r'^delete-order$',views.deleteOrder), # É¾³ıÒ»Ìõ¶©µ¥µÄĞÅÏ¢£¬Í¨¹ıpost·¢ËÍjson£¬½âÎöidÉ¾³ıÏàÓ¦µÄorderĞÅÏ¢£¬·µ»ØÒ»Ìõ×´Ì¬Óï¾ä
+    url(r'^update-order$',views.updateOrder), # ¸üĞÂÒ»Ìõ¶©µ¥µÄĞÅÏ¢£¬Í¨¹ıpost·¢ËÍjson£¬½âÎöidÉ¾³ıÏàÓ¦µÄorderĞÅÏ¢£¬ÔÙÌí¼ÓÏàÓ¦ĞÅÏ¢£¬·µ»ØÒ»Ìõ×´Ì¬Óï¾ä
+    url(r'^get-specific-order$',views.getSpecificOrder), # ²éÑ¯ÌØ¶¨¾ßÌåµÄ¶©µ¥ĞÅÏ¢£¬Í¨¹ıpost·¢ËÍjson£¬»ñÈ¡µ½Ìõ¼şºó²éÑ¯µ½ÏàÓ¦µÄ¶©µ¥ĞÅÏ¢·µ»Ø
+    url(r'^get-order-detail$',views.getOrderDetail), # ²éÑ¯µ¥ÌõµÄĞÅÏ¢£¬²¢·µ»Ø¶©µ¥µÄĞÅÏ¢ÒÔ¼°»õÆ·µÄĞÅÏ¢
+    url(r'^update-order-detail$',views.updateOrderDetail), # ¸üĞÂµ¥ÌõµÄĞÅÏ¢£¬¸üĞÂ³É¹¦Óë·ñ
+    url(r'^update-one-order$',views.updateOneOrder), # ¸üĞÂµ¥ÌõĞÅÏ¢µÄ×´Ì¬£¬0±ä1,1±ä0
+    url(r'^complete-orders$',views.completeOrders), # ½«Ñ¡ÔñµÄ¶©µ¥ĞÅÏ¢È«²¿¸ÄÎªÍê³É
+    url(r'^delete-orders$',views.deleteOrders), # ½«Ñ¡ÔñµÄ¶©µ¥È«²¿É¾³ı
+    # OrderProduct±í£¬Õâ¸ö¹¦ÄÜÖ÷ÒªÓÃÀ´ÏÔÊ¾¶©µ¥µÄÃ÷Ï¸
+    url(r'^get-all-order-product$',views.getAllOrderProduct),# »ñÈ¡ËùÓĞµÄ¶©µ¥»õÆ·ĞÅÏ¢
+    url(r'^add-order-product$',views.addOrderProduct), # Ìí¼Ó¶©µ¥µÄ»õÆ·ĞÅÏ¢£¬Í¨¹ıpost·¢ËÍjson£¬½ÓÊÜ¶©µ¥µÄËùÓĞ»õÆ·ĞÅÏ¢£¬·µ»ØÒ»Ìõ×´Ì¬Óï¾ä
+    url(r'^show-all-order-product$', views.showOrderProduct), #ºó¶Ë·µ»ØÒ»¸ö¶©µ¥µÄËùÓĞ²úÆ·º¯Êı ,½ÓÊÕÒ»¸öjsonÎÄ¼ş£¬»ñÈ¡µ½¶©µ¥µÄid£¬ÏÔÊ¾³ö¸Ã¶©µ¥ÖĞËùÓĞµÄ²úÆ·
+    url(r'^delete-order-product$', views.deleteOrderProduct), # É¾³ıÒ»¸ö¶©µ¥µÄÄ³¸ö²úÆ·
+    url(r'^update-order-product$', views.updateOrderProduct),  # # ºó¶ËĞŞ¸ÄÒ»¸ö¶©µ¥Ëù¶©¹ºµÄ²úÆ·ÊıÁ¿
     
-    # å‰ç«¯é¢å¤–æ‰€éœ€
-    url(r'^province$', address_select.getCity),#è·å–äºŒçº§ä¸‹æ‹‰æ¡†-åŸå¸‚ä¿¡æ¯
-    url(r'^city$', address_select.getDistrict),#è·å–ä¸‰çº§ä¸‹æ‹‰æ¡†-åœ°åŒºä¿¡æ¯
-    url(r'^product$', product_select.getProductInfo),#è·å–ä¸‹æ‹‰æ¡†-äº§å“ä¿¡æ¯
-    url(r'^add$',page_open.orderAdd),#å¼¹å‡ºå­é¡µé¢iframe-orderaddé¡µé¢
-    url(r'^list$',page_open.orderList),#å¼¹å‡ºå­é¡µé¢iframe-ordermodifyé¡µé¢
+    # Ç°¶Ë¶îÍâËùĞè
+    url(r'^province$', address_select.getCity),#»ñÈ¡¶ş¼¶ÏÂÀ­¿ò-³ÇÊĞĞÅÏ¢
+    url(r'^city$', address_select.getDistrict),#»ñÈ¡Èı¼¶ÏÂÀ­¿ò-µØÇøĞÅÏ¢
+    url(r'^product$', product_select.getProductInfo),#»ñÈ¡ÏÂÀ­¿ò-²úÆ·ĞÅÏ¢
+    url(r'^add$',page_open.orderAdd),#µ¯³ö×ÓÒ³Ãæiframe-orderaddÒ³Ãæ
+    url(r'^list$',page_open.orderList),#µ¯³ö×ÓÒ³Ãæiframe-ordermodifyÒ³Ãæ
 ]
 
 

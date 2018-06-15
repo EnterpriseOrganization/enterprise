@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from django.conf.urls import url,include
 from django.contrib import admin
@@ -14,8 +15,8 @@ urlpatterns = [
     url(r'^materialclass/$', bom_view.MaterialClassProcessor.get),
     url(r'^productclass/$', bom_view.ProductClassProcessor.get),
     url(r'^productmaterial/product/([0-9]*)/$', bom_view.ProductmaterialProcessor.processProductmaterialForCertainProduct), # get 
-    url(r'^productmaterial/$', bom_view.ProductmaterialProcessor.processProductmaterial), # delete ÊâπÈáèÂà†Èô§ create
-    url(r'^productmaterial/([0-9]*)/$', bom_view.ProductmaterialProcessor.processSpecificProductmaterial), # (get) <- ÂèØËÉΩ‰∏çÈúÄË¶Å  put delete
+    url(r'^productmaterial/$', bom_view.ProductmaterialProcessor.processProductmaterial), # delete ≈˙¡ø…æ≥˝ create
+    url(r'^productmaterial/([0-9]*)/$', bom_view.ProductmaterialProcessor.processSpecificProductmaterial), # (get) <- ø…ƒ‹≤ª–Ë“™  put delete
     url(r'^login', views.userLogin),
     url(r'^getUser',views.getUser),
     url(r'^changeinfo',views.changeInfo),
