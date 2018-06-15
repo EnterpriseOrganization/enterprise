@@ -22,7 +22,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/materialclass/",
+                    url:"../../../bom/materialclass/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -43,7 +43,7 @@
                 });
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/material/"+parent.curedit+"/",
+                    url:"../../../bom/material/"+parent.curedit+"/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -111,7 +111,7 @@
                     var materialname=data.field.materialname;
                     var materialtype=data.field.materialtype;
 
-                    var urltogo="http://127.0.0.1:8000/bom/material/"+materialid+"/?name="+materialname+"&class_id="+materialtype;
+                    var urltogo="../../../bom/material/"+materialid+"/?name="+materialname+"&class_id="+materialtype;
 
                     $.ajax({
                         url:urltogo,

@@ -259,7 +259,7 @@
                 };
             }
             $.ajax({               
-                url: "http://127.0.0.1:8000/order/" + req,
+                url: "../../../order/" + req,
                 type: "POST",
                 cache: false,
                 async: false,
@@ -336,7 +336,7 @@
             //将数据传回后台
             $.ajax({
                 type: "POST",
-                url: "http://127.0.0.1:8000/order/add-order",
+                url: "../../../order/add-order",
                 cache: false,
                 async: false,
                 contentType: "application/json",

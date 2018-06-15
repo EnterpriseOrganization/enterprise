@@ -21,7 +21,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/material/",
+                    url:"../../../bom/material/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -43,7 +43,7 @@
 
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/productmaterial/"+parent.cureditm+"/",
+                    url:"../../../bom/productmaterial/"+parent.cureditm+"/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -132,7 +132,7 @@
                     var materialnumber=data.field.materialnumber;
                     var materialnote=data.field.materialnote;
 
-                    var urltogo="http://127.0.0.1:8000/bom/productmaterial/"+recordid+"/?material_id="+materialid+"&procedure="+materialprocedure+"&number="+materialnumber+"&comments="+materialnote;
+                    var urltogo="../../../bom/productmaterial/"+recordid+"/?material_id="+materialid+"&procedure="+materialprocedure+"&number="+materialnumber+"&comments="+materialnote;
 
                     $.ajax({
                         url:urltogo,

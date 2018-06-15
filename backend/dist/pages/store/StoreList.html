@@ -171,7 +171,7 @@
                 //初次渲染table
                 $.ajax({
                     type: "GET",
-                    url: "http://127.0.0.1:8000/warehouse/inventory",
+                    url: "../../../warehouse/inventory",
                     success: function (data) {
                         pdata = data;
                         mdata = []
@@ -203,7 +203,7 @@
             window.search = function(){
                 var matNo = $('#materialNo').val()
                 var shelfnumber = $('#shelfnumber').val()
-                $.post("http://127.0.0.1:8000/warehouse/inventory",
+                $.post("../../../warehouse/inventory",
                     JSON.stringify({
                     "id":matNo,
                     "shelfnumber":shelfnumber

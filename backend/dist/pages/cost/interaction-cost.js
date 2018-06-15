@@ -18,7 +18,7 @@ function getAllCost(data){
     return response;
 }
 function getCostByName(data){
-    url = 'http://127.0.0.1:8000/cost/get-cost-by-name'
+    url = '../../../cost/get-cost-by-name'
     if(Object.keys(data).length > 0){
         url = url + '?';
         var count = 0;

@@ -126,7 +126,7 @@
                 //初次渲染table
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/order/get-all-order",
+                    url: "../../../order/get-all-order",
                     cache: false,
                     async: false,
                     contenType: "application/json",
@@ -209,7 +209,7 @@
             function multiOption(post_json, str) {
                 var req = str
                 $.ajax({
-                    url: "http://127.0.0.1:8000/order/" + req,
+                    url: "../../../order/" + req,
                     type: "POST",
                     cache: false,
                     async: false,
@@ -286,7 +286,7 @@
                 var kdata = []
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/order/" + req,
+                    url: "../../../order/" + req,
                     cache: false,
                     async: false,
                     contenType: "application/json",
@@ -335,7 +335,7 @@
                 var req = str
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/order/" + req,
+                    url: "../../../order/" + req,
                     cache: false,
                     async: false,
                     contenType: "application/json",
@@ -401,7 +401,7 @@
                 var mdata = []
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/order/get-specific-order",
+                    url: "../../../order/get-specific-order",
                     cache: false,
                     async: false,
                     contentType: "application/json",

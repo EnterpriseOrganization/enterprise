@@ -21,7 +21,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/productclass/",
+                    url:"../../../bom/productclass/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -91,7 +91,7 @@
                     var producttype=data.field.producttype;
                     var productprice=data.field.productprice
 
-                    var urltogo="http://127.0.0.1:8000/bom/product/?name="+productname+"&class_id="+producttype+"&price="+productprice;
+                    var urltogo="../../../bom/product/?name="+productname+"&class_id="+producttype+"&price="+productprice;
 
                     $.ajax({
                         url:urltogo,
