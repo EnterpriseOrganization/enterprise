@@ -1,5 +1,5 @@
 async function getInventory(data){
-    url = '../../../warehouse/inventory'
+    url = '../../../../warehouse/inventory'
     if(Object.keys(data).length > 0){
         url = url + '?';
         var count = 0;

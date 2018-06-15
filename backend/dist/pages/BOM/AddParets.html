@@ -19,7 +19,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"../../../bom/material/",
+                    url:"../../../../bom/material/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -103,7 +103,7 @@
                     var materialnumber=data.field.materialnumber;
                     var materialnote=data.field.materialnote;
 
-                    var urltogo="../../../bom/productmaterial/?product_id="+productid+"&material_id="+materialid+"&procedure="+materialprocedure+"&number="+materialnumber+"&comments="+materialnote;
+                    var urltogo="../../../../bom/productmaterial/?product_id="+productid+"&material_id="+materialid+"&procedure="+materialprocedure+"&number="+materialnumber+"&comments="+materialnote;
 
                     $.ajax({
                         url:urltogo,
