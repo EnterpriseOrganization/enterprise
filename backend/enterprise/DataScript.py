@@ -26,7 +26,7 @@ def generateOrder():
 
 def generateProductClass():
     bpc = ProductClass(class_field="BaseClass")
-    bpc.save()
+    bpc.save()  
     pc_name = "ProductClass {}"
     for i in range(10):
         id = bpc.id if i<3 else i - 1

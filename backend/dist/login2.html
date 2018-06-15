@@ -30,53 +30,18 @@
     </div>
 
     <script type="text/javascript">
-    
+        
             layui.extend({
                 admin: '{/}./static/js/admin'
             });
-            layui.use(['jquery'], function(){
-                var $ = layui.$
-                $.ajax({
-                    url:'/user/getUser',  
-                    type:'POST',  //POST提交数据  
-                    xhrFields:{
-                        withCredentials:true
-                    },
-                    success:function(arg){  //请求成功后的回调函数。  
-                        if(arg.status==200){
-                            location.href="./index.html"
-                        }
-                    }, 
-                    error:function(){  //请求失败时调用此函数。  
-                        layer.msg('网络错误',{anim:5})
-                    }
-                });
-            })
-            
             layui.use(['form','admin','jquery'], function(){
-
                 var form = layui.form
                   ,admin = layui.admin;
                 var $ = layui.$
-
-                // $.ajax({
-                //     url:'/user/getUser',
-                //     type:'POST',  //POST提交数据  
-                //     xhrFields:{
-                //         withCredentials:true
-                //     },
-                //     success:function(arg){  //请求成功后的回调函数。  
-                //         console.log(arg)
-                //         if(arg.status==200){
-                //             location.href="./index.html"
-                //         }
-                //     }, 
-                //     error:function(){  //请求失败时调用此函数。  
-                //         layer.msg('网络错误',{anim:5})
-                //     }
-                // });
-
-
+              // layer.msg('玩命卖萌中', function(){
+              //   //关闭后的操作
+              //   });
+              //监听提交 
               form.on('submit(login)', function(data){
                 // 后端检测密码正确性
                 var username = data.field.username
@@ -84,7 +49,7 @@
                 console.log(username)
                 // 如果登陆成功
                 $.ajax({  
-                    url:'/user/login/',  
+                    url:'http://127.0.0.1:8000/user/login/',  
                     type:'POST',  //POST提交数据  
                     data:{
                         'username':username,
@@ -110,7 +75,8 @@
 
                 return false;
               });
-            });   
+            });
+             
     </script>  
     <!-- 底部结束 -->
 </body>
