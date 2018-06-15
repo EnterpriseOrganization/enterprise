@@ -1,3 +1,4 @@
+#coding:utf8
 # Create your views here.
 import json
 from decimal import *

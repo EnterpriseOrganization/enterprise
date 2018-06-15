@@ -1,3 +1,4 @@
+#coding:utf8
 from enterprise.models import ProductMaterial, Material
 
 def getMaterialList(product_id, product_num):
