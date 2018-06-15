@@ -51,7 +51,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"../../../bom/materialclass/",
+                    url:"../../../../bom/materialclass/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -73,7 +73,7 @@
                 });
 
                 $.ajax({
-                    url:"../../../bom/material/?name=null&class_id=null&id=null",
+                    url:"../../../../bom/material/?name=null&class_id=null&id=null",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -104,7 +104,7 @@
                         materialname="null";
                     }
                     // alert(materialname)
-                    var urltogo="../../../bom/material/?name="+materialname+"&class_id="+materialtype+"&id=null";
+                    var urltogo="../../../../bom/material/?name="+materialname+"&class_id="+materialtype+"&id=null";
                     // alert(urltogo)
                     $.ajax({
                         url:urltogo,
@@ -191,7 +191,7 @@
                 var form=layui.form;
 
                 window.member_del = function (obj, id) {
-                    var urltogo="../../../bom/material/"+id+"/";
+                    var urltogo="../../../../bom/material/"+id+"/";
                     layer.confirm('确认要删除吗？', function(index) {
                         $.ajax({
                             url:urltogo,
@@ -242,7 +242,7 @@
                     
                     console.log(checkStatus)
                     //var data = tableCheck.getData();
-                    var urltogo="../../../bom/material/";
+                    var urltogo="../../../../bom/material/";
                     layer.confirm('确认要删除这些记录吗？', function(index) {
                         console.log(checkStatus)
                         $.ajax({

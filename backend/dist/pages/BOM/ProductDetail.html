@@ -23,7 +23,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"../../../bom/productclass/",
+                    url:"../../../../bom/productclass/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -44,7 +44,7 @@
                 });
 
                 $.ajax({
-                    url:"../../../bom/product/"+parent.cureditp+"/",
+                    url:"../../../../bom/product/"+parent.cureditp+"/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -121,7 +121,7 @@
                     var producttype=data.field.producttype;
                     var productprice=data.field.productprice
 
-                    var urltogo="../../../bom/product/"+productid+"/?name="+productname+"&class_id="+producttype+"&price="+productprice;
+                    var urltogo="../../../../bom/product/"+productid+"/?name="+productname+"&class_id="+producttype+"&price="+productprice;
 
                     $.ajax({
                         url:urltogo,
