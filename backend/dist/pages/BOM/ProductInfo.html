@@ -20,8 +20,8 @@
                 padding-left: 10px;
             }
             #treelist {
-                max-width: 235px;
-                height: 700px;
+                max-width: 300px;
+                height: 950px;
                 overflow-x: scroll;
                 overflow-y: scroll;
             }
@@ -34,7 +34,7 @@
                     return ;
                 }
                 console.log(treeNode.id)
-                urltogo="http://127.0.0.1:8000/bom/productmaterial/product/"+treeNode.id.split("_")[1]+"/"
+                urltogo="../../../bom/productmaterial/product/"+treeNode.id.split("_")[1]+"/"
                 $.ajax({
                     url:urltogo,
                     type:"GET",
@@ -111,7 +111,7 @@
                 });   
                 table.on('tool(protab)',function(obj){
                     console.log(obj.data)
-                    urltogo="http://127.0.0.1:8000/bom/productmaterial/product/"+obj.data.id+"/"
+                    urltogo="../../../bom/productmaterial/product/"+obj.data.id+"/"
                     $.ajax({
                         url:urltogo,
                         type:"GET",
@@ -178,7 +178,7 @@
                 var form=layui.form;
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/productclass/",
+                    url:"../../../bom/productclass/",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -213,7 +213,7 @@
 
 
                 $.ajax({
-                    url:"http://127.0.0.1:8000/bom/product/?name=null&class_id=null&id=null&price=null",
+                    url:"../../../bom/product/?name=null&class_id=null&id=null&price=null",
                     type:"GET",
                     xhrFields:{
                         withCredentials:true
@@ -267,7 +267,7 @@
                         productname="null";
                     }
                     // alert(materialname)
-                    var urltogo="http://127.0.0.1:8000/bom/product/?name="+productname+"&class_id="+producttype+"&id="+productid+"&price=null";
+                    var urltogo="../../../bom/product/?name="+productname+"&class_id="+producttype+"&id="+productid+"&price=null";
                     // alert(urltogo)
                     $.ajax({
                         url:urltogo,
@@ -382,7 +382,7 @@
                 var form=layui.form;        
 
                 window.member_del = function (obj, id) {
-                    var urltogo="http://127.0.0.1:8000/bom/product/"+id+"/";
+                    var urltogo="../../../bom/product/"+id+"/";
                     layer.confirm('确认要删除吗？', function(index) {
                         $.ajax({
                             url:urltogo,
@@ -434,7 +434,7 @@
                     
                     console.log(checkStatus)
                     
-                    var urltogo="http://127.0.0.1:8000/bom/product/";
+                    var urltogo="../../../bom/product/";
                     layer.confirm('确认要删除这些记录吗？', function(index) {
                         console.log(checkStatus)
                         $.ajax({
@@ -497,7 +497,7 @@
                 }    
 
                 window.bom_member_del=function(obj,id){
-                    var urltogo="http://127.0.0.1:8000/bom/productmaterial/"+id+"/";
+                    var urltogo="../../../bom/productmaterial/"+id+"/";
                     layer.confirm('确认要删除吗？', function(index) {
                         $.ajax({
                             url:urltogo,
@@ -547,7 +547,7 @@
                     
                     console.log(checkStatus)
                     //var data = tableCheck.getData();
-                    var urltogo="http://127.0.0.1:8000/bom/productmaterial/";
+                    var urltogo="../../../bom/productmaterial/";
                     layer.confirm('确认要删除这些记录吗？', function(index) {
                         console.log(checkStatus)
                         $.ajax({

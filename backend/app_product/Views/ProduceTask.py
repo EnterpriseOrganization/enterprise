@@ -1,3 +1,4 @@
+#coding:utf8
 from enterprise.models import OrderProduct, ProduceTaskBasic, Workshop
 from django.utils.dateparse import parse_date
 from datetime import *

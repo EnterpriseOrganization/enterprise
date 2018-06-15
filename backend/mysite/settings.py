@@ -24,7 +24,7 @@ SECRET_KEY = '^zx9oh6gh5r7&rq=cq)3b2madth()_ok!a@c^eo!6&50_&6b9e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','47.95.243.80']
 
 # Application definition
 
@@ -77,9 +77,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'enterprise',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',
+	'OPTIONS':{
+		"unix_socket":"/tmp/mysql.sock",
+	},
     }
 }
 
@@ -107,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = ('127.0.0.1:8000', 'localhost:8000')
+CORS_ORIGIN_WHITELIST = ('127.0.0.1:8000', 'localhost:8000','47.95.243.80:8000')
 
 # If True, cookies will be allowed to be included in cross-site HTTP requests. Defaults to False.
 CORS_ALLOW_CREDENTIALS = True

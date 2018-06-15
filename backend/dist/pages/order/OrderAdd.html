@@ -258,9 +258,9 @@
                     "city_id": city_id
                 };
             }
-            $.ajax({
-                type: "POST",
+            $.ajax({               
                 url: "http://127.0.0.1:8000/order/" + req,
+                type: "POST",
                 cache: false,
                 async: false,
                 contentType: "application/json",

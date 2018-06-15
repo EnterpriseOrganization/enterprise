@@ -16,7 +16,7 @@
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-                <script>
+        <script>
             var tableIns
             var mdata = null
             var order_id
@@ -35,28 +35,35 @@
         </div>
         <div class="weadmin-body">            
             <div class="layui-row">
-                <i class="layui-icon layui-icon-note"></i><a> 查询库存: </a>
+                <div class="layui-form layui-col-md12 we-search">
+                    筛选 <i class="fas fa-filter"></i>
                     <div class="layui-inline">
                         <input type="text" name="title" required lay-verify="required" id="materialNo"
                             placeholder="请输入物料编号" autocomplete="off" class="layui-input">
                     </div>
                     <div class="layui-inline">
                         <input type="text" name="title" required lay-verify="required" id="shelfnumber"
-                            placeholder="请输入货架号" autocomplete="off" class="layui-input">
+                            placeholder="请输入货架号" autocomplete="off" class="layui-input">   
                     </div>
-                <button class="layui-btn layui-btn-normal" lay-filter="search" onclick="search()"><i class="fas fa-search"></i></button>               
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search" onclick = "search()"><i class="fas fa-search"></i></button>
+                </div>
             </div>
-            <div class="weadmin-block">
-            <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="WeAdminShow('新增入库信息','./inRecord.html')"><i class="layui-icon">&#xe654;入库信息添加</i></button>
-                <button class="layui-btn layui-btn-sm" onclick="WeAdminShow('新增出库信息','./outRecord.html')"><i class="layui-icon">&#xe654;出库信息添加</i></button>
-            </div>
+
             <!--<div class="weadmin-block">
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
                 <button class="layui-btn" onclick="WeAdminShow('添加订单','./add.html')"><i class="layui-icon"></i>添加</button>
                 <span class="fr" style="line-height:40px">共有数据：88 条</span>
             </div>-->
-            <table class="layui-table" id="store-list" lay-filter="storeEvent">
+            <table class="layui-table" id="store-list">
             </table>
+<!--             <script id="tools">
+                    <a title="新增" onclick="WeAdminShow('新增','./StorePutIn.html',350,400)" href="javascript:;">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                    <a title="出库" onclick="WeAdminShow('出库','./StoreDelivery.html',350,400)" href="javascript:;">
+                        <i class="fas fa-minus"></i>
+                    </a>
+            </script> -->
 
         </div>
         <script>
@@ -75,83 +82,21 @@
                 //执行一个laydate实例
                 laydate.render({
                     elem: '#end' //指定元素
-                });
-                
-                /*用户-停用*/
-                function member_stop(obj, id) {
-                    layer.confirm('确认要停用吗？', function(index) {
-                        if($(obj).attr('title') == '启用') {
-                            //发异步把用户状态进行更改
-                            $(obj).attr('title', '停用')
-                            $(obj).find('i').html('&#xe62f;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                            layer.msg('已停用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-
-                        } else {
-                            $(obj).attr('title', '启用')
-                            $(obj).find('i').html('&#xe601;');
-    
-                            $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                            layer.msg('已启用!', {
-                                icon: 5,
-                                time: 1000
-                            });
-                        }
-                    });
-                }
-    
-                /*用户-删除*/
-                function member_del(obj, id) {
-                    layer.confirm('确认要删除吗？', function(index) {
-                        //发异步删除数据
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {
-                            icon: 1,
-                            time: 1000
-                        });
-                    });
-                }
-    
-                function delAll(argument) {
-                    var data = tableCheck.getData();
-                    layer.confirm('确认要删除吗？' + data, function(index) {
-                        //捉到所有被选中的，发异步进行删除
-                        layer.msg('删除成功', {
-                            icon: 1
-                        });
-                        $(".layui-form-checked").not('.header').parents('tr').remove();
-                    });
-                }
-            });
-            
+                })
+            })
         </script>
         <style>
             .amount-input {
                 width: 70px;
             }
-            #add-item-row {
-                margin-top: 15px;
-            }
         </style>
     </body>
-    <script src="./interaction-warehouse.js"></script>
     <script>
-
-
-        layui.use(['form', 'admin', 'jquery', 'table', 'layer', 'laydate'], function(){
+        layui.use(['table','jquery'], function(){
             var table = layui.table;
-            var admin = layui.admin;
-            var $ = layui.jquery;
-            var form = layui.form;
-            var laydate = layui.laydate;
-            var layer = layui.layer;
-            var postdata;
-            
-        tableIns = table.render({
+            $ = layui.jquery
+            //第一个实例
+            tableIns = table.render({
                 elem: '#store-list'
                 ,height: 315
                 ,width: 1000
@@ -242,11 +187,9 @@
                     // }
                 )
             }
-        })
+
+
+
+        });
     </script>
 </html>
-
-
-<!-- form.on('submit(search)', function() {
-
-}); -->
